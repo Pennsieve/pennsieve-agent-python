@@ -1,0 +1,150 @@
+syntax = "proto3";
+
+option go_package = "github.com/pennsieve/pennsieve-agent/protos";
+package protos;
+
+service Agent {
+	// Manifest Endpoints
+	rpc CreateManifest(CreateManifestRequest) returns (SimpleStatusResponse) {}
+	rpc AddToManifest(AddManifestRequest) returns (SimpleStatusResponse) {}
+	rpc RemoveFromManifest(RemoveFromManifestRequest) returns (SimpleStatusResponse) {}
+	rpc DeleteManifest(DeleteManifestRequest) returns (SimpleStatusResponse) {}
+	rpc ManifestStatus(ManifestStatusRequest) returns (ManifestStatusResponse) {}
+	rpc ListFilesForManifest(ListFilesRequest) returns (ListFilesResponse) {}
+
+	// Upload Endpoints
+	rpc UploadManifest(UploadManifestRequest) returns (SimpleStatusResponse) {}
+	rpc CancelUpload(CancelRequest) returns (SimpleStatusResponse) {}
+
+	// Server Endpoints
+	rpc Subscribe(SubscribeRequest) returns (stream SubsrcribeResponse) {}
+	rpc Unsubscribe(SubscribeRequest) returns (SubsrcribeResponse) {}
+
+	// User Endpoints
+	rpc GetUser(GetUserRequest) returns (UserResponse) {}
+	rpc SwitchProfile(SwitchProfileRequest) returns (UserResponse) {}
+
+}
+
+message SubscribeRequest {
+	int32 id = 1;
+}
+
+message SubsrcribeResponse {
+	message EventResponse {
+		string Details = 1;
+	}
+	message UploadResponse {
+		string FileId = 1;
+		int64 total = 2;
+		int64 current = 3;
+		int32 workerId = 4;
+	}
+	enum MESSAGE_TYPE{
+		EVENT = 0; // Server log message
+		UPLOAD_STATUS = 1;	// Upload Status Message
+		UPLOAD_CANCEL = 2; // Upload was cancelled
+	}
+	MESSAGE_TYPE type = 8;
+	oneof message_data {
+		UploadResponse uploadStatus = 9;
+		EventResponse eventInfo = 10;
+	}
+}
+
+message SimpleStatusResponse {
+	string status = 1;
+}
+
+message CancelRequest {
+	string manifestId = 1;
+	bool cancelAll = 2;
+}
+
+message CreateManifestRequest {
+	string basePath = 1;
+	string targetBasePath = 2;
+	bool recursive = 3;
+}
+
+message AddManifestRequest {
+	string manifestId = 1;
+	string basePath = 2;
+	string targetBasePath = 3;
+	bool recursive = 4;
+}
+
+message RemoveFromManifestRequest {
+	string manifestId = 1;
+	repeated int32 fileId = 2;
+}
+
+message ManifestStatusRequest {
+}
+
+message ManifestStatusResponse {
+	message Manifest {
+		string id = 1;
+		string user_name = 2;
+		string user_id = 3;
+		string organization_name = 4;
+		string organization_id = 5;
+		string dataset_name = 6;
+		string dataset_id = 7;
+		string status = 8;
+	}
+	repeated Manifest manifests = 1;
+}
+
+message DeleteManifestRequest{
+	string manifest_id = 1;
+}
+
+
+message ListFilesRequest{
+	string manifest_id = 1;
+	int32 offset = 2;
+	int32 limit = 3;
+}
+
+message ListFilesResponse{
+	enum STATUS_TYPE{
+		INDEXED = 0;  	// File indexed locally
+		SYNCED = 1; 		// File manifest synchronized with Cloud
+		UPLOADING = 3; 	// File being uploaded
+		COMPLETED = 4; 	// File completed uploading
+		CANCELED = 5; 	// File Upload canceled (manually, or failed)
+	}
+
+	message FileUpload {
+		int32 id = 1;
+		string session_id = 2;
+		string source_path = 3;
+		string target_path = 4;
+		string s3_key = 5;
+		STATUS_TYPE status = 6;
+	}
+
+	repeated FileUpload file = 1;
+}
+
+message UploadManifestRequest{
+	string manifest_id = 1;
+}
+
+message GetUserRequest {
+}
+
+message UserResponse {
+	string id = 2;
+	string name = 3;
+	string sessionToken = 4;
+	string profile = 8;
+	string environment = 9;
+	string organizationId = 10;
+	string organizationName = 11;
+}
+//
+message SwitchProfileRequest {
+	string profile = 1;
+}
