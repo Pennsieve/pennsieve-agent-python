@@ -4,7 +4,7 @@ from protos import agent_pb2
 # import .pennsieve
 
 
-class Manifest(object):
+class Manifest():
 
     def __init__(self, stub):
         self._stub = stub
@@ -14,7 +14,7 @@ class Manifest(object):
         return self._stub.CreateManifest(request=request)
 
     def add(self, manifest_id, basePath, targetBasePath=''):
-        request = agent_pb2.AddManifestRequest(manifest_id=manifest_id, basePath=basePath, targetBasePath=targetBasePath)
+        request = agent_pb2.AddToManifestRequest(manifest_id=manifest_id, basePath=basePath, targetBasePath=targetBasePath)
         return self._stub.AddToManifest(request=request) #AddManifest?
 
     def remove(self, manifest_id, file_id):
@@ -33,7 +33,7 @@ class Manifest(object):
         return self._stub.ManifestStatus(request=request)
 
     def listFiles(self, manifest_id, offset, limit):
-        request = agent_pb2.ListFilesRequest(manifest_id=manifest_id, offset=offset, limit=limit)
+        request = agent_pb2.ListFilesForRequest(manifest_id=manifest_id, offset=offset, limit=limit)
         return self._stub.ListFilesForManifest(request=request)
 
 """    CreateManifest

@@ -14,7 +14,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x12protos/agent.proto\x12\x06protos\"\x1e\n\x10SubscribeRequest\x12\n\n\x02id\x18\x01 \x01(\x05\"\x94\x03\n\x12SubsrcribeResponse\x12\x35\n\x04type\x18\x08 \x01(\x0e\x32\'.protos.SubsrcribeResponse.MESSAGE_TYPE\x12\x41\n\x0cuploadStatus\x18\t \x01(\x0b\x32).protos.SubsrcribeResponse.UploadResponseH\x00\x12=\n\teventInfo\x18\n \x01(\x0b\x32(.protos.SubsrcribeResponse.EventResponseH\x00\x1a \n\rEventResponse\x12\x0f\n\x07\x44\x65tails\x18\x01 \x01(\t\x1aR\n\x0eUploadResponse\x12\x0e\n\x06\x46ileId\x18\x01 \x01(\t\x12\r\n\x05total\x18\x02 \x01(\x03\x12\x0f\n\x07\x63urrent\x18\x03 \x01(\x03\x12\x10\n\x08workerId\x18\x04 \x01(\x05\"?\n\x0cMESSAGE_TYPE\x12\t\n\x05\x45VENT\x10\x00\x12\x11\n\rUPLOAD_STATUS\x10\x01\x12\x11\n\rUPLOAD_CANCEL\x10\x02\x42\x0e\n\x0cmessage_data\"&\n\x14SimpleStatusResponse\x12\x0e\n\x06status\x18\x01 \x01(\t\"6\n\rCancelRequest\x12\x12\n\nmanifestId\x18\x01 \x01(\t\x12\x11\n\tcancelAll\x18\x02 \x01(\x08\"T\n\x15\x43reateManifestRequest\x12\x10\n\x08\x62\x61sePath\x18\x01 \x01(\t\x12\x16\n\x0etargetBasePath\x18\x02 \x01(\t\x12\x11\n\trecursive\x18\x03 \x01(\x08\"e\n\x12\x41\x64\x64ManifestRequest\x12\x12\n\nmanifestId\x18\x01 \x01(\t\x12\x10\n\x08\x62\x61sePath\x18\x02 \x01(\t\x12\x16\n\x0etargetBasePath\x18\x03 \x01(\t\x12\x11\n\trecursive\x18\x04 \x01(\x08\"?\n\x19RemoveFromManifestRequest\x12\x12\n\nmanifestId\x18\x01 \x01(\t\x12\x0e\n\x06\x66ileId\x18\x02 \x03(\x05\"\x17\n\x15ManifestStatusRequest\"\xff\x01\n\x16ManifestStatusResponse\x12:\n\tmanifests\x18\x01 \x03(\x0b\x32\'.protos.ManifestStatusResponse.Manifest\x1a\xa8\x01\n\x08Manifest\x12\n\n\x02id\x18\x01 \x01(\t\x12\x11\n\tuser_name\x18\x02 \x01(\t\x12\x0f\n\x07user_id\x18\x03 \x01(\t\x12\x19\n\x11organization_name\x18\x04 \x01(\t\x12\x17\n\x0forganization_id\x18\x05 \x01(\t\x12\x14\n\x0c\x64\x61taset_name\x18\x06 \x01(\t\x12\x12\n\ndataset_id\x18\x07 \x01(\t\x12\x0e\n\x06status\x18\x08 \x01(\t\",\n\x15\x44\x65leteManifestRequest\x12\x13\n\x0bmanifest_id\x18\x01 \x01(\t\"F\n\x10ListFilesRequest\x12\x13\n\x0bmanifest_id\x18\x01 \x01(\t\x12\x0e\n\x06offset\x18\x02 \x01(\x05\x12\r\n\x05limit\x18\x03 \x01(\x05\"\xbb\x02\n\x11ListFilesResponse\x12\x32\n\x04\x66ile\x18\x01 \x03(\x0b\x32$.protos.ListFilesResponse.FileUpload\x1a\x9d\x01\n\nFileUpload\x12\n\n\x02id\x18\x01 \x01(\x05\x12\x12\n\nsession_id\x18\x02 \x01(\t\x12\x13\n\x0bsource_path\x18\x03 \x01(\t\x12\x13\n\x0btarget_path\x18\x04 \x01(\t\x12\x0e\n\x06s3_key\x18\x05 \x01(\t\x12\x35\n\x06status\x18\x06 \x01(\x0e\x32%.protos.ListFilesResponse.STATUS_TYPE\"R\n\x0bSTATUS_TYPE\x12\x0b\n\x07INDEXED\x10\x00\x12\n\n\x06SYNCED\x10\x01\x12\r\n\tUPLOADING\x10\x03\x12\r\n\tCOMPLETED\x10\x04\x12\x0c\n\x08\x43\x41NCELED\x10\x05\",\n\x15UploadManifestRequest\x12\x13\n\x0bmanifest_id\x18\x01 \x01(\t\"\x10\n\x0eGetUserRequest\"\x96\x01\n\x0cUserResponse\x12\n\n\x02id\x18\x02 \x01(\t\x12\x0c\n\x04name\x18\x03 \x01(\t\x12\x14\n\x0csessionToken\x18\x04 \x01(\t\x12\x0f\n\x07profile\x18\x08 \x01(\t\x12\x13\n\x0b\x65nvironment\x18\t \x01(\t\x12\x16\n\x0eorganizationId\x18\n \x01(\t\x12\x18\n\x10organizationName\x18\x0b \x01(\t\"\'\n\x14SwitchProfileRequest\x12\x0f\n\x07profile\x18\x01 \x01(\t2\x99\x07\n\x05\x41gent\x12O\n\x0e\x43reateManifest\x12\x1d.protos.CreateManifestRequest\x1a\x1c.protos.SimpleStatusResponse\"\x00\x12K\n\rAddToManifest\x12\x1a.protos.AddManifestRequest\x1a\x1c.protos.SimpleStatusResponse\"\x00\x12W\n\x12RemoveFromManifest\x12!.protos.RemoveFromManifestRequest\x1a\x1c.protos.SimpleStatusResponse\"\x00\x12O\n\x0e\x44\x65leteManifest\x12\x1d.protos.DeleteManifestRequest\x1a\x1c.protos.SimpleStatusResponse\"\x00\x12Q\n\x0eManifestStatus\x12\x1d.protos.ManifestStatusRequest\x1a\x1e.protos.ManifestStatusResponse\"\x00\x12M\n\x14ListFilesForManifest\x12\x18.protos.ListFilesRequest\x1a\x19.protos.ListFilesResponse\"\x00\x12O\n\x0eUploadManifest\x12\x1d.protos.UploadManifestRequest\x1a\x1c.protos.SimpleStatusResponse\"\x00\x12\x45\n\x0c\x43\x61ncelUpload\x12\x15.protos.CancelRequest\x1a\x1c.protos.SimpleStatusResponse\"\x00\x12\x45\n\tSubscribe\x12\x18.protos.SubscribeRequest\x1a\x1a.protos.SubsrcribeResponse\"\x00\x30\x01\x12\x45\n\x0bUnsubscribe\x12\x18.protos.SubscribeRequest\x1a\x1a.protos.SubsrcribeResponse\"\x00\x12\x39\n\x07GetUser\x12\x16.protos.GetUserRequest\x1a\x14.protos.UserResponse\"\x00\x12\x45\n\rSwitchProfile\x12\x1c.protos.SwitchProfileRequest\x1a\x14.protos.UserResponse\"\x00\x42-Z+github.com/pennsieve/pennsieve-agent/protosb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x12protos/agent.proto\x12\x06protos\"\x1e\n\x10SubscribeRequest\x12\n\n\x02id\x18\x01 \x01(\x05\"\x96\x03\n\x12SubsrcribeResponse\x12\x34\n\x04type\x18\x08 \x01(\x0e\x32&.protos.SubsrcribeResponse.MessageType\x12\x42\n\rupload_status\x18\t \x01(\x0b\x32).protos.SubsrcribeResponse.UploadResponseH\x00\x12>\n\nevent_info\x18\n \x01(\x0b\x32(.protos.SubsrcribeResponse.EventResponseH\x00\x1a \n\rEventResponse\x12\x0f\n\x07\x64\x65tails\x18\x01 \x01(\t\x1aT\n\x0eUploadResponse\x12\x0f\n\x07\x66ile_id\x18\x01 \x01(\t\x12\r\n\x05total\x18\x02 \x01(\x03\x12\x0f\n\x07\x63urrent\x18\x03 \x01(\x03\x12\x11\n\tworker_id\x18\x04 \x01(\x05\">\n\x0bMessageType\x12\t\n\x05\x45VENT\x10\x00\x12\x11\n\rUPLOAD_STATUS\x10\x01\x12\x11\n\rUPLOAD_CANCEL\x10\x02\x42\x0e\n\x0cmessage_data\"&\n\x14SimpleStatusResponse\x12\x0e\n\x06status\x18\x01 \x01(\t\">\n\x13\x43\x61ncelUploadRequest\x12\x13\n\x0bmanifest_id\x18\x01 \x01(\t\x12\x12\n\ncancel_all\x18\x02 \x01(\x08\"W\n\x15\x43reateManifestRequest\x12\x11\n\tbase_path\x18\x01 \x01(\t\x12\x18\n\x10target_base_path\x18\x02 \x01(\t\x12\x11\n\trecursive\x18\x03 \x01(\x08\"k\n\x14\x41\x64\x64ToManifestRequest\x12\x13\n\x0bmanifest_id\x18\x01 \x01(\t\x12\x11\n\tbase_path\x18\x02 \x01(\t\x12\x18\n\x10target_base_path\x18\x03 \x01(\t\x12\x11\n\trecursive\x18\x04 \x01(\x08\"A\n\x19RemoveFromManifestRequest\x12\x13\n\x0bmanifest_id\x18\x01 \x01(\t\x12\x0f\n\x07\x66ile_id\x18\x02 \x03(\x05\"\x17\n\x15ManifestStatusRequest\"\xff\x01\n\x16ManifestStatusResponse\x12:\n\tmanifests\x18\x01 \x03(\x0b\x32\'.protos.ManifestStatusResponse.Manifest\x1a\xa8\x01\n\x08Manifest\x12\n\n\x02id\x18\x01 \x01(\t\x12\x11\n\tuser_name\x18\x02 \x01(\t\x12\x0f\n\x07user_id\x18\x03 \x01(\t\x12\x19\n\x11organization_name\x18\x04 \x01(\t\x12\x17\n\x0forganization_id\x18\x05 \x01(\t\x12\x14\n\x0c\x64\x61taset_name\x18\x06 \x01(\t\x12\x12\n\ndataset_id\x18\x07 \x01(\t\x12\x0e\n\x06status\x18\x08 \x01(\t\",\n\x15\x44\x65leteManifestRequest\x12\x13\n\x0bmanifest_id\x18\x01 \x01(\t\"N\n\x18ListManifestFilesRequest\x12\x13\n\x0bmanifest_id\x18\x01 \x01(\t\x12\x0e\n\x06offset\x18\x02 \x01(\x05\x12\r\n\x05limit\x18\x03 \x01(\x05\"\xb9\x02\n\x11ListFilesResponse\x12\x32\n\x04\x66ile\x18\x01 \x03(\x0b\x32$.protos.ListFilesResponse.FileUpload\x1a\x9c\x01\n\nFileUpload\x12\n\n\x02id\x18\x01 \x01(\x05\x12\x12\n\nsession_id\x18\x02 \x01(\t\x12\x13\n\x0bsource_path\x18\x03 \x01(\t\x12\x13\n\x0btarget_path\x18\x04 \x01(\t\x12\x0e\n\x06s3_key\x18\x05 \x01(\t\x12\x34\n\x06status\x18\x06 \x01(\x0e\x32$.protos.ListFilesResponse.StatusType\"Q\n\nStatusType\x12\x0b\n\x07INDEXED\x10\x00\x12\n\n\x06SYNCED\x10\x01\x12\r\n\tUPLOADING\x10\x03\x12\r\n\tCOMPLETED\x10\x04\x12\x0c\n\x08\x43\x41NCELED\x10\x05\",\n\x15UploadManifestRequest\x12\x13\n\x0bmanifest_id\x18\x01 \x01(\t\"\x10\n\x0eGetUserRequest\"\xaf\x01\n\x0cUserResponse\x12\n\n\x02id\x18\x02 \x01(\t\x12\x0c\n\x04name\x18\x03 \x01(\t\x12\x15\n\rsession_token\x18\x04 \x01(\t\x12\x14\n\x0ctoken_expire\x18\x05 \x01(\x03\x12\x0f\n\x07profile\x18\x08 \x01(\t\x12\x13\n\x0b\x65nvironment\x18\t \x01(\t\x12\x17\n\x0forganization_id\x18\n \x01(\t\x12\x19\n\x11organization_name\x18\x0b \x01(\t\"\'\n\x14SwitchProfileRequest\x12\x0f\n\x07profile\x18\x01 \x01(\t\"\x17\n\x15ReAuthenticateRequest2\xef\x07\n\x05\x41gent\x12O\n\x0e\x43reateManifest\x12\x1d.protos.CreateManifestRequest\x1a\x1c.protos.SimpleStatusResponse\"\x00\x12M\n\rAddToManifest\x12\x1c.protos.AddToManifestRequest\x1a\x1c.protos.SimpleStatusResponse\"\x00\x12W\n\x12RemoveFromManifest\x12!.protos.RemoveFromManifestRequest\x1a\x1c.protos.SimpleStatusResponse\"\x00\x12O\n\x0e\x44\x65leteManifest\x12\x1d.protos.DeleteManifestRequest\x1a\x1c.protos.SimpleStatusResponse\"\x00\x12Q\n\x0eManifestStatus\x12\x1d.protos.ManifestStatusRequest\x1a\x1e.protos.ManifestStatusResponse\"\x00\x12R\n\x11ListManifestFiles\x12 .protos.ListManifestFilesRequest\x1a\x19.protos.ListFilesResponse\"\x00\x12O\n\x0eUploadManifest\x12\x1d.protos.UploadManifestRequest\x1a\x1c.protos.SimpleStatusResponse\"\x00\x12K\n\x0c\x43\x61ncelUpload\x12\x1b.protos.CancelUploadRequest\x1a\x1c.protos.SimpleStatusResponse\"\x00\x12\x45\n\tSubscribe\x12\x18.protos.SubscribeRequest\x1a\x1a.protos.SubsrcribeResponse\"\x00\x30\x01\x12\x45\n\x0bUnsubscribe\x12\x18.protos.SubscribeRequest\x1a\x1a.protos.SubsrcribeResponse\"\x00\x12\x39\n\x07GetUser\x12\x16.protos.GetUserRequest\x1a\x14.protos.UserResponse\"\x00\x12\x45\n\rSwitchProfile\x12\x1c.protos.SwitchProfileRequest\x1a\x14.protos.UserResponse\"\x00\x12G\n\x0eReAuthenticate\x12\x1d.protos.ReAuthenticateRequest\x1a\x14.protos.UserResponse\"\x00\x42-Z+github.com/pennsieve/pennsieve-agent/protosb\x06proto3')
 
 
 
@@ -23,23 +23,24 @@ _SUBSRCRIBERESPONSE = DESCRIPTOR.message_types_by_name['SubsrcribeResponse']
 _SUBSRCRIBERESPONSE_EVENTRESPONSE = _SUBSRCRIBERESPONSE.nested_types_by_name['EventResponse']
 _SUBSRCRIBERESPONSE_UPLOADRESPONSE = _SUBSRCRIBERESPONSE.nested_types_by_name['UploadResponse']
 _SIMPLESTATUSRESPONSE = DESCRIPTOR.message_types_by_name['SimpleStatusResponse']
-_CANCELREQUEST = DESCRIPTOR.message_types_by_name['CancelRequest']
+_CANCELUPLOADREQUEST = DESCRIPTOR.message_types_by_name['CancelUploadRequest']
 _CREATEMANIFESTREQUEST = DESCRIPTOR.message_types_by_name['CreateManifestRequest']
-_ADDMANIFESTREQUEST = DESCRIPTOR.message_types_by_name['AddManifestRequest']
+_ADDTOMANIFESTREQUEST = DESCRIPTOR.message_types_by_name['AddToManifestRequest']
 _REMOVEFROMMANIFESTREQUEST = DESCRIPTOR.message_types_by_name['RemoveFromManifestRequest']
 _MANIFESTSTATUSREQUEST = DESCRIPTOR.message_types_by_name['ManifestStatusRequest']
 _MANIFESTSTATUSRESPONSE = DESCRIPTOR.message_types_by_name['ManifestStatusResponse']
 _MANIFESTSTATUSRESPONSE_MANIFEST = _MANIFESTSTATUSRESPONSE.nested_types_by_name['Manifest']
 _DELETEMANIFESTREQUEST = DESCRIPTOR.message_types_by_name['DeleteManifestRequest']
-_LISTFILESREQUEST = DESCRIPTOR.message_types_by_name['ListFilesRequest']
+_LISTMANIFESTFILESREQUEST = DESCRIPTOR.message_types_by_name['ListManifestFilesRequest']
 _LISTFILESRESPONSE = DESCRIPTOR.message_types_by_name['ListFilesResponse']
 _LISTFILESRESPONSE_FILEUPLOAD = _LISTFILESRESPONSE.nested_types_by_name['FileUpload']
 _UPLOADMANIFESTREQUEST = DESCRIPTOR.message_types_by_name['UploadManifestRequest']
 _GETUSERREQUEST = DESCRIPTOR.message_types_by_name['GetUserRequest']
 _USERRESPONSE = DESCRIPTOR.message_types_by_name['UserResponse']
 _SWITCHPROFILEREQUEST = DESCRIPTOR.message_types_by_name['SwitchProfileRequest']
-_SUBSRCRIBERESPONSE_MESSAGE_TYPE = _SUBSRCRIBERESPONSE.enum_types_by_name['MESSAGE_TYPE']
-_LISTFILESRESPONSE_STATUS_TYPE = _LISTFILESRESPONSE.enum_types_by_name['STATUS_TYPE']
+_REAUTHENTICATEREQUEST = DESCRIPTOR.message_types_by_name['ReAuthenticateRequest']
+_SUBSRCRIBERESPONSE_MESSAGETYPE = _SUBSRCRIBERESPONSE.enum_types_by_name['MessageType']
+_LISTFILESRESPONSE_STATUSTYPE = _LISTFILESRESPONSE.enum_types_by_name['StatusType']
 SubscribeRequest = _reflection.GeneratedProtocolMessageType('SubscribeRequest', (_message.Message,), {
   'DESCRIPTOR' : _SUBSCRIBEREQUEST,
   '__module__' : 'protos.agent_pb2'
@@ -77,12 +78,12 @@ SimpleStatusResponse = _reflection.GeneratedProtocolMessageType('SimpleStatusRes
   })
 _sym_db.RegisterMessage(SimpleStatusResponse)
 
-CancelRequest = _reflection.GeneratedProtocolMessageType('CancelRequest', (_message.Message,), {
-  'DESCRIPTOR' : _CANCELREQUEST,
+CancelUploadRequest = _reflection.GeneratedProtocolMessageType('CancelUploadRequest', (_message.Message,), {
+  'DESCRIPTOR' : _CANCELUPLOADREQUEST,
   '__module__' : 'protos.agent_pb2'
-  # @@protoc_insertion_point(class_scope:protos.CancelRequest)
+  # @@protoc_insertion_point(class_scope:protos.CancelUploadRequest)
   })
-_sym_db.RegisterMessage(CancelRequest)
+_sym_db.RegisterMessage(CancelUploadRequest)
 
 CreateManifestRequest = _reflection.GeneratedProtocolMessageType('CreateManifestRequest', (_message.Message,), {
   'DESCRIPTOR' : _CREATEMANIFESTREQUEST,
@@ -91,12 +92,12 @@ CreateManifestRequest = _reflection.GeneratedProtocolMessageType('CreateManifest
   })
 _sym_db.RegisterMessage(CreateManifestRequest)
 
-AddManifestRequest = _reflection.GeneratedProtocolMessageType('AddManifestRequest', (_message.Message,), {
-  'DESCRIPTOR' : _ADDMANIFESTREQUEST,
+AddToManifestRequest = _reflection.GeneratedProtocolMessageType('AddToManifestRequest', (_message.Message,), {
+  'DESCRIPTOR' : _ADDTOMANIFESTREQUEST,
   '__module__' : 'protos.agent_pb2'
-  # @@protoc_insertion_point(class_scope:protos.AddManifestRequest)
+  # @@protoc_insertion_point(class_scope:protos.AddToManifestRequest)
   })
-_sym_db.RegisterMessage(AddManifestRequest)
+_sym_db.RegisterMessage(AddToManifestRequest)
 
 RemoveFromManifestRequest = _reflection.GeneratedProtocolMessageType('RemoveFromManifestRequest', (_message.Message,), {
   'DESCRIPTOR' : _REMOVEFROMMANIFESTREQUEST,
@@ -134,12 +135,12 @@ DeleteManifestRequest = _reflection.GeneratedProtocolMessageType('DeleteManifest
   })
 _sym_db.RegisterMessage(DeleteManifestRequest)
 
-ListFilesRequest = _reflection.GeneratedProtocolMessageType('ListFilesRequest', (_message.Message,), {
-  'DESCRIPTOR' : _LISTFILESREQUEST,
+ListManifestFilesRequest = _reflection.GeneratedProtocolMessageType('ListManifestFilesRequest', (_message.Message,), {
+  'DESCRIPTOR' : _LISTMANIFESTFILESREQUEST,
   '__module__' : 'protos.agent_pb2'
-  # @@protoc_insertion_point(class_scope:protos.ListFilesRequest)
+  # @@protoc_insertion_point(class_scope:protos.ListManifestFilesRequest)
   })
-_sym_db.RegisterMessage(ListFilesRequest)
+_sym_db.RegisterMessage(ListManifestFilesRequest)
 
 ListFilesResponse = _reflection.GeneratedProtocolMessageType('ListFilesResponse', (_message.Message,), {
 
@@ -184,6 +185,13 @@ SwitchProfileRequest = _reflection.GeneratedProtocolMessageType('SwitchProfileRe
   })
 _sym_db.RegisterMessage(SwitchProfileRequest)
 
+ReAuthenticateRequest = _reflection.GeneratedProtocolMessageType('ReAuthenticateRequest', (_message.Message,), {
+  'DESCRIPTOR' : _REAUTHENTICATEREQUEST,
+  '__module__' : 'protos.agent_pb2'
+  # @@protoc_insertion_point(class_scope:protos.ReAuthenticateRequest)
+  })
+_sym_db.RegisterMessage(ReAuthenticateRequest)
+
 _AGENT = DESCRIPTOR.services_by_name['Agent']
 if _descriptor._USE_C_DESCRIPTORS == False:
 
@@ -192,47 +200,49 @@ if _descriptor._USE_C_DESCRIPTORS == False:
   _SUBSCRIBEREQUEST._serialized_start=30
   _SUBSCRIBEREQUEST._serialized_end=60
   _SUBSRCRIBERESPONSE._serialized_start=63
-  _SUBSRCRIBERESPONSE._serialized_end=467
-  _SUBSRCRIBERESPONSE_EVENTRESPONSE._serialized_start=270
-  _SUBSRCRIBERESPONSE_EVENTRESPONSE._serialized_end=302
-  _SUBSRCRIBERESPONSE_UPLOADRESPONSE._serialized_start=304
-  _SUBSRCRIBERESPONSE_UPLOADRESPONSE._serialized_end=386
-  _SUBSRCRIBERESPONSE_MESSAGE_TYPE._serialized_start=388
-  _SUBSRCRIBERESPONSE_MESSAGE_TYPE._serialized_end=451
-  _SIMPLESTATUSRESPONSE._serialized_start=469
-  _SIMPLESTATUSRESPONSE._serialized_end=507
-  _CANCELREQUEST._serialized_start=509
-  _CANCELREQUEST._serialized_end=563
-  _CREATEMANIFESTREQUEST._serialized_start=565
-  _CREATEMANIFESTREQUEST._serialized_end=649
-  _ADDMANIFESTREQUEST._serialized_start=651
-  _ADDMANIFESTREQUEST._serialized_end=752
-  _REMOVEFROMMANIFESTREQUEST._serialized_start=754
-  _REMOVEFROMMANIFESTREQUEST._serialized_end=817
-  _MANIFESTSTATUSREQUEST._serialized_start=819
-  _MANIFESTSTATUSREQUEST._serialized_end=842
-  _MANIFESTSTATUSRESPONSE._serialized_start=845
-  _MANIFESTSTATUSRESPONSE._serialized_end=1100
-  _MANIFESTSTATUSRESPONSE_MANIFEST._serialized_start=932
-  _MANIFESTSTATUSRESPONSE_MANIFEST._serialized_end=1100
-  _DELETEMANIFESTREQUEST._serialized_start=1102
-  _DELETEMANIFESTREQUEST._serialized_end=1146
-  _LISTFILESREQUEST._serialized_start=1148
-  _LISTFILESREQUEST._serialized_end=1218
-  _LISTFILESRESPONSE._serialized_start=1221
-  _LISTFILESRESPONSE._serialized_end=1536
-  _LISTFILESRESPONSE_FILEUPLOAD._serialized_start=1295
-  _LISTFILESRESPONSE_FILEUPLOAD._serialized_end=1452
-  _LISTFILESRESPONSE_STATUS_TYPE._serialized_start=1454
-  _LISTFILESRESPONSE_STATUS_TYPE._serialized_end=1536
-  _UPLOADMANIFESTREQUEST._serialized_start=1538
-  _UPLOADMANIFESTREQUEST._serialized_end=1582
-  _GETUSERREQUEST._serialized_start=1584
-  _GETUSERREQUEST._serialized_end=1600
-  _USERRESPONSE._serialized_start=1603
-  _USERRESPONSE._serialized_end=1753
-  _SWITCHPROFILEREQUEST._serialized_start=1755
-  _SWITCHPROFILEREQUEST._serialized_end=1794
-  _AGENT._serialized_start=1797
-  _AGENT._serialized_end=2718
+  _SUBSRCRIBERESPONSE._serialized_end=469
+  _SUBSRCRIBERESPONSE_EVENTRESPONSE._serialized_start=271
+  _SUBSRCRIBERESPONSE_EVENTRESPONSE._serialized_end=303
+  _SUBSRCRIBERESPONSE_UPLOADRESPONSE._serialized_start=305
+  _SUBSRCRIBERESPONSE_UPLOADRESPONSE._serialized_end=389
+  _SUBSRCRIBERESPONSE_MESSAGETYPE._serialized_start=391
+  _SUBSRCRIBERESPONSE_MESSAGETYPE._serialized_end=453
+  _SIMPLESTATUSRESPONSE._serialized_start=471
+  _SIMPLESTATUSRESPONSE._serialized_end=509
+  _CANCELUPLOADREQUEST._serialized_start=511
+  _CANCELUPLOADREQUEST._serialized_end=573
+  _CREATEMANIFESTREQUEST._serialized_start=575
+  _CREATEMANIFESTREQUEST._serialized_end=662
+  _ADDTOMANIFESTREQUEST._serialized_start=664
+  _ADDTOMANIFESTREQUEST._serialized_end=771
+  _REMOVEFROMMANIFESTREQUEST._serialized_start=773
+  _REMOVEFROMMANIFESTREQUEST._serialized_end=838
+  _MANIFESTSTATUSREQUEST._serialized_start=840
+  _MANIFESTSTATUSREQUEST._serialized_end=863
+  _MANIFESTSTATUSRESPONSE._serialized_start=866
+  _MANIFESTSTATUSRESPONSE._serialized_end=1121
+  _MANIFESTSTATUSRESPONSE_MANIFEST._serialized_start=953
+  _MANIFESTSTATUSRESPONSE_MANIFEST._serialized_end=1121
+  _DELETEMANIFESTREQUEST._serialized_start=1123
+  _DELETEMANIFESTREQUEST._serialized_end=1167
+  _LISTMANIFESTFILESREQUEST._serialized_start=1169
+  _LISTMANIFESTFILESREQUEST._serialized_end=1247
+  _LISTFILESRESPONSE._serialized_start=1250
+  _LISTFILESRESPONSE._serialized_end=1563
+  _LISTFILESRESPONSE_FILEUPLOAD._serialized_start=1324
+  _LISTFILESRESPONSE_FILEUPLOAD._serialized_end=1480
+  _LISTFILESRESPONSE_STATUSTYPE._serialized_start=1482
+  _LISTFILESRESPONSE_STATUSTYPE._serialized_end=1563
+  _UPLOADMANIFESTREQUEST._serialized_start=1565
+  _UPLOADMANIFESTREQUEST._serialized_end=1609
+  _GETUSERREQUEST._serialized_start=1611
+  _GETUSERREQUEST._serialized_end=1627
+  _USERRESPONSE._serialized_start=1630
+  _USERRESPONSE._serialized_end=1805
+  _SWITCHPROFILEREQUEST._serialized_start=1807
+  _SWITCHPROFILEREQUEST._serialized_end=1846
+  _REAUTHENTICATEREQUEST._serialized_start=1848
+  _REAUTHENTICATEREQUEST._serialized_end=1871
+  _AGENT._serialized_start=1874
+  _AGENT._serialized_end=2881
 # @@protoc_insertion_point(module_scope)

@@ -21,7 +21,7 @@ class AgentStub(object):
                 )
         self.AddToManifest = channel.unary_unary(
                 '/protos.Agent/AddToManifest',
-                request_serializer=protos_dot_agent__pb2.AddManifestRequest.SerializeToString,
+                request_serializer=protos_dot_agent__pb2.AddToManifestRequest.SerializeToString,
                 response_deserializer=protos_dot_agent__pb2.SimpleStatusResponse.FromString,
                 )
         self.RemoveFromManifest = channel.unary_unary(
@@ -39,9 +39,9 @@ class AgentStub(object):
                 request_serializer=protos_dot_agent__pb2.ManifestStatusRequest.SerializeToString,
                 response_deserializer=protos_dot_agent__pb2.ManifestStatusResponse.FromString,
                 )
-        self.ListFilesForManifest = channel.unary_unary(
-                '/protos.Agent/ListFilesForManifest',
-                request_serializer=protos_dot_agent__pb2.ListFilesRequest.SerializeToString,
+        self.ListManifestFiles = channel.unary_unary(
+                '/protos.Agent/ListManifestFiles',
+                request_serializer=protos_dot_agent__pb2.ListManifestFilesRequest.SerializeToString,
                 response_deserializer=protos_dot_agent__pb2.ListFilesResponse.FromString,
                 )
         self.UploadManifest = channel.unary_unary(
@@ -51,7 +51,7 @@ class AgentStub(object):
                 )
         self.CancelUpload = channel.unary_unary(
                 '/protos.Agent/CancelUpload',
-                request_serializer=protos_dot_agent__pb2.CancelRequest.SerializeToString,
+                request_serializer=protos_dot_agent__pb2.CancelUploadRequest.SerializeToString,
                 response_deserializer=protos_dot_agent__pb2.SimpleStatusResponse.FromString,
                 )
         self.Subscribe = channel.unary_stream(
@@ -72,6 +72,11 @@ class AgentStub(object):
         self.SwitchProfile = channel.unary_unary(
                 '/protos.Agent/SwitchProfile',
                 request_serializer=protos_dot_agent__pb2.SwitchProfileRequest.SerializeToString,
+                response_deserializer=protos_dot_agent__pb2.UserResponse.FromString,
+                )
+        self.ReAuthenticate = channel.unary_unary(
+                '/protos.Agent/ReAuthenticate',
+                request_serializer=protos_dot_agent__pb2.ReAuthenticateRequest.SerializeToString,
                 response_deserializer=protos_dot_agent__pb2.UserResponse.FromString,
                 )
 
@@ -110,7 +115,7 @@ class AgentServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def ListFilesForManifest(self, request, context):
+    def ListManifestFiles(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -155,6 +160,12 @@ class AgentServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def ReAuthenticate(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_AgentServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -165,7 +176,7 @@ def add_AgentServicer_to_server(servicer, server):
             ),
             'AddToManifest': grpc.unary_unary_rpc_method_handler(
                     servicer.AddToManifest,
-                    request_deserializer=protos_dot_agent__pb2.AddManifestRequest.FromString,
+                    request_deserializer=protos_dot_agent__pb2.AddToManifestRequest.FromString,
                     response_serializer=protos_dot_agent__pb2.SimpleStatusResponse.SerializeToString,
             ),
             'RemoveFromManifest': grpc.unary_unary_rpc_method_handler(
@@ -183,9 +194,9 @@ def add_AgentServicer_to_server(servicer, server):
                     request_deserializer=protos_dot_agent__pb2.ManifestStatusRequest.FromString,
                     response_serializer=protos_dot_agent__pb2.ManifestStatusResponse.SerializeToString,
             ),
-            'ListFilesForManifest': grpc.unary_unary_rpc_method_handler(
-                    servicer.ListFilesForManifest,
-                    request_deserializer=protos_dot_agent__pb2.ListFilesRequest.FromString,
+            'ListManifestFiles': grpc.unary_unary_rpc_method_handler(
+                    servicer.ListManifestFiles,
+                    request_deserializer=protos_dot_agent__pb2.ListManifestFilesRequest.FromString,
                     response_serializer=protos_dot_agent__pb2.ListFilesResponse.SerializeToString,
             ),
             'UploadManifest': grpc.unary_unary_rpc_method_handler(
@@ -195,7 +206,7 @@ def add_AgentServicer_to_server(servicer, server):
             ),
             'CancelUpload': grpc.unary_unary_rpc_method_handler(
                     servicer.CancelUpload,
-                    request_deserializer=protos_dot_agent__pb2.CancelRequest.FromString,
+                    request_deserializer=protos_dot_agent__pb2.CancelUploadRequest.FromString,
                     response_serializer=protos_dot_agent__pb2.SimpleStatusResponse.SerializeToString,
             ),
             'Subscribe': grpc.unary_stream_rpc_method_handler(
@@ -216,6 +227,11 @@ def add_AgentServicer_to_server(servicer, server):
             'SwitchProfile': grpc.unary_unary_rpc_method_handler(
                     servicer.SwitchProfile,
                     request_deserializer=protos_dot_agent__pb2.SwitchProfileRequest.FromString,
+                    response_serializer=protos_dot_agent__pb2.UserResponse.SerializeToString,
+            ),
+            'ReAuthenticate': grpc.unary_unary_rpc_method_handler(
+                    servicer.ReAuthenticate,
+                    request_deserializer=protos_dot_agent__pb2.ReAuthenticateRequest.FromString,
                     response_serializer=protos_dot_agent__pb2.UserResponse.SerializeToString,
             ),
     }
@@ -257,7 +273,7 @@ class Agent(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/protos.Agent/AddToManifest',
-            protos_dot_agent__pb2.AddManifestRequest.SerializeToString,
+            protos_dot_agent__pb2.AddToManifestRequest.SerializeToString,
             protos_dot_agent__pb2.SimpleStatusResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
@@ -314,7 +330,7 @@ class Agent(object):
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
-    def ListFilesForManifest(request,
+    def ListManifestFiles(request,
             target,
             options=(),
             channel_credentials=None,
@@ -324,8 +340,8 @@ class Agent(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/protos.Agent/ListFilesForManifest',
-            protos_dot_agent__pb2.ListFilesRequest.SerializeToString,
+        return grpc.experimental.unary_unary(request, target, '/protos.Agent/ListManifestFiles',
+            protos_dot_agent__pb2.ListManifestFilesRequest.SerializeToString,
             protos_dot_agent__pb2.ListFilesResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
@@ -359,7 +375,7 @@ class Agent(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/protos.Agent/CancelUpload',
-            protos_dot_agent__pb2.CancelRequest.SerializeToString,
+            protos_dot_agent__pb2.CancelUploadRequest.SerializeToString,
             protos_dot_agent__pb2.SimpleStatusResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
@@ -428,6 +444,23 @@ class Agent(object):
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/protos.Agent/SwitchProfile',
             protos_dot_agent__pb2.SwitchProfileRequest.SerializeToString,
+            protos_dot_agent__pb2.UserResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def ReAuthenticate(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/protos.Agent/ReAuthenticate',
+            protos_dot_agent__pb2.ReAuthenticateRequest.SerializeToString,
             protos_dot_agent__pb2.UserResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
