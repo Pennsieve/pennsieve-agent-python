@@ -1,9 +1,5 @@
 from protos import agent_pb2
 
-
-# import .pennsieve
-
-
 class Manifest():
 
     def __init__(self, stub):
@@ -15,7 +11,7 @@ class Manifest():
 
     def add(self, manifest_id, basePath, targetBasePath=''):
         request = agent_pb2.AddToManifestRequest(manifest_id=manifest_id, basePath=basePath, targetBasePath=targetBasePath)
-        return self._stub.AddToManifest(request=request) #AddManifest?
+        return self._stub.AddToManifest(request=request)
 
     def remove(self, manifest_id, file_id):
         assert (type(file_id) is list)
@@ -36,10 +32,14 @@ class Manifest():
         request = agent_pb2.ListFilesForRequest(manifest_id=manifest_id, offset=offset, limit=limit)
         return self._stub.ListFilesForManifest(request=request)
 
-"""    CreateManifest
-    AddToManifest
-    RemoveFromManifest
-    DeleteManifest
-    ManifestStatus
-    ListFilesForManifest
-"""
+    def upload(self, manifest_id):
+        request = agent_pb2.UploadManifestRequest(manifest_id=manifest_id)
+        return self._stub.UploadManifest(request=request)
+
+    def startUpload(self, manifest_id):
+        return self.upload(self, manifest_id)
+
+    def cancelUpload(self, manifest_id, cancel_all=True):
+        request = agent_pb2.CancelUploadRequest(manifest_id=manifest_id, cancel_all=cancel_all)
+        return self._stub.CancelUpload(request=request)
+

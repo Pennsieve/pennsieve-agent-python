@@ -17,21 +17,20 @@ class UserProfile(object):
 
 
     def reconnect(self):
-        request = agent_pb2.ReAuthenticate()
-        return self.stub.ReAuthenticate(request=request)
+        request = agent_pb2.ReAuthenticateRequest()
+        return self._stub.ReAuthenticate(request=request)
 
 
     def whoami(self):
         request = agent_pb2.GetUserRequest()
         response = self._stub.GetUser(request=request)
-        print(str(response))
         self.session_token = response.session_token
         self.organization_id = response.organization_id
         self.api_host = self.config[response.profile]['api_host']
         print(response)
         print(self.api_host)
         self.credentials = {'session_token': response.session_token, 'organization_id' : response.organization_id}
-        #return context
+        return self.credentials
 
     def switch(self, profile):
         self.whoami()
@@ -48,20 +47,3 @@ class UserProfile(object):
             configFile=os.path.join(Path.home(),'.pennsieve','config.ini')
         self.config.read(configFile)
 
-
-"""
-	string id = 2;
-	string name = 3;
-	string sessionToken = 4;
-	string profile = 8;
-	string environment = 9;
-	string organizationId = 10;
-	string organizationName = 11;"""
-
-"""
-
-CancelUpload
-Subscribe
-Unsubscribe
-
-"""
