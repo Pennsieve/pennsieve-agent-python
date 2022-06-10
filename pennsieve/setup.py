@@ -1,3 +1,8 @@
+"""
+Copyright (c) 2022 Patryk Orzechowski | Wagenaar Lab | University of Pennsylvania
+"""
+
+
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
@@ -38,5 +43,5 @@ setup(
         'Topic :: Software Development :: Libraries :: Python Modules',
         'Topic :: Utilities'
     ],
-    keywords=['pennsieve', 'data science']
+    keywords=['pennsieve', 'data science', 'datasets', 'repositories']
 )

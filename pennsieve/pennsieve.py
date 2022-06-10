@@ -1,25 +1,59 @@
+"""
+Copyright (c) 2022 Patryk Orzechowski | Wagenaar Lab | University of Pennsylvania
+"""
+
 import sys
 import argparse
-#import configparser
 import grpc
-
-#import os
+import requests
+import json
 
 from protos import agent_pb2_grpc, agent_pb2
 from manifest import Manifest
-#from userProfile import UserProfile
-#from api import PennsieveAPI
-import requests
-import json
 from userProfile import UserProfile
 
-#from pathlib import Path
-
-
 class Pennsieve():
+    """ The main class of Python Pennsieve agent
 
-    def __init__(self, target='localhost:9000', options=None, compression=None):
+    Attributes:
+    -----------
+    api : object
+        a singleton for backward compatibility
+    manifest : object
+        a manifest with files to be uploaded
+    user : object
+        class managing user credentials
 
+    Methods:
+    --------
+    getUser()
+        Returns current user.
+    getManifests()
+        Returns available manifest in form of a list.
+    call(url, method, **kwargs)
+        Invokes get/post/put/delete on the server endpoint defined in url.
+    get(url, **kwargs)
+        Invokes GET endpoint on a server. Passing server name in url is optional.
+    post(url, json, **kwargs)
+        Invokes POST endpoint on a server. Passing server name in url is optional.
+    put(url, json, **kwargs)
+        Invokes PUT endpoint on a server. Passing server name in url is optional.
+    delete(url, **kwargs)
+        Invokes DELETE endpoint on a server. Passing server name in url is optional.
+    subscribe(id)
+        Subscribes for notifications.
+    unsubscribe(id)
+        Unsubscribes from notifications.
+    """
+
+    def __init__(self, target='localhost:9000'):
+        """ Initialization of Pennsieve Python agent
+
+            Parameters:
+            -----------
+            target : str
+                a socket with running GO agent
+        """
         channel = grpc.insecure_channel(target)
         try:
             grpc.channel_ready_future(channel).result(timeout=10)
@@ -33,15 +67,8 @@ class Pennsieve():
         self.manifest = Manifest(self.stub)
         self.user=UserProfile(self.stub)
 
-
-    def _parse_config(self, configFile):
-        self.config=configparser.ConfigParser()
-        if not configFile:
-            configFile=os.path.join(Path.home(),'.pennsieve','config.ini')
-        self.config.read(configFile)
-
-
     def _get_default_headers(self):
+        """ Returns default headers for Pennsieve. """
         return { "Content-Type" : "application/json",
                  "Accept" : "application/json; charset=utf-8",
                  "Authorization" : "Bearer " + self.user.credentials['session_token'],
@@ -49,10 +76,45 @@ class Pennsieve():
 
 
     def getUser(self):
+        """ Returns current user.
+        Return:
+        -------
+            user : str
+                Current user credentials.
+        """
         return self.user.whoami()
 
+    def getManifests(self):
+        """ Returns available manifest in form of a list
+
+        Return:
+        --------
+            manifest : list
+                A list storing all manifests.
+        """
+        return self.manifest.list()
 
     def call(self, url, method, **kwargs):
+        """ Calls get/post/put/delete endpoints directly on the server
+
+        Parameters:
+        -----------
+        url : str
+            address of the server to be called (e.g. api.pennsieve.io)
+        method : str
+            get, post, put or delete - an endpoint to be invoked
+        kwargs : dict
+            a dictionary storing additional information, e.g. json - request payload required for some of the enpoints (e.g. post)
+
+        Raises:
+        -------
+            requests.exceptions.HTTPError : in case of http error
+            Exception : in case of other error
+        Return:
+        --------
+        String in JSON format with response from the server.
+
+        """
         if url.startswith('/'):
             url=self.user.api_host + url
         if 'headers' not in kwargs:
@@ -80,22 +142,104 @@ class Pennsieve():
 
 
     def get(self, url, **kwargs):
+        """Invokes GET endpoint on a server. Passing server name in url is optional.
+
+        Parameters:
+        -----------
+        url : str
+            the address of the server endpoint to be called (e.g. api.pennsieve.io/datasets). The name of the server can be ommitted.
+        kwargs : dict
+            a dictionary storing additional information
+
+        Return:
+        --------
+        String in JSON format with response from the server.
+        """
         return self.call(url, method='get', **kwargs)
 
     def post(self, url, json, **kwargs):
+        """Invokes POST endpoint on a server. Passing server name in url is optional.
+
+        Parameters:
+        -----------
+        url : str
+            the address of the server endpoint to be called (e.g. api.pennsieve.io/datasets).
+            The name of the server can be omitted.
+        json : dict
+            a request payload with parameters defined by a given endpoint
+        kwargs : dict
+            additional information
+
+        Return:
+        --------
+        String in JSON format with response from the server.
+        """
         return self.call(url, method='post', json=json, **kwargs)
 
     def put(self, url, json, **kwargs):
+        """Invokes PUT endpoint on a server. Passing server name in url is optional.
+
+        Parameters:
+        -----------
+        url : str
+            the address of the server endpoint to be called (e.g. api.pennsieve.io/datasets).
+            The name of the server can be omitted.
+        json : dict
+            a request payload with parameters defined by a given endpoint
+        kwargs : dict
+            additional information
+
+        Return:
+        --------
+        String in JSON format with response from the server.
+        """
         return self.call(url, method='put', json=json, **kwargs)
 
     def delete(self, url, **kwargs):
+        """Invokes DELETE endpoint on a server. Passing server name in url is optional.
+
+        Parameters:
+        -----------
+        url : str
+            the address of the server endpoint to be called. The name of the server can be omitted.
+        kwargs : dict
+            additional information
+
+        Return:
+        --------
+        String in JSON format with response from the server.
+        """
         return self.call(url, method='delete', **kwargs)
 
     def subscribe(self, id):
+        """ Creates a subscriber with id that would receive messages from the GO agent.
+        Parameters:
+        -----------
+        id : int
+            an identifier of a subscriber
+
+        Return:
+        -------
+        response : str
+            A response from the server
+        """
+
         request = agent_pb2.SubscribeRequest(id=id)
         return self.stub.Subscribe(request=request)
 
     def unsubscribe(self, id):
+        """ Unsubscribes a subscriber with identifier id from receiving messages from the GO agent.
+        Parameters:
+        -----------
+        id : int
+            an identifier of a subscriber
+
+        Return:
+        -------
+        response : str
+            A response from the server
+        """
+
         request = agent_pb2.SubscribeRequest(id=id)
         return self.stub.Unsubscribe(request=request)
 
