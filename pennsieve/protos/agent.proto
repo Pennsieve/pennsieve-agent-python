@@ -9,8 +9,10 @@ service Agent {
 	rpc AddToManifest(AddToManifestRequest) returns (SimpleStatusResponse) {}
 	rpc RemoveFromManifest(RemoveFromManifestRequest) returns (SimpleStatusResponse) {}
 	rpc DeleteManifest(DeleteManifestRequest) returns (SimpleStatusResponse) {}
+//	rpc ResetManifest(ResetManifestRequest) returns (SimpleStatusResponse) {}
 	rpc ListManifests(ListManifestsRequest) returns (ListManifestsResponse) {}
-	rpc ListManifestFiles(ListManifestFilesRequest) returns (ListFilesResponse) {}
+	rpc ListManifestFiles(ListManifestFilesRequest) returns (ListManifestFilesResponse) {}
+	rpc SyncManifest(SyncManifestRequest) returns (SyncManifestResponse) {}
 
 	// Upload Endpoints
 	rpc UploadManifest(UploadManifestRequest) returns (SimpleStatusResponse) {}
@@ -24,6 +26,9 @@ service Agent {
 	rpc GetUser(GetUserRequest) returns (UserResponse) {}
 	rpc SwitchProfile(SwitchProfileRequest) returns (UserResponse) {}
 	rpc ReAuthenticate(ReAuthenticateRequest) returns (UserResponse) {}
+
+	// Datasets Endpoints
+	rpc UseDataset(UseDatasetRequest) returns (UseDatasetResponse) {}
 
 }
 
@@ -69,7 +74,7 @@ message CreateManifestRequest {
 }
 
 message AddToManifestRequest {
-	string manifest_id = 1;
+	int32 manifest_id = 1;
 	string base_path = 2;
 	string target_base_path = 3;
 	bool recursive = 4;
@@ -85,44 +90,46 @@ message ListManifestsRequest {
 
 message ListManifestsResponse {
 	message Manifest {
-		string id = 1;
-		string user_name = 2;
-		string user_id = 3;
-		string organization_name = 4;
-		string organization_id = 5;
-		string dataset_name = 6;
-		string dataset_id = 7;
-		string status = 8;
+		int32 id = 1;
+		string node_id = 2;
+		string user_name = 3;
+		string user_id = 4;
+		string organization_name = 5;
+		string organization_id = 6;
+		string dataset_name = 7;
+		string dataset_id = 8;
+		string status = 9;
 	}
 	repeated Manifest manifests = 1;
 }
 
 message DeleteManifestRequest{
-	string manifest_id = 1;
+	int32 manifest_id = 1;
 }
 
 
 message ListManifestFilesRequest{
-	string manifest_id = 1;
+	int32 manifest_id = 1;
 	int32 offset = 2;
 	int32 limit = 3;
 }
 
-message ListFilesResponse{
+message ListManifestFilesResponse{
 	enum StatusType{
 		INDEXED = 0;  	// File indexed locally
 		SYNCED = 1; 		// File manifest synchronized with Cloud
 		UPLOADING = 3; 	// File being uploaded
 		COMPLETED = 4; 	// File completed uploading
-		CANCELED = 5; 	// File Upload canceled (manually, or failed)
+		VERIFIED = 5;   // File imported in cloud
+		CANCELLED = 6; 	// File Upload canceled (manually, or failed)
 	}
 
 	message FileUpload {
 		int32 id = 1;
-		string session_id = 2;
+		int32 manifest_id = 2;
 		string source_path = 3;
 		string target_path = 4;
-		string s3_key = 5;
+		string upload_id = 5;
 		StatusType status = 6;
 	}
 
@@ -152,4 +159,26 @@ message SwitchProfileRequest {
 }
 
 message ReAuthenticateRequest {
+}
+
+message UseDatasetRequest {
+	string dataset_id = 1;
+}
+
+message UseDatasetResponse {
+	string dataset_id = 1;
+}
+
+message SyncManifestRequest {
+	int32 manifest_id = 1;
+}
+
+message SyncManifestResponse {
+	string manifest_node_id = 1;
+	int32 nr_files_added = 2;
+	int32 nr_files_removed = 3;
+}
+
+message ResetManifestRequest {
+	int32 manifest_id = 1;
 }

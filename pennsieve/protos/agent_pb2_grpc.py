@@ -42,7 +42,12 @@ class AgentStub(object):
         self.ListManifestFiles = channel.unary_unary(
                 '/protos.Agent/ListManifestFiles',
                 request_serializer=protos_dot_agent__pb2.ListManifestFilesRequest.SerializeToString,
-                response_deserializer=protos_dot_agent__pb2.ListFilesResponse.FromString,
+                response_deserializer=protos_dot_agent__pb2.ListManifestFilesResponse.FromString,
+                )
+        self.SyncManifest = channel.unary_unary(
+                '/protos.Agent/SyncManifest',
+                request_serializer=protos_dot_agent__pb2.SyncManifestRequest.SerializeToString,
+                response_deserializer=protos_dot_agent__pb2.SyncManifestResponse.FromString,
                 )
         self.UploadManifest = channel.unary_unary(
                 '/protos.Agent/UploadManifest',
@@ -79,6 +84,11 @@ class AgentStub(object):
                 request_serializer=protos_dot_agent__pb2.ReAuthenticateRequest.SerializeToString,
                 response_deserializer=protos_dot_agent__pb2.UserResponse.FromString,
                 )
+        self.UseDataset = channel.unary_unary(
+                '/protos.Agent/UseDataset',
+                request_serializer=protos_dot_agent__pb2.UseDatasetRequest.SerializeToString,
+                response_deserializer=protos_dot_agent__pb2.UseDatasetResponse.FromString,
+                )
 
 
 class AgentServicer(object):
@@ -110,12 +120,19 @@ class AgentServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def ListManifests(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """	rpc ResetManifest(ResetManifestRequest) returns (SimpleStatusResponse) {}
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def ListManifestFiles(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def SyncManifest(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -166,6 +183,13 @@ class AgentServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def UseDataset(self, request, context):
+        """Datasets Endpoints
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_AgentServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -197,7 +221,12 @@ def add_AgentServicer_to_server(servicer, server):
             'ListManifestFiles': grpc.unary_unary_rpc_method_handler(
                     servicer.ListManifestFiles,
                     request_deserializer=protos_dot_agent__pb2.ListManifestFilesRequest.FromString,
-                    response_serializer=protos_dot_agent__pb2.ListFilesResponse.SerializeToString,
+                    response_serializer=protos_dot_agent__pb2.ListManifestFilesResponse.SerializeToString,
+            ),
+            'SyncManifest': grpc.unary_unary_rpc_method_handler(
+                    servicer.SyncManifest,
+                    request_deserializer=protos_dot_agent__pb2.SyncManifestRequest.FromString,
+                    response_serializer=protos_dot_agent__pb2.SyncManifestResponse.SerializeToString,
             ),
             'UploadManifest': grpc.unary_unary_rpc_method_handler(
                     servicer.UploadManifest,
@@ -233,6 +262,11 @@ def add_AgentServicer_to_server(servicer, server):
                     servicer.ReAuthenticate,
                     request_deserializer=protos_dot_agent__pb2.ReAuthenticateRequest.FromString,
                     response_serializer=protos_dot_agent__pb2.UserResponse.SerializeToString,
+            ),
+            'UseDataset': grpc.unary_unary_rpc_method_handler(
+                    servicer.UseDataset,
+                    request_deserializer=protos_dot_agent__pb2.UseDatasetRequest.FromString,
+                    response_serializer=protos_dot_agent__pb2.UseDatasetResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -342,7 +376,24 @@ class Agent(object):
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/protos.Agent/ListManifestFiles',
             protos_dot_agent__pb2.ListManifestFilesRequest.SerializeToString,
-            protos_dot_agent__pb2.ListFilesResponse.FromString,
+            protos_dot_agent__pb2.ListManifestFilesResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def SyncManifest(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/protos.Agent/SyncManifest',
+            protos_dot_agent__pb2.SyncManifestRequest.SerializeToString,
+            protos_dot_agent__pb2.SyncManifestResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -462,5 +513,22 @@ class Agent(object):
         return grpc.experimental.unary_unary(request, target, '/protos.Agent/ReAuthenticate',
             protos_dot_agent__pb2.ReAuthenticateRequest.SerializeToString,
             protos_dot_agent__pb2.UserResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def UseDataset(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/protos.Agent/UseDataset',
+            protos_dot_agent__pb2.UseDatasetRequest.SerializeToString,
+            protos_dot_agent__pb2.UseDatasetResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

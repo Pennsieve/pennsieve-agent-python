@@ -32,7 +32,7 @@ class Manifest():
 
     def __init__(self, stub):
         """ Initialization of the manifest.
-        
+
         Parameters:
         -----------
         stub : object

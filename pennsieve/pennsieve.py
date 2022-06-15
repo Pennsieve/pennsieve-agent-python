@@ -23,6 +23,8 @@ class Pennsieve():
         a manifest with files to be uploaded
     user : object
         class managing user credentials
+    datasets : dict
+        a dictionary with all the datasets the user has access to
 
     Methods:
     --------
@@ -30,6 +32,8 @@ class Pennsieve():
         Returns current user.
     getManifests()
         Returns available manifest in form of a list.
+    useDataset(dataset_id)
+        specifies which dataset on the server will be used
     call(url, method, **kwargs)
         Invokes get/post/put/delete on the server endpoint defined in url.
     get(url, **kwargs)
@@ -56,7 +60,7 @@ class Pennsieve():
         """
         channel = grpc.insecure_channel(target)
         try:
-            grpc.channel_ready_future(channel).result(timeout=10)
+            grpc.channel_ready_future(channel).result(timeout=100)
         except grpc.FutureTimeoutError:
             sys.exit('Error connecting to server')
         else:
@@ -66,6 +70,7 @@ class Pennsieve():
         self.api = self
         self.manifest = Manifest(self.stub)
         self.user=UserProfile(self.stub)
+        self.datasets=None
 
     def _get_default_headers(self):
         """ Returns default headers for Pennsieve. """
@@ -73,7 +78,6 @@ class Pennsieve():
                  "Accept" : "application/json; charset=utf-8",
                  "Authorization" : "Bearer " + self.user.credentials['session_token'],
                  "X-ORGANIZATION-ID" : self.user.credentials['organization_id']}
-
 
     def getUser(self):
         """ Returns current user.
@@ -93,6 +97,33 @@ class Pennsieve():
                 A list storing all manifests.
         """
         return self.manifest.list()
+
+    def getDatasets(self):
+        """ Lists datasets for which the authenticated user has access to
+
+        Return:
+        --------
+            datasets : dict
+                a dictionary with user-defined names as keys and AWS ids as values
+        """
+
+        response = self.get('/datasets')
+        self.datasets = dict(map(lambda x : (x['content']['name'], x['content']['id']), response))
+        return self.datasets
+
+    def useDataset(self, dataset_id):
+        """ Specifies which dataset on the server will be used
+
+        Parameters:
+        --------
+            dataset_id : string
+                either dataset name or AWS-like dataset id of the dataset to which the changes will be applied
+        """
+        if self.datasets and dataset_id in self.datasets.keys():
+            dataset_id = self.datasets[dataset_id]
+        request = agent_pb2.UseDatasetRequest(dataset_id=dataset_id)
+        return self.stub.UseDataset(request=request)
+
 
     def call(self, url, method, **kwargs):
         """ Calls get/post/put/delete endpoints directly on the server
