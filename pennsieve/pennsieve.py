@@ -32,6 +32,8 @@ class Pennsieve():
         Returns current user.
     getManifests()
         Returns available manifest in form of a list.
+    getDatasets()
+        Returns available datasets in form of a list.
     useDataset(dataset_id)
         specifies which dataset on the server will be used
     call(url, method, **kwargs)

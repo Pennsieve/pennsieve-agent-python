@@ -28,6 +28,14 @@ class Manifest():
             see: upload(manifest_id)
         cancelUpload(manifest_id, cancel_all=True):
             cancels the upload session for manifest_id or all upload sessions
+        relocateFiles(manifest_id, path, target_path):
+            changes the target path of the manifest
+        sync(manifest_id):
+            synchronizes the state of the manifest between local and cloud server
+        reset(manifest_id):
+            allows users to reset the status for all files in a manifest
+
+
     """
 
     def __init__(self, stub):
@@ -116,7 +124,7 @@ class Manifest():
         request = agent_pb2.DeleteManifestRequest(manifest_id=manifest_id)
         return self._stub.DeleteManifest(request=request)
 
-    def list(self):
+    def listManifests(self):
         """ Lists all available manifests.
 
         Return:
@@ -187,7 +195,67 @@ class Manifest():
             A response from the server
         """
 
-
         request = agent_pb2.CancelUploadRequest(manifest_id=manifest_id, cancel_all=cancel_all)
         return self._stub.CancelUpload(request=request)
+
+
+    def relocateFiles(self, manifest_id, path, updated_path):
+        """ Changes the target path of the manifest
+
+        Parameters:
+        -----------
+        manifest_id :
+            an identifier of the manifest to stop uploading files
+        path:
+            a path of the files
+        updated_path:
+            a new path of the files
+
+        Return:
+        -------
+        response : str
+            A response from the server
+        """
+
+        request = agent_pb2.RelocateManifestFilesRequest(manifest_id=manifest_id, path=path, updated_path=updated_path)
+        return self._stub.RelocateManifestFiles(request=request)
+
+
+
+    def sync(self, manifest_id):
+        """ Synchronizes the state of the manifest between local and cloud server
+
+        Parameters:
+        -----------
+        manifest_id :
+            an identifier of the manifest to stop uploading files
+
+        Return:
+        -------
+        response : str
+            A response from the server
+        """
+
+        request = agent_pb2.SyncManifestRequest(manifest_id=manifest_id)
+        return self._stub.SyncManifest(request=request)
+
+
+
+    def reset(self, manifest_id):
+        """ Allows users to reset the status for all files in a manifest
+
+        Parameters:
+        -----------
+        manifest_id :
+            an identifier of the manifest to stop uploading files
+
+        Return:
+        -------
+        response : str
+            A response from the server
+        """
+
+        request = agent_pb2.ResetManifestRequest(manifest_id=manifest_id)
+        return self._stub.ResetManifest(request=request)
+
 
