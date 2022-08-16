@@ -2,6 +2,7 @@
 Copyright (c) 2022 Patryk Orzechowski | Wagenaar Lab | University of Pennsylvania
 """
 
+from setuptools import setup, Extension
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
