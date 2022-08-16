@@ -4,7 +4,8 @@ Copyright (c) 2022 Patryk Orzechowski | Wagenaar Lab | University of Pennsylvani
 
 from protos import agent_pb2
 
-class Manifest():
+
+class Manifest:
     """
         A class to represent operations on manifest.
 
@@ -65,7 +66,7 @@ class Manifest():
         request = agent_pb2.CreateManifestRequest(base_path=base_path)
         return self._stub.CreateManifest(request=request)
 
-    def add(self, manifest_id, base_path, targetBasePath=''):
+    def add(self, manifest_id, base_path, targetBasePath=""):
         """ Adds a file(s) to a manifest with manifest_id located on base_path, which will be stored on targetBasePath on the server
 
         Parameters:
@@ -83,7 +84,9 @@ class Manifest():
             A response from the server
         """
 
-        request = agent_pb2.AddToManifestRequest(manifest_id=manifest_id, base_path=base_path, targetBasePath=targetBasePath)
+        request = agent_pb2.AddToManifestRequest(
+            manifest_id=manifest_id, base_path=base_path, targetBasePath=targetBasePath
+        )
         return self._stub.AddToManifest(request=request)
 
     def remove(self, manifest_id, file_id):
@@ -102,10 +105,12 @@ class Manifest():
             A response from the server
         """
 
-        assert (type(file_id) is list)
+        assert type(file_id) is list
         if type(file_id) is int:
             files = [file_id]
-        request = agent_pb2.RemoveFromManifestRequest(manifest_id=manifest_id, file_id=file_id)
+        request = agent_pb2.RemoveFromManifestRequest(
+            manifest_id=manifest_id, file_id=file_id
+        )
         return self._stub.RemoveFromManifest(request=request)
 
     def delete(self, manifest_id):
@@ -135,8 +140,6 @@ class Manifest():
         request = agent_pb2.ListManifestsRequest()
         return self._stub.ListManifests(request=request).manifests
 
-
-
     def listFiles(self, manifest_id, offset=0, limit=100):
         """ Lists files for manifest with manifest_id, starting from the number defined by offset, not more than the limit
 
@@ -155,7 +158,9 @@ class Manifest():
             A response from the server
         """
 
-        request = agent_pb2.ListManifestFilesRequest(manifest_id=manifest_id, offset=offset, limit=limit)
+        request = agent_pb2.ListManifestFilesRequest(
+            manifest_id=manifest_id, offset=offset, limit=limit
+        )
         return self._stub.ListManifestFiles(request=request)
 
     def upload(self, manifest_id):
@@ -195,9 +200,10 @@ class Manifest():
             A response from the server
         """
 
-        request = agent_pb2.CancelUploadRequest(manifest_id=manifest_id, cancel_all=cancel_all)
+        request = agent_pb2.CancelUploadRequest(
+            manifest_id=manifest_id, cancel_all=cancel_all
+        )
         return self._stub.CancelUpload(request=request)
-
 
     def relocateFiles(self, manifest_id, path, updated_path):
         """ Changes the target path of the manifest
@@ -217,10 +223,10 @@ class Manifest():
             A response from the server
         """
 
-        request = agent_pb2.RelocateManifestFilesRequest(manifest_id=manifest_id, path=path, updated_path=updated_path)
+        request = agent_pb2.RelocateManifestFilesRequest(
+            manifest_id=manifest_id, path=path, updated_path=updated_path
+        )
         return self._stub.RelocateManifestFiles(request=request)
-
-
 
     def sync(self, manifest_id):
         """ Synchronizes the state of the manifest between local and cloud server
@@ -239,8 +245,6 @@ class Manifest():
         request = agent_pb2.SyncManifestRequest(manifest_id=manifest_id)
         return self._stub.SyncManifest(request=request)
 
-
-
     def reset(self, manifest_id):
         """ Allows users to reset the status for all files in a manifest
 
@@ -257,5 +261,3 @@ class Manifest():
 
         request = agent_pb2.ResetManifestRequest(manifest_id=manifest_id)
         return self._stub.ResetManifest(request=request)
-
-

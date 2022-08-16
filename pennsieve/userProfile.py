@@ -8,7 +8,7 @@ from pathlib import Path
 from protos import agent_pb2
 
 
-class UserProfile():
+class UserProfile:
     """ A class to handle user credentials.
     Attributes:
     -----------
@@ -35,7 +35,7 @@ class UserProfile():
     """
 
     def __init__(self, stub):
-        self._stub=stub
+        self._stub = stub
         self._parse_config()
         self.whoami()
 
@@ -44,17 +44,19 @@ class UserProfile():
         request = agent_pb2.ReAuthenticateRequest()
         return self._stub.ReAuthenticate(request=request)
 
-
     def whoami(self):
         """ Checks and prints current user credentials """
         request = agent_pb2.GetUserRequest()
         response = self._stub.GetUser(request=request)
         self.session_token = response.session_token
         self.organization_id = response.organization_id
-        self.api_host = self.config[response.profile]['api_host']
+        self.api_host = self.config[response.profile]["api_host"]
         print(response)
         print(self.api_host)
-        self.credentials = {'session_token': response.session_token, 'organization_id' : response.organization_id}
+        self.credentials = {
+            "session_token": response.session_token,
+            "organization_id": response.organization_id,
+        }
         return self.credentials
 
     def switch(self, profile):
@@ -69,7 +71,6 @@ class UserProfile():
         response = self._stub.SwitchProfile(request=request)
         self.whoami()
 
-
     def _parse_config(self, configFile=None):
         """ Reads Pennsieve config file and sets available configs for the user
 
@@ -78,8 +79,7 @@ class UserProfile():
         configFile : str, optional
            a name of the file with Pennsieve agent config (by default ~/.pennsieve/config.ini)
         """
-        self.config=configparser.ConfigParser()
+        self.config = configparser.ConfigParser()
         if not configFile:
-            configFile=os.path.join(Path.home(),'.pennsieve','config.ini')
+            configFile = os.path.join(Path.home(), ".pennsieve", "config.ini")
         self.config.read(configFile)
-

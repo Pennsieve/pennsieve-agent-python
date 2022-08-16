@@ -12,7 +12,8 @@ from protos import agent_pb2_grpc, agent_pb2
 from manifest import Manifest
 from userProfile import UserProfile
 
-class Pennsieve():
+
+class Pennsieve:
     """ The main class of Python Pennsieve agent
 
     Attributes:
@@ -52,7 +53,7 @@ class Pennsieve():
         Unsubscribes from notifications.
     """
 
-    def __init__(self, target='localhost:9000'):
+    def __init__(self, target="localhost:9000"):
         """ Initialization of Pennsieve Python agent
 
             Parameters:
@@ -64,22 +65,24 @@ class Pennsieve():
         try:
             grpc.channel_ready_future(channel).result(timeout=100)
         except grpc.FutureTimeoutError:
-            sys.exit('Error connecting to server')
+            sys.exit("Error connecting to server")
         else:
             self.stub = agent_pb2_grpc.AgentStub(channel)
-        assert (self.stub is not None)
+        assert self.stub is not None
 
         self.api = self
         self.manifest = Manifest(self.stub)
-        self.user=UserProfile(self.stub)
-        self.datasets=None
+        self.user = UserProfile(self.stub)
+        self.datasets = None
 
     def _get_default_headers(self):
         """ Returns default headers for Pennsieve. """
-        return { "Content-Type" : "application/json",
-                 "Accept" : "application/json; charset=utf-8",
-                 "Authorization" : "Bearer " + self.user.credentials['session_token'],
-                 "X-ORGANIZATION-ID" : self.user.credentials['organization_id']}
+        return {
+            "Content-Type": "application/json",
+            "Accept": "application/json; charset=utf-8",
+            "Authorization": "Bearer " + self.user.credentials["session_token"],
+            "X-ORGANIZATION-ID": self.user.credentials["organization_id"],
+        }
 
     def getUser(self):
         """ Returns current user.
@@ -109,8 +112,10 @@ class Pennsieve():
                 a dictionary with user-defined names as keys and AWS ids as values
         """
 
-        response = self.get('/datasets')
-        self.datasets = dict(map(lambda x : (x['content']['name'], x['content']['id']), response))
+        response = self.get("/datasets")
+        self.datasets = dict(
+            map(lambda x: (x["content"]["name"], x["content"]["id"]), response)
+        )
         return self.datasets
 
     def useDataset(self, dataset_id):
@@ -125,7 +130,6 @@ class Pennsieve():
             dataset_id = self.datasets[dataset_id]
         request = agent_pb2.UseDatasetRequest(dataset_id=dataset_id)
         return self.stub.UseDataset(request=request)
-
 
     def call(self, url, method, **kwargs):
         """ Calls get/post/put/delete endpoints directly on the server
@@ -148,31 +152,30 @@ class Pennsieve():
         String in JSON format with response from the server.
 
         """
-        if url.startswith('/'):
-            url=self.user.api_host + url
-        if 'headers' not in kwargs:
-            headers=self._get_default_headers()
+        if url.startswith("/"):
+            url = self.user.api_host + url
+        if "headers" not in kwargs:
+            headers = self._get_default_headers()
         else:
-            headers=kwargs['headers']
+            headers = kwargs["headers"]
         try:
-            if method.lower() == 'get':
+            if method.lower() == "get":
                 response = requests.get(url=url, headers=headers, **kwargs)
-            elif method.lower() == 'post':
+            elif method.lower() == "post":
                 response = requests.post(url=url, headers=headers, **kwargs)
-            elif method.lower() == 'put':
+            elif method.lower() == "put":
                 response = requests.put(url=url, headers=headers, **kwargs)
-            elif method.lower() == 'delete':
+            elif method.lower() == "delete":
                 response = requests.delete(url=url, headers=headers, **kwargs)
             else:
-                raise Exception('Not implemented')
+                raise Exception("Not implemented")
             response.raise_for_status()
         except requests.exceptions.HTTPError as http_err:
-            print(f'HTTP error occurred: {http_err}')
+            print(f"HTTP error occurred: {http_err}")
         except Exception as err:
-            print(f'Other excpetion occurred: {err}')
+            print(f"Other excpetion occurred: {err}")
         else:
-            return response.json() #content.decode('utf-8'))
-
+            return response.json()  # content.decode('utf-8'))
 
     def get(self, url, **kwargs):
         """Invokes GET endpoint on a server. Passing server name in url is optional.
@@ -188,7 +191,7 @@ class Pennsieve():
         --------
         String in JSON format with response from the server.
         """
-        return self.call(url, method='get', **kwargs)
+        return self.call(url, method="get", **kwargs)
 
     def post(self, url, json, **kwargs):
         """Invokes POST endpoint on a server. Passing server name in url is optional.
@@ -207,7 +210,7 @@ class Pennsieve():
         --------
         String in JSON format with response from the server.
         """
-        return self.call(url, method='post', json=json, **kwargs)
+        return self.call(url, method="post", json=json, **kwargs)
 
     def put(self, url, json, **kwargs):
         """Invokes PUT endpoint on a server. Passing server name in url is optional.
@@ -226,7 +229,7 @@ class Pennsieve():
         --------
         String in JSON format with response from the server.
         """
-        return self.call(url, method='put', json=json, **kwargs)
+        return self.call(url, method="put", json=json, **kwargs)
 
     def delete(self, url, **kwargs):
         """Invokes DELETE endpoint on a server. Passing server name in url is optional.
@@ -242,7 +245,7 @@ class Pennsieve():
         --------
         String in JSON format with response from the server.
         """
-        return self.call(url, method='delete', **kwargs)
+        return self.call(url, method="delete", **kwargs)
 
     def subscribe(self, id):
         """ Creates a subscriber with id that would receive messages from the GO agent.
@@ -275,4 +278,3 @@ class Pennsieve():
 
         request = agent_pb2.SubscribeRequest(id=id)
         return self.stub.Unsubscribe(request=request)
-

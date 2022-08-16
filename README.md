@@ -1,6 +1,6 @@
 Pennsieve Python client (pennsieve2)
 ================
-[![pypi](https://img.shields.io/pypi/pyversions/pennsieve.svg)](https://pypi.org/project/pennsieve2/)
+[![pypi](https://img.shields.io/pypi/pyversions/pennsieve2.svg)](https://pypi.org/project/pennsieve2/)
 
 Python client and command line tool for Pennsieve (pennsieve2).
 
