@@ -16,7 +16,7 @@ Installation
 To install, run:
 
 ```bash
-    pip install -U pennsieve
+    pip install -U pennsieve2
 ```
 
 
