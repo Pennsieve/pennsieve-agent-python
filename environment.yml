@@ -5,10 +5,10 @@ dependencies:
     - make
     - compilers
     - python
-    - grpcio
-    - grpcio-tools
-    
+
     # pip
     - pip=20.3.3 
     - pip:
-        - grpc
+        - grpcio
+        - grpcio-tools
+        - protobuf
