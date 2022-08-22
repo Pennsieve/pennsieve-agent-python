@@ -1,0 +1,204 @@
+syntax = "proto3";
+
+option go_package = "github.com/pennsieve/pennsieve-agent/protos";
+package protos;
+
+service Agent {
+	// Manifest Endpoints
+	rpc CreateManifest(CreateManifestRequest) returns (CreateManifestResponse) {}
+	rpc AddToManifest(AddToManifestRequest) returns (SimpleStatusResponse) {}
+	rpc RemoveFromManifest(RemoveFromManifestRequest) returns (SimpleStatusResponse) {}
+	rpc DeleteManifest(DeleteManifestRequest) returns (SimpleStatusResponse) {}
+	rpc ListManifests(ListManifestsRequest) returns (ListManifestsResponse) {}
+	rpc ListManifestFiles(ListManifestFilesRequest) returns (ListManifestFilesResponse) {}
+	rpc RelocateManifestFiles(RelocateManifestFilesRequest) returns (SimpleStatusResponse) {}
+	rpc SyncManifest(SyncManifestRequest) returns (SyncManifestResponse) {}
+	rpc ResetManifest(ResetManifestRequest) returns (SimpleStatusResponse) {}
+
+	// Upload Endpoints
+	rpc UploadManifest(UploadManifestRequest) returns (SimpleStatusResponse) {}
+	rpc CancelUpload(CancelUploadRequest) returns (SimpleStatusResponse) {}
+
+	// Server Endpoints
+	rpc Subscribe(SubscribeRequest) returns (stream SubsrcribeResponse) {}
+	rpc Unsubscribe(SubscribeRequest) returns (SubsrcribeResponse) {}
+
+	// User Endpoints
+	rpc GetUser(GetUserRequest) returns (UserResponse) {}
+	rpc SwitchProfile(SwitchProfileRequest) returns (UserResponse) {}
+	rpc ReAuthenticate(ReAuthenticateRequest) returns (UserResponse) {}
+
+	// Datasets Endpoints
+	rpc UseDataset(UseDatasetRequest) returns (UseDatasetResponse) {}
+
+}
+
+message SubscribeRequest {
+	int32 id = 1;
+}
+
+message SubsrcribeResponse {
+	message EventResponse {
+		string details = 1;
+	}
+	message UploadResponse {
+		string file_id = 1;
+		int64 total = 2;
+		int64 current = 3;
+		int32 worker_id = 4;
+	}
+	enum MessageType{
+		EVENT = 0; // Server log message
+		UPLOAD_STATUS = 1;	// Upload Status Message
+		UPLOAD_CANCEL = 2; // Upload was cancelled
+	}
+	MessageType type = 8;
+	oneof message_data {
+		UploadResponse upload_status = 9;
+		EventResponse event_info = 10;
+	}
+}
+
+message SimpleStatusResponse {
+	string status = 1;
+}
+
+message CancelUploadRequest {
+	int32 manifest_id = 1;
+	bool cancel_all = 2;
+}
+
+message CreateManifestRequest {
+	string base_path = 1;
+	string target_base_path = 2;
+	bool recursive = 3;
+	repeated string files = 4;
+}
+
+message CreateManifestResponse {
+	int32 manifest_id = 1;
+	string message = 2;
+}
+
+message AddToManifestRequest {
+	int32 manifest_id = 1;
+	string base_path = 2;
+	string target_base_path = 3;
+	bool recursive = 4;
+	repeated string files = 5;
+
+}
+
+message RemoveFromManifestRequest {
+	int32 manifest_id = 1;
+	string remove_path = 3;
+}
+
+message ListManifestsRequest {
+}
+
+message ListManifestsResponse {
+	message Manifest {
+		int32 id = 1;
+		string node_id = 2;
+		string user_name = 3;
+		string user_id = 4;
+		string organization_name = 5;
+		string organization_id = 6;
+		string dataset_name = 7;
+		string dataset_id = 8;
+		string status = 9;
+	}
+	repeated Manifest manifests = 1;
+}
+
+message DeleteManifestRequest{
+	int32 manifest_id = 1;
+}
+
+
+message ListManifestFilesRequest{
+	int32 manifest_id = 1;
+	int32 offset = 2;
+	int32 limit = 3;
+}
+
+message ListManifestFilesResponse{
+	enum StatusType{
+		LOCAL = 0;  	// File indexed locally
+		REGISTERED = 1; 		// File manifest synchronized with Cloud
+		IMPORTED = 2;
+		FINALIZED = 3;
+		VERIFIED = 4;
+		FAILED = 5;   // File imported in cloud
+		REMOVED = 6; 	// File Upload canceled (manually, or failed)
+		UNKNOWN = 7;
+		CHANGED = 8;
+		UPLOADED = 9;
+	}
+
+	message FileUpload {
+		int32 id = 1;
+		int32 manifest_id = 2;
+		string source_path = 3;
+		string target_path = 4;
+		string upload_id = 5;
+		StatusType status = 6;
+	}
+
+	repeated FileUpload file = 1;
+}
+
+message UploadManifestRequest{
+	int32 manifest_id = 1;
+}
+
+message GetUserRequest {
+}
+
+message UserResponse {
+	string id = 2;
+	string name = 3;
+	string session_token = 4;
+	int64 token_expire = 5;
+	string profile = 8;
+	string environment = 9;
+	string organization_id = 10;
+	string organization_name = 11;
+}
+//
+message SwitchProfileRequest {
+	string profile = 1;
+}
+
+message ReAuthenticateRequest {
+}
+
+message UseDatasetRequest {
+	string dataset_id = 1;
+}
+
+message UseDatasetResponse {
+	string dataset_id = 1;
+}
+
+message SyncManifestRequest {
+	int32 manifest_id = 1;
+}
+
+message SyncManifestResponse {
+	string manifest_node_id = 1;
+	int32 nr_files_updated = 2;
+	int32 nr_files_removed = 3;
+	int32 nr_files_failed = 4;
+}
+
+message ResetManifestRequest {
+	int32 manifest_id = 1;
+}
+
+message RelocateManifestFilesRequest {
+	int32 manifest_id = 1;
+	string path = 2;
+	string updated_path = 3;
+}
