@@ -49,7 +49,7 @@ class Manifest:
         """
         self._stub = stub
 
-    def create(self, base_path):
+    def create(self, base_path, target_base_path='', recursive=False, files=None):
         """ Creates a new manifest with file(s) located in base_path.
 
         Parameters:
@@ -63,10 +63,12 @@ class Manifest:
             A response from the server
         """
 
-        request = agent_pb2.CreateManifestRequest(base_path=base_path)
+        request = agent_pb2.CreateManifestRequest(
+            base_path=base_path, target_base_path=target_base_path, recursive=recursive, files=files
+        )
         return self._stub.CreateManifest(request=request)
 
-    def add(self, manifest_id, base_path, targetBasePath=""):
+    def add(self, manifest_id, base_path, target_base_path='', recursive=False, files=None):
         """ Adds a file(s) to a manifest with manifest_id located on base_path, which will be stored on targetBasePath on the server
 
         Parameters:
@@ -85,7 +87,7 @@ class Manifest:
         """
 
         request = agent_pb2.AddToManifestRequest(
-            manifest_id=manifest_id, base_path=base_path, targetBasePath=targetBasePath
+            manifest_id=manifest_id, base_path=base_path, target_base_path=target_base_path, recursive=recursive, files=files
         )
         return self._stub.AddToManifest(request=request)
 

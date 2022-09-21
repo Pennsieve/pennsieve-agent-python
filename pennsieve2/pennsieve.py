@@ -101,7 +101,7 @@ class Pennsieve:
             manifest : list
                 A list storing all manifests.
         """
-        return self.manifest.list()
+        return self.manifest.listManifests()
 
     def getDatasets(self):
         """ Lists datasets for which the authenticated user has access to
@@ -113,9 +113,12 @@ class Pennsieve:
         """
 
         response = self.get("/datasets")
-        self.datasets = dict(
-            map(lambda x: (x["content"]["name"], x["content"]["id"]), response)
-        )
+        self.dataset=None
+        if type(response) is list and len(response)>0:
+            self.datasets = dict(
+                map(lambda x: (x["content"]["name"], x["content"]["id"]) 
+                    if "content" in x.keys() and "name" in x["content"].keys() and "id" in x["content"].keys() else None,
+                    response) )
         return self.datasets
 
     def useDataset(self, dataset_id):
