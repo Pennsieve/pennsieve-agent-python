@@ -1,1 +1,2 @@
-__version__ = '0.0.4post1'
+#from pennsieve import Pennsieve
+__version__ = '0.0.5'

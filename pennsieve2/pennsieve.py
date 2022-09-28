@@ -8,9 +8,9 @@ import grpc
 import requests
 import json
 
-from protos import agent_pb2_grpc, agent_pb2
-from manifest import Manifest
-from userProfile import UserProfile
+from .protos import agent_pb2_grpc, agent_pb2
+from .manifest import Manifest
+from .userProfile import UserProfile
 
 
 class Pennsieve:

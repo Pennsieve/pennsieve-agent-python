@@ -2,7 +2,7 @@
 Copyright (c) 2022 Patryk Orzechowski | Wagenaar Lab | University of Pennsylvania
 """
 
-from protos import agent_pb2
+from .protos import agent_pb2
 
 
 class Manifest:

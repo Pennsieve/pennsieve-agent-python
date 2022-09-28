@@ -5,7 +5,7 @@ Copyright (c) 2022 Patryk Orzechowski | Wagenaar Lab | University of Pennsylvani
 import os
 import configparser
 from pathlib import Path
-from protos import agent_pb2
+from .protos import agent_pb2
 
 
 class UserProfile:
@@ -37,6 +37,7 @@ class UserProfile:
     def __init__(self, stub):
         self._stub = stub
         self._parse_config()
+        self.reauthenticate()
         self.whoami()
 
     def reauthenticate(self):
@@ -50,7 +51,9 @@ class UserProfile:
         response = self._stub.GetUser(request=request)
         self.session_token = response.session_token
         self.organization_id = response.organization_id
-        self.api_host = self.config[response.profile]["api_host"]
+        self.api_host='https://api.pennsieve.io'
+        if 'api_host' in self.config[response.profile]:
+            self.api_host = self.config[response.profile]["api_host"]
         print(response)
         print(self.api_host)
         self.credentials = {

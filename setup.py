@@ -12,21 +12,17 @@ from pennsieve2 import __version__
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
-
-
+packages=find_packages()
+print(packages)
 
 setup(
     name="pennsieve2",
-#    version=get_version('__init__.py'),
     version=__version__,
     author="Patryk Orzechowski",
     author_email=("patryk.orzechowski@gmail.com"),
     url="https://github.com/Pennsieve/pennsieve-agent-python",
     description="Pennsieve Python Client",
     packages=find_packages(),
-    package_data={'pennsieve2': ['pennsieve2/protos/*.proto']},
-    package_dir={'pennsieve2' : 'pennsieve2'},
-    include_package_data=True,
     long_description=long_description,
     long_description_content_type="text/markdown",
     zip_safe=True,
@@ -52,3 +48,4 @@ setup(
     ],
     keywords=["pennsieve", "data science", "datasets", "repositories"],
 )
+
