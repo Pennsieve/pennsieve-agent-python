@@ -49,7 +49,7 @@ class Manifest:
         """
         self._stub = stub
 
-    def create(self, base_path, target_base_path='', recursive=False, files=None):
+    def create(self, base_path, target_base_path='.', recursive=False, files=None):
         """ Creates a new manifest with file(s) located in base_path.
 
         Parameters:
@@ -68,7 +68,7 @@ class Manifest:
         )
         return self._stub.CreateManifest(request=request)
 
-    def add(self, manifest_id, base_path, target_base_path='', recursive=False, files=None):
+    def add(self, base_path, target_base_path='.', manifest_id=None, recursive=False, files=None):
         """ Adds a file(s) to a manifest with manifest_id located on base_path, which will be stored on targetBasePath on the server
 
         Parameters:
@@ -85,13 +85,17 @@ class Manifest:
         response : str
             A response from the server
         """
+        if manifest_id is None:
+            manifests = self.listManifests()
+            assert type(manifests) is list
+            manifest_id=manifests[-1].id
 
         request = agent_pb2.AddToManifestRequest(
             manifest_id=manifest_id, base_path=base_path, target_base_path=target_base_path, recursive=recursive, files=files
         )
         return self._stub.AddToManifest(request=request)
 
-    def remove(self, manifest_id, file_id):
+    def remove(self, file_id, manifest_id=None):
         """ Removes a file with file_id from manifest with manifest_id.
 
         Parameters:
@@ -107,8 +111,12 @@ class Manifest:
             A response from the server
         """
 
-        assert type(file_id) is list
-        if type(file_id) is int:
+        if manifest_id is None:
+            manifests = self.listManifests()
+            assert type(manifests) is list
+            manifest_id=manifests[-1].id
+
+        if type(file_id) is int or type(file_id) is string:
             files = [file_id]
         request = agent_pb2.RemoveFromManifestRequest(
             manifest_id=manifest_id, file_id=file_id
@@ -131,8 +139,12 @@ class Manifest:
         request = agent_pb2.DeleteManifestRequest(manifest_id=manifest_id)
         return self._stub.DeleteManifest(request=request)
 
-    def listManifests(self):
+    def listManifests(self, manifest_id=None):
         """ Lists all available manifests.
+
+        Parameters:
+        -----------
+        manifest_id : an identifier of the manifest to viewed.
 
         Return:
         -------
@@ -140,9 +152,9 @@ class Manifest:
             A response from the server"""
 
         request = agent_pb2.ListManifestsRequest()
-        return self._stub.ListManifests(request=request).manifests
+        return list(self._stub.ListManifests(request=request).manifests)[manifest_id-1]
 
-    def listFiles(self, manifest_id, offset=0, limit=100):
+    def listFiles(self, manifest_id=None, offset=0, limit=100):
         """ Lists files for manifest with manifest_id, starting from the number defined by offset, not more than the limit
 
         Parameters:
@@ -160,12 +172,17 @@ class Manifest:
             A response from the server
         """
 
+        if manifest_id is None:
+            manifests = self.listManifests()
+            assert type(manifests) is list
+            manifest_id=manifests[-1].id
+
         request = agent_pb2.ListManifestFilesRequest(
             manifest_id=manifest_id, offset=offset, limit=limit
         )
         return self._stub.ListManifestFiles(request=request)
 
-    def upload(self, manifest_id):
+    def upload(self, manifest_id=None):
         """ Initiates the upload of files definied in manifest with manifest_id
 
         Parameters:
@@ -178,15 +195,26 @@ class Manifest:
             A response from the server
         """
 
+        if manifest_id is None:
+            manifests = self.listManifests()
+            assert type(manifests) is list
+            manifest_id=manifests[-1].id
+
+
         request = agent_pb2.UploadManifestRequest(manifest_id=manifest_id)
         return self._stub.UploadManifest(request=request)
 
-    def startUpload(self, manifest_id):
+    def startUpload(self, manifest_id=None):
         """ see: upload(manifest_id) """
+
+        if manifest_id is None:
+            manifests = self.listManifests()
+            assert type(manifests) is list
+            manifest_id=manifests[-1].id
 
         return self.upload(self, manifest_id)
 
-    def cancelUpload(self, manifest_id, cancel_all=True):
+    def cancelUpload(self, manifest_id=None, cancel_all=True):
         """ Cancels the upload session for manifest_id or all upload sessions.
 
         Parameters:
@@ -201,13 +229,18 @@ class Manifest:
         response : str
             A response from the server
         """
+        if manifest_id is None:
+            manifests = self.listManifests()
+            assert type(manifests) is list
+            manifest_id=manifests[-1].id
 
         request = agent_pb2.CancelUploadRequest(
             manifest_id=manifest_id, cancel_all=cancel_all
         )
         return self._stub.CancelUpload(request=request)
 
-    def relocateFiles(self, manifest_id, path, updated_path):
+
+    def relocateFiles(self, path, updated_path, manifest_id=None):
         """ Changes the target path of the manifest
 
         Parameters:
@@ -224,13 +257,17 @@ class Manifest:
         response : str
             A response from the server
         """
+        if manifest_id is None:
+            manifests = self.listManifests()
+            assert type(manifests) is list
+            manifest_id=manifests[-1].id
 
         request = agent_pb2.RelocateManifestFilesRequest(
             manifest_id=manifest_id, path=path, updated_path=updated_path
         )
         return self._stub.RelocateManifestFiles(request=request)
 
-    def sync(self, manifest_id):
+    def sync(self, manifest_id=None):
         """ Synchronizes the state of the manifest between local and cloud server
 
         Parameters:
@@ -243,11 +280,15 @@ class Manifest:
         response : str
             A response from the server
         """
+        if manifest_id is None:
+            manifests = self.listManifests()
+            assert type(manifests) is list
+            manifest_id=manifests[-1].id
 
         request = agent_pb2.SyncManifestRequest(manifest_id=manifest_id)
         return self._stub.SyncManifest(request=request)
 
-    def reset(self, manifest_id):
+    def reset(self, manifest_id=None):
         """ Allows users to reset the status for all files in a manifest
 
         Parameters:
@@ -260,6 +301,11 @@ class Manifest:
         response : str
             A response from the server
         """
+        if manifest_id is None:
+            manifests = self.listManifests()
+            assert type(manifests) is list
+            manifest_id=manifests[-1].id
+
 
         request = agent_pb2.ResetManifestRequest(manifest_id=manifest_id)
         return self._stub.ResetManifest(request=request)

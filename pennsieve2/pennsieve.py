@@ -73,7 +73,7 @@ class Pennsieve:
         self.api = self
         self.manifest = Manifest(self.stub)
         self.user = UserProfile(self.stub)
-        self.datasets = None
+        self.datasets = self.getDatasets()
 
     def _get_default_headers(self):
         """ Returns default headers for Pennsieve. """
@@ -130,8 +130,9 @@ class Pennsieve:
                 either dataset name or AWS-like dataset id of the dataset to which the changes will be applied
         """
         if self.datasets and dataset_id in self.datasets.keys():
-            dataset_id = self.datasets[dataset_id]
-        request = agent_pb2.UseDatasetRequest(dataset_id=dataset_id)
+            self.dataset = self.datasets[dataset_id]
+        assert self.dataset is not None
+        request = agent_pb2.UseDatasetRequest(dataset_id=self.dataset)
         return self.stub.UseDataset(request=request)
 
     def call(self, url, method, **kwargs):
