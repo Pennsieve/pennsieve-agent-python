@@ -42,5 +42,5 @@ To create a package and upload it to PyPI, first update the package version in t
 Documentation
 -------------
 
-Client and command line documentation can be found on [Pennsieve’s documentation website](https://docs.pennsieve.io/docs/the-pennsieve-agent).
+Client and command line documentation can be found on [Pennsieve’s documentation website](https://docs.pennsieve.io/docs/uploading-files-programmatically).
 
