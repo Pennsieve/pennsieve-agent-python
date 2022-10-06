@@ -7,7 +7,9 @@ import argparse
 import grpc
 import requests
 import json
-
+#import tqdm
+from tqdm.auto import tqdm
+#
 from .protos import agent_pb2_grpc, agent_pb2
 from .manifest import Manifest
 from .userProfile import UserProfile
@@ -265,7 +267,21 @@ class Pennsieve:
         """
 
         request = agent_pb2.SubscribeRequest(id=id)
-        return self.stub.Subscribe(request=request)
+        for response in self.stub.Subscribe(request=request):
+            key_list=response.DESCRIPTOR.fields_by_name.keys()
+            d = {}
+            for key in key_list:
+                d[key] = getattr(response, key)
+            if d['type'] == 0: #general info
+                print(str(d['event_info'].details))
+            elif d['type'] == 1: #upload status with fields: file_id, total, current, worker_id
+                file_id   = d['upload_status'].file_id
+                total     = d['upload_status'].total
+                current   = d['upload_status'].current
+                worker_id = d['upload_status'].worker_id
+                pbar=tqdm(desc=file_id.split('/')[-1], total=total, unit='B', unit_scale=True, unit_divisor=1024, position=worker_id)
+                pbar.n=current
+                pbar.refresh()
 
     def unsubscribe(self, id):
         """ Unsubscribes a subscriber with identifier id from receiving messages from the GO agent.

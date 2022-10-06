@@ -26,7 +26,7 @@ setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     zip_safe=True,
-    install_requires=["grpcio>=1.45.0", "protobuf"],
+    install_requires=["grpcio>=1.45.0", "protobuf", "tqdm"],
     extras_require={},
     classifiers=[
         "Development Status :: 3 - Alpha",
