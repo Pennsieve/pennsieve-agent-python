@@ -272,6 +272,8 @@ class Pennsieve:
             d = {}
             for key in key_list:
                 d[key] = getattr(response, key)
+            #decrypt all fields of the message
+            #print(str(d)) #debug
             if d['type'] == 0: #general info
                 print(str(d['event_info'].details))
             elif d['type'] == 1: #upload status with fields: file_id, total, current, worker_id
@@ -282,6 +284,12 @@ class Pennsieve:
                 pbar=tqdm(desc=file_id.split('/')[-1], total=total, unit='B', unit_scale=True, unit_divisor=1024, position=worker_id)
                 pbar.n=current
                 pbar.refresh()
+            elif d['type'] == 3:  #sync status
+                sync_status   = d['sync_status'].status
+                total         = d['sync_status'].total
+#                if sync_status == 2:
+#                    print(f'Upload complete. Uploaded {total} file(s).')
+#                    return
 
     def unsubscribe(self, id):
         """ Unsubscribes a subscriber with identifier id from receiving messages from the GO agent.
@@ -298,3 +306,25 @@ class Pennsieve:
 
         request = agent_pb2.SubscribeRequest(id=id)
         return self.stub.Unsubscribe(request=request)
+
+
+    def agentVersion(self):
+        """ Returns agent and python client version
+
+        Return:
+        -------
+        version : str
+            Version of Pennsieve Python agent, i.e. __version__
+
+        """
+        request = agent_pb2.VersionRequest()
+        agent_version = self.stub.Version(request=request).version
+        log_level = self.stub.Version(request=request).log_level
+        print(f"Pennsieve Agent version: {agent_version}, log level: {log_level}")
+
+
+    def stop(self):
+        """ Stops the agent
+        """
+        request = agent_pb2.StopRequest()
+        return self.stub.Stop(request=request)

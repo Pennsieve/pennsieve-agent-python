@@ -116,7 +116,7 @@ class Manifest:
         if manifest_id is None:
             manifest_id=manifests[-1].id
 
-        if type(file_id) is int or type(file_id) is string:
+        if type(file_id) is int or type(file_id) is str:
             files = [file_id]
         request = agent_pb2.RemoveFromManifestRequest(
             manifest_id=manifest_id, file_id=file_id

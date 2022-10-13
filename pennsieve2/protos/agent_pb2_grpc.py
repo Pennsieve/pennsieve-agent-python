@@ -69,15 +69,30 @@ class AgentStub(object):
                 request_serializer=pennsieve2_dot_protos_dot_agent__pb2.CancelUploadRequest.SerializeToString,
                 response_deserializer=pennsieve2_dot_protos_dot_agent__pb2.SimpleStatusResponse.FromString,
                 )
+        self.Version = channel.unary_unary(
+                '/protos.Agent/Version',
+                request_serializer=pennsieve2_dot_protos_dot_agent__pb2.VersionRequest.SerializeToString,
+                response_deserializer=pennsieve2_dot_protos_dot_agent__pb2.VersionResponse.FromString,
+                )
         self.Subscribe = channel.unary_stream(
                 '/protos.Agent/Subscribe',
                 request_serializer=pennsieve2_dot_protos_dot_agent__pb2.SubscribeRequest.SerializeToString,
-                response_deserializer=pennsieve2_dot_protos_dot_agent__pb2.SubsrcribeResponse.FromString,
+                response_deserializer=pennsieve2_dot_protos_dot_agent__pb2.SubscribeResponse.FromString,
                 )
         self.Unsubscribe = channel.unary_unary(
                 '/protos.Agent/Unsubscribe',
                 request_serializer=pennsieve2_dot_protos_dot_agent__pb2.SubscribeRequest.SerializeToString,
-                response_deserializer=pennsieve2_dot_protos_dot_agent__pb2.SubsrcribeResponse.FromString,
+                response_deserializer=pennsieve2_dot_protos_dot_agent__pb2.SubscribeResponse.FromString,
+                )
+        self.Stop = channel.unary_unary(
+                '/protos.Agent/Stop',
+                request_serializer=pennsieve2_dot_protos_dot_agent__pb2.StopRequest.SerializeToString,
+                response_deserializer=pennsieve2_dot_protos_dot_agent__pb2.StopResponse.FromString,
+                )
+        self.Ping = channel.unary_unary(
+                '/protos.Agent/Ping',
+                request_serializer=pennsieve2_dot_protos_dot_agent__pb2.PingRequest.SerializeToString,
+                response_deserializer=pennsieve2_dot_protos_dot_agent__pb2.PingResponse.FromString,
                 )
         self.GetUser = channel.unary_unary(
                 '/protos.Agent/GetUser',
@@ -172,14 +187,32 @@ class AgentServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def Subscribe(self, request, context):
+    def Version(self, request, context):
         """Server Endpoints
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def Subscribe(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def Unsubscribe(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def Stop(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def Ping(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -269,15 +302,30 @@ def add_AgentServicer_to_server(servicer, server):
                     request_deserializer=pennsieve2_dot_protos_dot_agent__pb2.CancelUploadRequest.FromString,
                     response_serializer=pennsieve2_dot_protos_dot_agent__pb2.SimpleStatusResponse.SerializeToString,
             ),
+            'Version': grpc.unary_unary_rpc_method_handler(
+                    servicer.Version,
+                    request_deserializer=pennsieve2_dot_protos_dot_agent__pb2.VersionRequest.FromString,
+                    response_serializer=pennsieve2_dot_protos_dot_agent__pb2.VersionResponse.SerializeToString,
+            ),
             'Subscribe': grpc.unary_stream_rpc_method_handler(
                     servicer.Subscribe,
                     request_deserializer=pennsieve2_dot_protos_dot_agent__pb2.SubscribeRequest.FromString,
-                    response_serializer=pennsieve2_dot_protos_dot_agent__pb2.SubsrcribeResponse.SerializeToString,
+                    response_serializer=pennsieve2_dot_protos_dot_agent__pb2.SubscribeResponse.SerializeToString,
             ),
             'Unsubscribe': grpc.unary_unary_rpc_method_handler(
                     servicer.Unsubscribe,
                     request_deserializer=pennsieve2_dot_protos_dot_agent__pb2.SubscribeRequest.FromString,
-                    response_serializer=pennsieve2_dot_protos_dot_agent__pb2.SubsrcribeResponse.SerializeToString,
+                    response_serializer=pennsieve2_dot_protos_dot_agent__pb2.SubscribeResponse.SerializeToString,
+            ),
+            'Stop': grpc.unary_unary_rpc_method_handler(
+                    servicer.Stop,
+                    request_deserializer=pennsieve2_dot_protos_dot_agent__pb2.StopRequest.FromString,
+                    response_serializer=pennsieve2_dot_protos_dot_agent__pb2.StopResponse.SerializeToString,
+            ),
+            'Ping': grpc.unary_unary_rpc_method_handler(
+                    servicer.Ping,
+                    request_deserializer=pennsieve2_dot_protos_dot_agent__pb2.PingRequest.FromString,
+                    response_serializer=pennsieve2_dot_protos_dot_agent__pb2.PingResponse.SerializeToString,
             ),
             'GetUser': grpc.unary_unary_rpc_method_handler(
                     servicer.GetUser,
@@ -497,6 +545,23 @@ class Agent(object):
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
+    def Version(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/protos.Agent/Version',
+            pennsieve2_dot_protos_dot_agent__pb2.VersionRequest.SerializeToString,
+            pennsieve2_dot_protos_dot_agent__pb2.VersionResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
     def Subscribe(request,
             target,
             options=(),
@@ -509,7 +574,7 @@ class Agent(object):
             metadata=None):
         return grpc.experimental.unary_stream(request, target, '/protos.Agent/Subscribe',
             pennsieve2_dot_protos_dot_agent__pb2.SubscribeRequest.SerializeToString,
-            pennsieve2_dot_protos_dot_agent__pb2.SubsrcribeResponse.FromString,
+            pennsieve2_dot_protos_dot_agent__pb2.SubscribeResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -526,7 +591,41 @@ class Agent(object):
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/protos.Agent/Unsubscribe',
             pennsieve2_dot_protos_dot_agent__pb2.SubscribeRequest.SerializeToString,
-            pennsieve2_dot_protos_dot_agent__pb2.SubsrcribeResponse.FromString,
+            pennsieve2_dot_protos_dot_agent__pb2.SubscribeResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def Stop(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/protos.Agent/Stop',
+            pennsieve2_dot_protos_dot_agent__pb2.StopRequest.SerializeToString,
+            pennsieve2_dot_protos_dot_agent__pb2.StopResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def Ping(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/protos.Agent/Ping',
+            pennsieve2_dot_protos_dot_agent__pb2.PingRequest.SerializeToString,
+            pennsieve2_dot_protos_dot_agent__pb2.PingResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
