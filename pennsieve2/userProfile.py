@@ -63,7 +63,8 @@ class UserProfile:
         return self.credentials
 
     def switch(self, profile):
-        """ Switches profile of the user to one defined in config file (by default ~/.pennsieve/config.ini)
+        """ Switches profile of the user to one defined in config file
+            (by default ~/.pennsieve/config.ini)
 
         Parameters:
         -----------
@@ -73,8 +74,9 @@ class UserProfile:
         request = agent_pb2.SwitchProfileRequest(profile=profile)
         response = self._stub.SwitchProfile(request=request)
         self.whoami()
+        return response
 
-    def _parse_config(self, configFile=None):
+    def _parse_config(self, config_file=None):
         """ Reads Pennsieve config file and sets available configs for the user
 
         Parameters:
@@ -83,6 +85,6 @@ class UserProfile:
            a name of the file with Pennsieve agent config (by default ~/.pennsieve/config.ini)
         """
         self.config = configparser.ConfigParser()
-        if not configFile:
-            configFile = os.path.join(Path.home(), ".pennsieve", "config.ini")
-        self.config.read(configFile)
+        if not config_file:
+            config_file = os.path.join(Path.home(), ".pennsieve", "config.ini")
+        self.config.read(config_file)

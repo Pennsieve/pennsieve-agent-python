@@ -2,17 +2,17 @@
 Copyright (c) 2022 Patryk Orzechowski | Wagenaar Lab | University of Pennsylvania
 """
 
-import codecs
-import os.path
+# import codecs
+# import os.path
 
-from setuptools import setup, Extension, find_packages
+from setuptools import setup, find_packages
 from pennsieve2 import __version__
 
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
-packages=find_packages()
+packages = find_packages()
 print(packages)
 
 setup(
@@ -48,4 +48,3 @@ setup(
     ],
     keywords=["pennsieve", "data science", "datasets", "repositories"],
 )
-
