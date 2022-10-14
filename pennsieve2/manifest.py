@@ -36,8 +36,6 @@ class Manifest:
             synchronizes the state of the manifest between local and cloud server
         reset(manifest_id):
             allows users to reset the status for all files in a manifest
-
-
     """
 
     def __init__(self, stub):
@@ -69,7 +67,6 @@ class Manifest:
         )
         return self._stub.CreateManifest(request=request)
 
-
     def add(self, base_path, target_base_path='.', manifest_id=None, recursive=False, files=None):
         """ Adds a file(s) to a manifest with manifest_id located on base_path
             which will be stored on targetBasePath on the server
@@ -89,9 +86,9 @@ class Manifest:
             A response from the server
         """
         manifests = self.list_manifests()
-        assert len(manifests)>0
+        assert len(manifests) > 0
         if manifest_id is None:
-            manifest_id=manifests[-1].id
+            manifest_id = manifests[-1].id
 
         request = agent_pb2.AddToManifestRequest(
             manifest_id=manifest_id,
@@ -119,9 +116,9 @@ class Manifest:
         """
 
         manifests = self.list_manifests()
-        assert len(manifests)>0, 'Please create a manifest first.'
+        assert len(manifests) > 0, 'Please create a manifest first.'
         if manifest_id is None:
-            manifest_id=manifests[-1].id
+            manifest_id = manifests[-1].id
 
         if isinstance(file_id, (int, str)):
             files = [file_id]
@@ -160,7 +157,7 @@ class Manifest:
 
         request = agent_pb2.ListManifestsRequest()
         manifests = list(self._stub.ListManifests(request=request).manifests)
-        if len(manifests)>0 and manifest_id>0:
+        if len(manifests) > 0 and manifest_id > 0:
             return manifests[manifest_id-1]
         return manifests
 
@@ -184,9 +181,9 @@ class Manifest:
         """
 
         manifests = self.list_manifests()
-        assert len(manifests)>0, 'Please create a manifest first.'
+        assert len(manifests) > 0, 'Please create a manifest first.'
         if manifest_id is None:
-            manifest_id=manifests[-1].id
+            manifest_id = manifests[-1].id
 
         request = agent_pb2.ListManifestFilesRequest(
             manifest_id=manifest_id, offset=offset, limit=limit
@@ -207,10 +204,9 @@ class Manifest:
         """
 
         manifests = self.list_manifests()
-        assert len(manifests)>0, 'Please create a manifest first.'
+        assert len(manifests) > 0, 'Please create a manifest first.'
         if manifest_id is None:
-            manifest_id=manifests[-1].id
-
+            manifest_id = manifests[-1].id
 
         request = agent_pb2.UploadManifestRequest(manifest_id=manifest_id)
         return self._stub.UploadManifest(request=request)
@@ -219,9 +215,9 @@ class Manifest:
         """ see: upload(manifest_id) """
 
         manifests = self.list_manifests()
-        assert len(manifests)>0, 'Please create a manifest first.'
+        assert len(manifests) > 0, 'Please create a manifest first.'
         if manifest_id is None:
-            manifest_id=manifests[-1].id
+            manifest_id = manifests[-1].id
 
         return self.upload(manifest_id)
 
@@ -242,15 +238,14 @@ class Manifest:
         """
 
         manifests = self.list_manifests()
-        assert len(manifests)>0, 'Please create a manifest first.'
+        assert len(manifests) > 0, 'Please create a manifest first.'
         if manifest_id is None:
-            manifest_id=manifests[-1].id
+            manifest_id = manifests[-1].id
 
         request = agent_pb2.CancelUploadRequest(
             manifest_id=manifest_id, cancel_all=cancel_all
         )
         return self._stub.CancelUpload(request=request)
-
 
     def relocate_files(self, path, updated_path, manifest_id=None):
         """ Changes the target path of the manifest
@@ -269,12 +264,10 @@ class Manifest:
         response : str
             A response from the server
         """
-
-
         manifests = self.list_manifests()
-        assert len(manifests)>0, 'Please create a manifest first.'
+        assert len(manifests) > 0, 'Please create a manifest first.'
         if manifest_id is None:
-            manifest_id=manifests[-1].id
+            manifest_id = manifests[-1].id
 
         request = agent_pb2.RelocateManifestFilesRequest(
             manifest_id=manifest_id, path=path, updated_path=updated_path
@@ -296,9 +289,9 @@ class Manifest:
         """
 
         manifests = self.list_manifests()
-        assert len(manifests)>0, 'Please create a manifest first.'
+        assert len(manifests) > 0, 'Please create a manifest first.'
         if manifest_id is None:
-            manifest_id=manifests[-1].id
+            manifest_id = manifests[-1].id
 
         request = agent_pb2.SyncManifestRequest(manifest_id=manifest_id)
         return self._stub.SyncManifest(request=request)
@@ -318,9 +311,9 @@ class Manifest:
         """
 
         manifests = self.list_manifests()
-        assert len(manifests)>0, 'Please create a manifest first.'
+        assert len(manifests) > 0, 'Please create a manifest first.'
         if manifest_id is None:
-            manifest_id=manifests[-1].id
+            manifest_id = manifests[-1].id
 
         request = agent_pb2.ResetManifestRequest(manifest_id=manifest_id)
         return self._stub.ResetManifest(request=request)

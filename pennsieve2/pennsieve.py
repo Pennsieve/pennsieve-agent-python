@@ -114,12 +114,12 @@ class Pennsieve:
         """
 
         response = self.get("/datasets")
-        self.dataset=None
-        if isinstance(response,list) and len(response)>0:
+        self.dataset = None
+        if isinstance(response, list) and len(response) > 0:
             self.datasets = dict(
                 map(lambda x: (x["content"]["name"], x["content"]["id"]) if "content" in x.keys()
-                            and "name" in x["content"].keys()
-                            and "id" in x["content"].keys() else None, response))
+                    and "name" in x["content"].keys()
+                    and "id" in x["content"].keys() else None, response))
         return self.datasets
 
     def use_dataset(self, dataset_id):
