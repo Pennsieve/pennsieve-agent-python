@@ -38,6 +38,10 @@ jobs:
         sudo apt install ./pennsieve-agent_${AGENT_VERSION}_amd64.deb 
         pennsieve config init ~/.pennsieve/config.ini --api_token ${{ env.API_KEY }} --api_secret ${{ env.API_SECRET }} -f
         pennsieve agent
+      env:
+        PORT: 9000
+    - name: Verify Pennsieve Agent installation
+      run: |
         pennsieve version
     - name: Install dependencies 
       run: |
