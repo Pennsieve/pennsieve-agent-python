@@ -282,10 +282,16 @@ class Pennsieve:
                 total     = events_dict['upload_status'].total
                 current   = events_dict['upload_status'].current
                 worker_id = events_dict['upload_status'].worker_id
+
                 pbar = tqdm(desc=file_id.split('/')[-1], total=total,
-                            unit='B', unit_scale=True, unit_divisor=1024, position=worker_id)
+                            unit='B', unit_scale=True, unit_divisor=1024, position=0, leave=True)
+#                   for i in tqdm(worker_id, position=0, leave=True):
                 pbar.n=current
-                pbar.refresh()
+                pbar.update()
+#                pbar = tqdm(
+#                pbar.update()
+#                pbar.refresh()
+
 #            elif events_dict['type'] == 3:  #sync status
 #                sync_status   = events_dict['sync_status'].status
 #                total         = events_dict['sync_status'].total

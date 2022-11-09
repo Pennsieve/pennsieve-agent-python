@@ -15,102 +15,102 @@ class AgentStub(object):
             channel: A grpc.Channel.
         """
         self.CreateManifest = channel.unary_unary(
-                '/protos.Agent/CreateManifest',
+                '/v1.Agent/CreateManifest',
                 request_serializer=pennsieve2_dot_protos_dot_agent__pb2.CreateManifestRequest.SerializeToString,
                 response_deserializer=pennsieve2_dot_protos_dot_agent__pb2.CreateManifestResponse.FromString,
                 )
         self.AddToManifest = channel.unary_unary(
-                '/protos.Agent/AddToManifest',
+                '/v1.Agent/AddToManifest',
                 request_serializer=pennsieve2_dot_protos_dot_agent__pb2.AddToManifestRequest.SerializeToString,
                 response_deserializer=pennsieve2_dot_protos_dot_agent__pb2.SimpleStatusResponse.FromString,
                 )
         self.RemoveFromManifest = channel.unary_unary(
-                '/protos.Agent/RemoveFromManifest',
+                '/v1.Agent/RemoveFromManifest',
                 request_serializer=pennsieve2_dot_protos_dot_agent__pb2.RemoveFromManifestRequest.SerializeToString,
                 response_deserializer=pennsieve2_dot_protos_dot_agent__pb2.SimpleStatusResponse.FromString,
                 )
         self.DeleteManifest = channel.unary_unary(
-                '/protos.Agent/DeleteManifest',
+                '/v1.Agent/DeleteManifest',
                 request_serializer=pennsieve2_dot_protos_dot_agent__pb2.DeleteManifestRequest.SerializeToString,
                 response_deserializer=pennsieve2_dot_protos_dot_agent__pb2.SimpleStatusResponse.FromString,
                 )
         self.ListManifests = channel.unary_unary(
-                '/protos.Agent/ListManifests',
+                '/v1.Agent/ListManifests',
                 request_serializer=pennsieve2_dot_protos_dot_agent__pb2.ListManifestsRequest.SerializeToString,
                 response_deserializer=pennsieve2_dot_protos_dot_agent__pb2.ListManifestsResponse.FromString,
                 )
         self.ListManifestFiles = channel.unary_unary(
-                '/protos.Agent/ListManifestFiles',
+                '/v1.Agent/ListManifestFiles',
                 request_serializer=pennsieve2_dot_protos_dot_agent__pb2.ListManifestFilesRequest.SerializeToString,
                 response_deserializer=pennsieve2_dot_protos_dot_agent__pb2.ListManifestFilesResponse.FromString,
                 )
         self.RelocateManifestFiles = channel.unary_unary(
-                '/protos.Agent/RelocateManifestFiles',
+                '/v1.Agent/RelocateManifestFiles',
                 request_serializer=pennsieve2_dot_protos_dot_agent__pb2.RelocateManifestFilesRequest.SerializeToString,
                 response_deserializer=pennsieve2_dot_protos_dot_agent__pb2.SimpleStatusResponse.FromString,
                 )
         self.SyncManifest = channel.unary_unary(
-                '/protos.Agent/SyncManifest',
+                '/v1.Agent/SyncManifest',
                 request_serializer=pennsieve2_dot_protos_dot_agent__pb2.SyncManifestRequest.SerializeToString,
                 response_deserializer=pennsieve2_dot_protos_dot_agent__pb2.SyncManifestResponse.FromString,
                 )
         self.ResetManifest = channel.unary_unary(
-                '/protos.Agent/ResetManifest',
+                '/v1.Agent/ResetManifest',
                 request_serializer=pennsieve2_dot_protos_dot_agent__pb2.ResetManifestRequest.SerializeToString,
                 response_deserializer=pennsieve2_dot_protos_dot_agent__pb2.SimpleStatusResponse.FromString,
                 )
         self.UploadManifest = channel.unary_unary(
-                '/protos.Agent/UploadManifest',
+                '/v1.Agent/UploadManifest',
                 request_serializer=pennsieve2_dot_protos_dot_agent__pb2.UploadManifestRequest.SerializeToString,
                 response_deserializer=pennsieve2_dot_protos_dot_agent__pb2.SimpleStatusResponse.FromString,
                 )
         self.CancelUpload = channel.unary_unary(
-                '/protos.Agent/CancelUpload',
+                '/v1.Agent/CancelUpload',
                 request_serializer=pennsieve2_dot_protos_dot_agent__pb2.CancelUploadRequest.SerializeToString,
                 response_deserializer=pennsieve2_dot_protos_dot_agent__pb2.SimpleStatusResponse.FromString,
                 )
         self.Version = channel.unary_unary(
-                '/protos.Agent/Version',
+                '/v1.Agent/Version',
                 request_serializer=pennsieve2_dot_protos_dot_agent__pb2.VersionRequest.SerializeToString,
                 response_deserializer=pennsieve2_dot_protos_dot_agent__pb2.VersionResponse.FromString,
                 )
         self.Subscribe = channel.unary_stream(
-                '/protos.Agent/Subscribe',
+                '/v1.Agent/Subscribe',
                 request_serializer=pennsieve2_dot_protos_dot_agent__pb2.SubscribeRequest.SerializeToString,
                 response_deserializer=pennsieve2_dot_protos_dot_agent__pb2.SubscribeResponse.FromString,
                 )
         self.Unsubscribe = channel.unary_unary(
-                '/protos.Agent/Unsubscribe',
+                '/v1.Agent/Unsubscribe',
                 request_serializer=pennsieve2_dot_protos_dot_agent__pb2.SubscribeRequest.SerializeToString,
                 response_deserializer=pennsieve2_dot_protos_dot_agent__pb2.SubscribeResponse.FromString,
                 )
         self.Stop = channel.unary_unary(
-                '/protos.Agent/Stop',
+                '/v1.Agent/Stop',
                 request_serializer=pennsieve2_dot_protos_dot_agent__pb2.StopRequest.SerializeToString,
                 response_deserializer=pennsieve2_dot_protos_dot_agent__pb2.StopResponse.FromString,
                 )
         self.Ping = channel.unary_unary(
-                '/protos.Agent/Ping',
+                '/v1.Agent/Ping',
                 request_serializer=pennsieve2_dot_protos_dot_agent__pb2.PingRequest.SerializeToString,
                 response_deserializer=pennsieve2_dot_protos_dot_agent__pb2.PingResponse.FromString,
                 )
         self.GetUser = channel.unary_unary(
-                '/protos.Agent/GetUser',
+                '/v1.Agent/GetUser',
                 request_serializer=pennsieve2_dot_protos_dot_agent__pb2.GetUserRequest.SerializeToString,
                 response_deserializer=pennsieve2_dot_protos_dot_agent__pb2.UserResponse.FromString,
                 )
         self.SwitchProfile = channel.unary_unary(
-                '/protos.Agent/SwitchProfile',
+                '/v1.Agent/SwitchProfile',
                 request_serializer=pennsieve2_dot_protos_dot_agent__pb2.SwitchProfileRequest.SerializeToString,
                 response_deserializer=pennsieve2_dot_protos_dot_agent__pb2.UserResponse.FromString,
                 )
         self.ReAuthenticate = channel.unary_unary(
-                '/protos.Agent/ReAuthenticate',
+                '/v1.Agent/ReAuthenticate',
                 request_serializer=pennsieve2_dot_protos_dot_agent__pb2.ReAuthenticateRequest.SerializeToString,
                 response_deserializer=pennsieve2_dot_protos_dot_agent__pb2.UserResponse.FromString,
                 )
         self.UseDataset = channel.unary_unary(
-                '/protos.Agent/UseDataset',
+                '/v1.Agent/UseDataset',
                 request_serializer=pennsieve2_dot_protos_dot_agent__pb2.UseDatasetRequest.SerializeToString,
                 response_deserializer=pennsieve2_dot_protos_dot_agent__pb2.UseDatasetResponse.FromString,
                 )
@@ -349,7 +349,7 @@ def add_AgentServicer_to_server(servicer, server):
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
-            'protos.Agent', rpc_method_handlers)
+            'v1.Agent', rpc_method_handlers)
     server.add_generic_rpc_handlers((generic_handler,))
 
 
@@ -368,7 +368,7 @@ class Agent(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/protos.Agent/CreateManifest',
+        return grpc.experimental.unary_unary(request, target, '/v1.Agent/CreateManifest',
             pennsieve2_dot_protos_dot_agent__pb2.CreateManifestRequest.SerializeToString,
             pennsieve2_dot_protos_dot_agent__pb2.CreateManifestResponse.FromString,
             options, channel_credentials,
@@ -385,7 +385,7 @@ class Agent(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/protos.Agent/AddToManifest',
+        return grpc.experimental.unary_unary(request, target, '/v1.Agent/AddToManifest',
             pennsieve2_dot_protos_dot_agent__pb2.AddToManifestRequest.SerializeToString,
             pennsieve2_dot_protos_dot_agent__pb2.SimpleStatusResponse.FromString,
             options, channel_credentials,
@@ -402,7 +402,7 @@ class Agent(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/protos.Agent/RemoveFromManifest',
+        return grpc.experimental.unary_unary(request, target, '/v1.Agent/RemoveFromManifest',
             pennsieve2_dot_protos_dot_agent__pb2.RemoveFromManifestRequest.SerializeToString,
             pennsieve2_dot_protos_dot_agent__pb2.SimpleStatusResponse.FromString,
             options, channel_credentials,
@@ -419,7 +419,7 @@ class Agent(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/protos.Agent/DeleteManifest',
+        return grpc.experimental.unary_unary(request, target, '/v1.Agent/DeleteManifest',
             pennsieve2_dot_protos_dot_agent__pb2.DeleteManifestRequest.SerializeToString,
             pennsieve2_dot_protos_dot_agent__pb2.SimpleStatusResponse.FromString,
             options, channel_credentials,
@@ -436,7 +436,7 @@ class Agent(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/protos.Agent/ListManifests',
+        return grpc.experimental.unary_unary(request, target, '/v1.Agent/ListManifests',
             pennsieve2_dot_protos_dot_agent__pb2.ListManifestsRequest.SerializeToString,
             pennsieve2_dot_protos_dot_agent__pb2.ListManifestsResponse.FromString,
             options, channel_credentials,
@@ -453,7 +453,7 @@ class Agent(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/protos.Agent/ListManifestFiles',
+        return grpc.experimental.unary_unary(request, target, '/v1.Agent/ListManifestFiles',
             pennsieve2_dot_protos_dot_agent__pb2.ListManifestFilesRequest.SerializeToString,
             pennsieve2_dot_protos_dot_agent__pb2.ListManifestFilesResponse.FromString,
             options, channel_credentials,
@@ -470,7 +470,7 @@ class Agent(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/protos.Agent/RelocateManifestFiles',
+        return grpc.experimental.unary_unary(request, target, '/v1.Agent/RelocateManifestFiles',
             pennsieve2_dot_protos_dot_agent__pb2.RelocateManifestFilesRequest.SerializeToString,
             pennsieve2_dot_protos_dot_agent__pb2.SimpleStatusResponse.FromString,
             options, channel_credentials,
@@ -487,7 +487,7 @@ class Agent(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/protos.Agent/SyncManifest',
+        return grpc.experimental.unary_unary(request, target, '/v1.Agent/SyncManifest',
             pennsieve2_dot_protos_dot_agent__pb2.SyncManifestRequest.SerializeToString,
             pennsieve2_dot_protos_dot_agent__pb2.SyncManifestResponse.FromString,
             options, channel_credentials,
@@ -504,7 +504,7 @@ class Agent(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/protos.Agent/ResetManifest',
+        return grpc.experimental.unary_unary(request, target, '/v1.Agent/ResetManifest',
             pennsieve2_dot_protos_dot_agent__pb2.ResetManifestRequest.SerializeToString,
             pennsieve2_dot_protos_dot_agent__pb2.SimpleStatusResponse.FromString,
             options, channel_credentials,
@@ -521,7 +521,7 @@ class Agent(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/protos.Agent/UploadManifest',
+        return grpc.experimental.unary_unary(request, target, '/v1.Agent/UploadManifest',
             pennsieve2_dot_protos_dot_agent__pb2.UploadManifestRequest.SerializeToString,
             pennsieve2_dot_protos_dot_agent__pb2.SimpleStatusResponse.FromString,
             options, channel_credentials,
@@ -538,7 +538,7 @@ class Agent(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/protos.Agent/CancelUpload',
+        return grpc.experimental.unary_unary(request, target, '/v1.Agent/CancelUpload',
             pennsieve2_dot_protos_dot_agent__pb2.CancelUploadRequest.SerializeToString,
             pennsieve2_dot_protos_dot_agent__pb2.SimpleStatusResponse.FromString,
             options, channel_credentials,
@@ -555,7 +555,7 @@ class Agent(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/protos.Agent/Version',
+        return grpc.experimental.unary_unary(request, target, '/v1.Agent/Version',
             pennsieve2_dot_protos_dot_agent__pb2.VersionRequest.SerializeToString,
             pennsieve2_dot_protos_dot_agent__pb2.VersionResponse.FromString,
             options, channel_credentials,
@@ -572,7 +572,7 @@ class Agent(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_stream(request, target, '/protos.Agent/Subscribe',
+        return grpc.experimental.unary_stream(request, target, '/v1.Agent/Subscribe',
             pennsieve2_dot_protos_dot_agent__pb2.SubscribeRequest.SerializeToString,
             pennsieve2_dot_protos_dot_agent__pb2.SubscribeResponse.FromString,
             options, channel_credentials,
@@ -589,7 +589,7 @@ class Agent(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/protos.Agent/Unsubscribe',
+        return grpc.experimental.unary_unary(request, target, '/v1.Agent/Unsubscribe',
             pennsieve2_dot_protos_dot_agent__pb2.SubscribeRequest.SerializeToString,
             pennsieve2_dot_protos_dot_agent__pb2.SubscribeResponse.FromString,
             options, channel_credentials,
@@ -606,7 +606,7 @@ class Agent(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/protos.Agent/Stop',
+        return grpc.experimental.unary_unary(request, target, '/v1.Agent/Stop',
             pennsieve2_dot_protos_dot_agent__pb2.StopRequest.SerializeToString,
             pennsieve2_dot_protos_dot_agent__pb2.StopResponse.FromString,
             options, channel_credentials,
@@ -623,7 +623,7 @@ class Agent(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/protos.Agent/Ping',
+        return grpc.experimental.unary_unary(request, target, '/v1.Agent/Ping',
             pennsieve2_dot_protos_dot_agent__pb2.PingRequest.SerializeToString,
             pennsieve2_dot_protos_dot_agent__pb2.PingResponse.FromString,
             options, channel_credentials,
@@ -640,7 +640,7 @@ class Agent(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/protos.Agent/GetUser',
+        return grpc.experimental.unary_unary(request, target, '/v1.Agent/GetUser',
             pennsieve2_dot_protos_dot_agent__pb2.GetUserRequest.SerializeToString,
             pennsieve2_dot_protos_dot_agent__pb2.UserResponse.FromString,
             options, channel_credentials,
@@ -657,7 +657,7 @@ class Agent(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/protos.Agent/SwitchProfile',
+        return grpc.experimental.unary_unary(request, target, '/v1.Agent/SwitchProfile',
             pennsieve2_dot_protos_dot_agent__pb2.SwitchProfileRequest.SerializeToString,
             pennsieve2_dot_protos_dot_agent__pb2.UserResponse.FromString,
             options, channel_credentials,
@@ -674,7 +674,7 @@ class Agent(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/protos.Agent/ReAuthenticate',
+        return grpc.experimental.unary_unary(request, target, '/v1.Agent/ReAuthenticate',
             pennsieve2_dot_protos_dot_agent__pb2.ReAuthenticateRequest.SerializeToString,
             pennsieve2_dot_protos_dot_agent__pb2.UserResponse.FromString,
             options, channel_credentials,
@@ -691,7 +691,7 @@ class Agent(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/protos.Agent/UseDataset',
+        return grpc.experimental.unary_unary(request, target, '/v1.Agent/UseDataset',
             pennsieve2_dot_protos_dot_agent__pb2.UseDatasetRequest.SerializeToString,
             pennsieve2_dot_protos_dot_agent__pb2.UseDatasetResponse.FromString,
             options, channel_credentials,
