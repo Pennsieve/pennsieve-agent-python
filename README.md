@@ -23,6 +23,10 @@ To install, run:
     pip install -U pennsieve2
 ```
 
+To install specific dev version, run:
+```bash
+    pip install -U --index-url https://test.pypi.org/simple/ pennsieve2==0.0.5.post6
+```
 
 Contributions
 --------------

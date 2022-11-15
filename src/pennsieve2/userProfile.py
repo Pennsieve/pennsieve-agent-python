@@ -9,7 +9,7 @@ from .protos import agent_pb2
 
 
 class UserProfile:
-    """ A class to handle user credentials.
+    """A class to handle user credentials.
     Attributes:
     -----------
     _stub : object
@@ -41,18 +41,18 @@ class UserProfile:
         self.whoami()
 
     def reauthenticate(self):
-        """ Reauthenticates with GO agent on the server """
+        """Reauthenticates with GO agent on the server"""
         request = agent_pb2.ReAuthenticateRequest()
         return self._stub.ReAuthenticate(request=request)
 
     def whoami(self):
-        """ Checks and prints current user credentials """
+        """Checks and prints current user credentials"""
         request = agent_pb2.GetUserRequest()
         response = self._stub.GetUser(request=request)
         self.session_token = response.session_token
         self.organization_id = response.organization_id
-        self.api_host='https://api.pennsieve.io'
-        if 'api_host' in self.config[response.profile]:
+        self.api_host = "https://api.pennsieve.io"
+        if "api_host" in self.config[response.profile]:
             self.api_host = self.config[response.profile]["api_host"]
         print(response)
         print(self.api_host)
@@ -63,7 +63,7 @@ class UserProfile:
         return self.credentials
 
     def switch(self, profile):
-        """ Switches profile of the user to one defined in config file
+        """Switches profile of the user to one defined in config file
             (by default ~/.pennsieve/config.ini)
 
         Parameters:
@@ -77,7 +77,7 @@ class UserProfile:
         return response
 
     def _parse_config(self, config_file=None):
-        """ Reads Pennsieve config file and sets available configs for the user
+        """Reads Pennsieve config file and sets available configs for the user
 
         Parameters:
         -----------

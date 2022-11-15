@@ -14,7 +14,7 @@ from .userProfile import UserProfile
 
 
 class Pennsieve:
-    """ The main class of Python Pennsieve agent
+    """The main class of Python Pennsieve agent
 
     Attributes:
     -----------
@@ -54,12 +54,12 @@ class Pennsieve:
     """
 
     def __init__(self, target="localhost:9000"):
-        """ Initialization of Pennsieve Python agent
+        """Initialization of Pennsieve Python agent
 
-            Parameters:
-            -----------
-            target : str
-                a socket with running GO agent
+        Parameters:
+        -----------
+        target : str
+            a socket with running GO agent
         """
         channel = grpc.insecure_channel(target)
         try:
@@ -77,7 +77,7 @@ class Pennsieve:
         self.dataset = None
 
     def _get_default_headers(self):
-        """ Returns default headers for Pennsieve. """
+        """Returns default headers for Pennsieve."""
         return {
             "Content-Type": "application/json",
             "Accept": "application/json; charset=utf-8",
@@ -86,7 +86,7 @@ class Pennsieve:
         }
 
     def get_user(self):
-        """ Returns current user.
+        """Returns current user.
         Return:
         -------
             user : str
@@ -95,7 +95,7 @@ class Pennsieve:
         return self.user.whoami()
 
     def get_manifests(self):
-        """ Returns available manifest in form of a list
+        """Returns available manifest in form of a list
 
         Return:
         --------
@@ -105,7 +105,7 @@ class Pennsieve:
         return self.manifest.list_manifests()
 
     def get_datasets(self):
-        """ Lists datasets for which the authenticated user has access to
+        """Lists datasets for which the authenticated user has access to
 
         Return:
         --------
@@ -117,13 +117,19 @@ class Pennsieve:
         self.dataset = None
         if isinstance(response, list) and len(response) > 0:
             self.datasets = dict(
-                map(lambda x: (x["content"]["name"], x["content"]["id"]) if "content" in x.keys()
+                map(
+                    lambda x: (x["content"]["name"], x["content"]["id"])
+                    if "content" in x.keys()
                     and "name" in x["content"].keys()
-                    and "id" in x["content"].keys() else None, response))
+                    and "id" in x["content"].keys()
+                    else None,
+                    response,
+                )
+            )
         return self.datasets
 
     def use_dataset(self, dataset_id):
-        """ Specifies which dataset on the server will be used
+        """Specifies which dataset on the server will be used
 
         Parameters:
         --------
@@ -137,7 +143,7 @@ class Pennsieve:
         return self.stub.UseDataset(request=request)
 
     def call(self, url, method, **kwargs):
-        """ Calls get/post/put/delete endpoints directly on the server
+        """Calls get/post/put/delete endpoints directly on the server
 
         Parameters:
         -----------
@@ -178,7 +184,7 @@ class Pennsieve:
             response.raise_for_status()
         except requests.exceptions.HTTPError as http_err:
             print(f"HTTP error occurred: {http_err}")
-        except: # pylint: disable=W0702
+        except:  # pylint: disable=W0702
             traceback.print_exc()
 
         return response.json()  # content.decode('utf-8'))
@@ -255,7 +261,7 @@ class Pennsieve:
         return self.call(url, method="delete", **kwargs)
 
     def subscribe(self, subscriber_id):
-        """ Creates a subscriber with id that would receive messages from the GO agent.
+        """Creates a subscriber with id that would receive messages from the GO agent.
         Parameters:
         -----------
         id : int
@@ -275,32 +281,40 @@ class Pennsieve:
                 events_dict[key] = getattr(response, key)
             # decrypt all fields of the message
             # print(str(d)) #debug
-            if events_dict['type'] == 0: # general info
-                print(str(events_dict['event_info'].details))
-            elif events_dict['type'] == 1: # upload status: file_id, total, current, worker_id
-                file_id   = events_dict['upload_status'].file_id
-                total     = events_dict['upload_status'].total
-                current   = events_dict['upload_status'].current
-                worker_id = events_dict['upload_status'].worker_id
+            if events_dict["type"] == 0:  # general info
+                print(str(events_dict["event_info"].details))
+            elif events_dict["type"] == 1:  # upload status: file_id, total, current, worker_id
+                file_id = events_dict["upload_status"].file_id
+                total = events_dict["upload_status"].total
+                current = events_dict["upload_status"].current
+                worker_id = events_dict["upload_status"].worker_id
 
-                pbar = tqdm(desc=file_id.split('/')[-1], total=total,
-                            unit='B', unit_scale=True, unit_divisor=1024, position=0, leave=True)
-#                   for i in tqdm(worker_id, position=0, leave=True):
-                pbar.n=current
+                pbar = tqdm(
+                    desc=file_id.split("/")[-1],
+                    total=total,
+                    unit="B",
+                    unit_scale=True,
+                    unit_divisor=1024,
+                    position=0,
+                    leave=True,
+                )
+                #                   for i in tqdm(worker_id, position=0, leave=True):
+                pbar.n = current
                 pbar.update()
-#                pbar = tqdm(
-#                pbar.update()
-#                pbar.refresh()
 
-#            elif events_dict['type'] == 3:  #sync status
-#                sync_status   = events_dict['sync_status'].status
-#                total         = events_dict['sync_status'].total
-#                if sync_status == 2:
-#                    print(f'Upload complete. Uploaded {total} file(s).')
-#                    return
+    #                pbar = tqdm(
+    #                pbar.update()
+    #                pbar.refresh()
+
+    #            elif events_dict['type'] == 3:  #sync status
+    #                sync_status   = events_dict['sync_status'].status
+    #                total         = events_dict['sync_status'].total
+    #                if sync_status == 2:
+    #                    print(f'Upload complete. Uploaded {total} file(s).')
+    #                    return
 
     def unsubscribe(self, subscriber_id):
-        """ Unsubscribes a subscriber with identifier id from receiving messages from the GO agent.
+        """Unsubscribes a subscriber with identifier id from receiving messages from the GO agent.
         Parameters:
         -----------
         id : int
@@ -315,9 +329,8 @@ class Pennsieve:
         request = agent_pb2.SubscribeRequest(id=subscriber_id)
         return self.stub.Unsubscribe(request=request)
 
-
     def agent_version(self):
-        """ Returns agent and python client version
+        """Returns agent and python client version
 
         Return:
         -------
@@ -330,9 +343,7 @@ class Pennsieve:
         log_level = self.stub.Version(request=request).log_level
         print(f"Pennsieve Agent version: {version_number}, log level: {log_level}")
 
-
     def stop(self):
-        """ Stops the agent
-        """
+        """Stops the agent"""
         request = agent_pb2.StopRequest()
         return self.stub.Stop(request=request)

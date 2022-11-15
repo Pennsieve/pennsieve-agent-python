@@ -1,0 +1,83 @@
+[project]
+name = "pennsieve2"
+version = "0.0.5.post6"
+description = "Pennsieve Python Client"
+readme = "README.md"
+requires-python = ">=3.8"
+license = {file = "LICENSE"}
+keywords = ["data science", "datasets"]
+authors = [
+  {name = "Patryk Orzechowski", email = "patryk@upenn.edu"}
+]
+maintainers = [
+  {name = "Patryk Orzechowski", email = "patryk@upenn.edu"}
+]
+classifiers=[
+    "Development Status :: 1 - Planning",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Information Technology",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3.10",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+    "Topic :: Scientific/Engineering :: Information Analysis",
+    "Topic :: Software Development",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dependencies = [
+  "grpcio", "tqdm"
+]
+
+
+[project.optional-dependencies]
+test = [
+  "pytest < 5.0.0",
+  "pytest-cov[all]"
+]
+
+
+[project.urls]
+homepage = "https://app.pennsieve.io"
+documentation = "https://docs.pennsieve.io/docs/uploading-files-programmatically"
+repository = "https://github.com/pennsieve/pennsieve-agent-python"
+changelog = "https://github.com/pennsieve/pennsieve-agent-python/CHANGELOG"
+
+
+[tool.black]
+line-length = 99
+target-version = ['py310']
+exclude = '''
+/(
+    \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.venv
+  | _build
+  | buck-out
+  | build
+  | dist
+  | docs
+)/
+'''
+
+
+[build-system]
+requires = ["setuptools","setuptools_scm[toml]>=6.2"]
+build-backend = "setuptools.build_meta"
+
+
+[tool.setuptools_scm]
+write_to = "src/pennsieve2/_version.py"
+version_scheme = "release-branch-semver"
+
+[tool.pytest.ini_options]
+addopts = "-ra -q"
+testpaths = [
+    "tests",
+]
+pythonpath = [
+  ".", "src",
+]
