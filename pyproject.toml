@@ -1,17 +1,12 @@
-[project]
+[tool.poetry]
 name = "pennsieve2"
 version = "0.0.5.post6"
 description = "Pennsieve Python Client"
 readme = "README.md"
+license = "Apache-2.0"
 requires-python = ">=3.8"
-license = {file = "LICENSE"}
 keywords = ["data science", "datasets"]
-authors = [
-  {name = "Patryk Orzechowski", email = "patryk@upenn.edu"}
-]
-maintainers = [
-  {name = "Patryk Orzechowski", email = "patryk@upenn.edu"}
-]
+authors = ["Patryk Orzechowski <patryk@upenn.edu>"]
 classifiers=[
     "Development Status :: 1 - Planning",
     "Intended Audience :: Developers",
@@ -26,10 +21,21 @@ classifiers=[
     "Topic :: Software Development :: Libraries",
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
-dependencies = [
-  "grpcio", "tqdm"
-]
 
+
+
+[tool.poetry.dependencies]
+black = {version = ">=20.8b1", optional = true}
+codecov = {version = ">=2.0.8", optional = true}
+pytest = {version = ">=4.4", optional = true}
+python = ">=3.8,<4.0"
+pytest-cov = {version = ">=4.0", optional = true}
+grpcio = {version = ">=1.50"}
+tqdm = {version = ">=4.64"}
+
+
+[tool.poetry.extras]
+dev = ["black", "pytest", "flake8", "codecov", "grpcio", "grpcio-tools", "tqdm"]
 
 [project.optional-dependencies]
 test = [
@@ -65,9 +71,13 @@ exclude = '''
 
 
 [build-system]
-requires = ["setuptools","setuptools_scm[toml]>=6.2"]
-build-backend = "setuptools.build_meta"
 
+#build-backend = "setuptools.build_meta"
+build-backend = "poetry.masonry.api"
+requires = [
+    "setuptools",
+    "setuptools_scm[toml]>=6.2",
+    "poetry>=1.0"]
 
 [tool.setuptools_scm]
 write_to = "src/pennsieve2/_version.py"
