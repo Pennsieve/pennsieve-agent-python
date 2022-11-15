@@ -32,7 +32,7 @@ python = ">=3.8,<4.0"
 pytest-cov = {version = ">=4.0", optional = true}
 grpcio = {version = ">=1.50"}
 tqdm = {version = ">=4.64"}
-
+protobuf = {version= ">=4.21.9"}
 
 [tool.poetry.extras]
 dev = ["black", "pytest", "flake8", "codecov", "grpcio", "grpcio-tools", "tqdm"]
@@ -71,8 +71,6 @@ exclude = '''
 
 
 [build-system]
-
-#build-backend = "setuptools.build_meta"
 build-backend = "poetry.masonry.api"
 requires = [
     "setuptools",
