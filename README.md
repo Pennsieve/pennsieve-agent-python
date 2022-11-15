@@ -31,11 +31,15 @@ To install specific dev version, run:
 Contributions
 --------------
 
-To update gRPC python files, execute from the project path:
+To update gRPC python files, execute from the src folder:
 
 ```bash
-    python -m grpc_tools.protoc --python_out=. -I. --grpc_python_out=. pennsieve2/protos/agent.proto
+    rm src/pennsieve2/protos/agent_pb2*
+    cd src
+    python3.9 -m grpc_tools.protoc --python_out=. -I. --grpc_python_out=. pennsieve2/protos/agent.proto
 ```
+Notice, this command does not produce a valid agent_pb2.py file when executed for Python3.10 - it does not use reflection and is reported as error for Flake8.
+
 
 To create a package and upload it to PyPI, first update the package version in the pennsieve2/__init__.py, then execute:
 

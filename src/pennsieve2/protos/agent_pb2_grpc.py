@@ -2,7 +2,7 @@
 """Client and server classes corresponding to protobuf-defined services."""
 import grpc
 
-from src.pennsieve2.protos import agent_pb2 as src_dot_pennsieve2_dot_protos_dot_agent__pb2
+from pennsieve2.protos import agent_pb2 as pennsieve2_dot_protos_dot_agent__pb2
 
 
 class AgentStub(object):
@@ -16,103 +16,103 @@ class AgentStub(object):
         """
         self.CreateManifest = channel.unary_unary(
                 '/v1.Agent/CreateManifest',
-                request_serializer=src_dot_pennsieve2_dot_protos_dot_agent__pb2.CreateManifestRequest.SerializeToString,
-                response_deserializer=src_dot_pennsieve2_dot_protos_dot_agent__pb2.CreateManifestResponse.FromString,
+                request_serializer=pennsieve2_dot_protos_dot_agent__pb2.CreateManifestRequest.SerializeToString,
+                response_deserializer=pennsieve2_dot_protos_dot_agent__pb2.CreateManifestResponse.FromString,
                 )
         self.AddToManifest = channel.unary_unary(
                 '/v1.Agent/AddToManifest',
-                request_serializer=src_dot_pennsieve2_dot_protos_dot_agent__pb2.AddToManifestRequest.SerializeToString,
-                response_deserializer=src_dot_pennsieve2_dot_protos_dot_agent__pb2.SimpleStatusResponse.FromString,
+                request_serializer=pennsieve2_dot_protos_dot_agent__pb2.AddToManifestRequest.SerializeToString,
+                response_deserializer=pennsieve2_dot_protos_dot_agent__pb2.SimpleStatusResponse.FromString,
                 )
         self.RemoveFromManifest = channel.unary_unary(
                 '/v1.Agent/RemoveFromManifest',
-                request_serializer=src_dot_pennsieve2_dot_protos_dot_agent__pb2.RemoveFromManifestRequest.SerializeToString,
-                response_deserializer=src_dot_pennsieve2_dot_protos_dot_agent__pb2.SimpleStatusResponse.FromString,
+                request_serializer=pennsieve2_dot_protos_dot_agent__pb2.RemoveFromManifestRequest.SerializeToString,
+                response_deserializer=pennsieve2_dot_protos_dot_agent__pb2.SimpleStatusResponse.FromString,
                 )
         self.DeleteManifest = channel.unary_unary(
                 '/v1.Agent/DeleteManifest',
-                request_serializer=src_dot_pennsieve2_dot_protos_dot_agent__pb2.DeleteManifestRequest.SerializeToString,
-                response_deserializer=src_dot_pennsieve2_dot_protos_dot_agent__pb2.SimpleStatusResponse.FromString,
+                request_serializer=pennsieve2_dot_protos_dot_agent__pb2.DeleteManifestRequest.SerializeToString,
+                response_deserializer=pennsieve2_dot_protos_dot_agent__pb2.SimpleStatusResponse.FromString,
                 )
         self.ListManifests = channel.unary_unary(
                 '/v1.Agent/ListManifests',
-                request_serializer=src_dot_pennsieve2_dot_protos_dot_agent__pb2.ListManifestsRequest.SerializeToString,
-                response_deserializer=src_dot_pennsieve2_dot_protos_dot_agent__pb2.ListManifestsResponse.FromString,
+                request_serializer=pennsieve2_dot_protos_dot_agent__pb2.ListManifestsRequest.SerializeToString,
+                response_deserializer=pennsieve2_dot_protos_dot_agent__pb2.ListManifestsResponse.FromString,
                 )
         self.ListManifestFiles = channel.unary_unary(
                 '/v1.Agent/ListManifestFiles',
-                request_serializer=src_dot_pennsieve2_dot_protos_dot_agent__pb2.ListManifestFilesRequest.SerializeToString,
-                response_deserializer=src_dot_pennsieve2_dot_protos_dot_agent__pb2.ListManifestFilesResponse.FromString,
+                request_serializer=pennsieve2_dot_protos_dot_agent__pb2.ListManifestFilesRequest.SerializeToString,
+                response_deserializer=pennsieve2_dot_protos_dot_agent__pb2.ListManifestFilesResponse.FromString,
                 )
         self.RelocateManifestFiles = channel.unary_unary(
                 '/v1.Agent/RelocateManifestFiles',
-                request_serializer=src_dot_pennsieve2_dot_protos_dot_agent__pb2.RelocateManifestFilesRequest.SerializeToString,
-                response_deserializer=src_dot_pennsieve2_dot_protos_dot_agent__pb2.SimpleStatusResponse.FromString,
+                request_serializer=pennsieve2_dot_protos_dot_agent__pb2.RelocateManifestFilesRequest.SerializeToString,
+                response_deserializer=pennsieve2_dot_protos_dot_agent__pb2.SimpleStatusResponse.FromString,
                 )
         self.SyncManifest = channel.unary_unary(
                 '/v1.Agent/SyncManifest',
-                request_serializer=src_dot_pennsieve2_dot_protos_dot_agent__pb2.SyncManifestRequest.SerializeToString,
-                response_deserializer=src_dot_pennsieve2_dot_protos_dot_agent__pb2.SyncManifestResponse.FromString,
+                request_serializer=pennsieve2_dot_protos_dot_agent__pb2.SyncManifestRequest.SerializeToString,
+                response_deserializer=pennsieve2_dot_protos_dot_agent__pb2.SyncManifestResponse.FromString,
                 )
         self.ResetManifest = channel.unary_unary(
                 '/v1.Agent/ResetManifest',
-                request_serializer=src_dot_pennsieve2_dot_protos_dot_agent__pb2.ResetManifestRequest.SerializeToString,
-                response_deserializer=src_dot_pennsieve2_dot_protos_dot_agent__pb2.SimpleStatusResponse.FromString,
+                request_serializer=pennsieve2_dot_protos_dot_agent__pb2.ResetManifestRequest.SerializeToString,
+                response_deserializer=pennsieve2_dot_protos_dot_agent__pb2.SimpleStatusResponse.FromString,
                 )
         self.UploadManifest = channel.unary_unary(
                 '/v1.Agent/UploadManifest',
-                request_serializer=src_dot_pennsieve2_dot_protos_dot_agent__pb2.UploadManifestRequest.SerializeToString,
-                response_deserializer=src_dot_pennsieve2_dot_protos_dot_agent__pb2.SimpleStatusResponse.FromString,
+                request_serializer=pennsieve2_dot_protos_dot_agent__pb2.UploadManifestRequest.SerializeToString,
+                response_deserializer=pennsieve2_dot_protos_dot_agent__pb2.SimpleStatusResponse.FromString,
                 )
         self.CancelUpload = channel.unary_unary(
                 '/v1.Agent/CancelUpload',
-                request_serializer=src_dot_pennsieve2_dot_protos_dot_agent__pb2.CancelUploadRequest.SerializeToString,
-                response_deserializer=src_dot_pennsieve2_dot_protos_dot_agent__pb2.SimpleStatusResponse.FromString,
+                request_serializer=pennsieve2_dot_protos_dot_agent__pb2.CancelUploadRequest.SerializeToString,
+                response_deserializer=pennsieve2_dot_protos_dot_agent__pb2.SimpleStatusResponse.FromString,
                 )
         self.Version = channel.unary_unary(
                 '/v1.Agent/Version',
-                request_serializer=src_dot_pennsieve2_dot_protos_dot_agent__pb2.VersionRequest.SerializeToString,
-                response_deserializer=src_dot_pennsieve2_dot_protos_dot_agent__pb2.VersionResponse.FromString,
+                request_serializer=pennsieve2_dot_protos_dot_agent__pb2.VersionRequest.SerializeToString,
+                response_deserializer=pennsieve2_dot_protos_dot_agent__pb2.VersionResponse.FromString,
                 )
         self.Subscribe = channel.unary_stream(
                 '/v1.Agent/Subscribe',
-                request_serializer=src_dot_pennsieve2_dot_protos_dot_agent__pb2.SubscribeRequest.SerializeToString,
-                response_deserializer=src_dot_pennsieve2_dot_protos_dot_agent__pb2.SubscribeResponse.FromString,
+                request_serializer=pennsieve2_dot_protos_dot_agent__pb2.SubscribeRequest.SerializeToString,
+                response_deserializer=pennsieve2_dot_protos_dot_agent__pb2.SubscribeResponse.FromString,
                 )
         self.Unsubscribe = channel.unary_unary(
                 '/v1.Agent/Unsubscribe',
-                request_serializer=src_dot_pennsieve2_dot_protos_dot_agent__pb2.SubscribeRequest.SerializeToString,
-                response_deserializer=src_dot_pennsieve2_dot_protos_dot_agent__pb2.SubscribeResponse.FromString,
+                request_serializer=pennsieve2_dot_protos_dot_agent__pb2.SubscribeRequest.SerializeToString,
+                response_deserializer=pennsieve2_dot_protos_dot_agent__pb2.SubscribeResponse.FromString,
                 )
         self.Stop = channel.unary_unary(
                 '/v1.Agent/Stop',
-                request_serializer=src_dot_pennsieve2_dot_protos_dot_agent__pb2.StopRequest.SerializeToString,
-                response_deserializer=src_dot_pennsieve2_dot_protos_dot_agent__pb2.StopResponse.FromString,
+                request_serializer=pennsieve2_dot_protos_dot_agent__pb2.StopRequest.SerializeToString,
+                response_deserializer=pennsieve2_dot_protos_dot_agent__pb2.StopResponse.FromString,
                 )
         self.Ping = channel.unary_unary(
                 '/v1.Agent/Ping',
-                request_serializer=src_dot_pennsieve2_dot_protos_dot_agent__pb2.PingRequest.SerializeToString,
-                response_deserializer=src_dot_pennsieve2_dot_protos_dot_agent__pb2.PingResponse.FromString,
+                request_serializer=pennsieve2_dot_protos_dot_agent__pb2.PingRequest.SerializeToString,
+                response_deserializer=pennsieve2_dot_protos_dot_agent__pb2.PingResponse.FromString,
                 )
         self.GetUser = channel.unary_unary(
                 '/v1.Agent/GetUser',
-                request_serializer=src_dot_pennsieve2_dot_protos_dot_agent__pb2.GetUserRequest.SerializeToString,
-                response_deserializer=src_dot_pennsieve2_dot_protos_dot_agent__pb2.UserResponse.FromString,
+                request_serializer=pennsieve2_dot_protos_dot_agent__pb2.GetUserRequest.SerializeToString,
+                response_deserializer=pennsieve2_dot_protos_dot_agent__pb2.UserResponse.FromString,
                 )
         self.SwitchProfile = channel.unary_unary(
                 '/v1.Agent/SwitchProfile',
-                request_serializer=src_dot_pennsieve2_dot_protos_dot_agent__pb2.SwitchProfileRequest.SerializeToString,
-                response_deserializer=src_dot_pennsieve2_dot_protos_dot_agent__pb2.UserResponse.FromString,
+                request_serializer=pennsieve2_dot_protos_dot_agent__pb2.SwitchProfileRequest.SerializeToString,
+                response_deserializer=pennsieve2_dot_protos_dot_agent__pb2.UserResponse.FromString,
                 )
         self.ReAuthenticate = channel.unary_unary(
                 '/v1.Agent/ReAuthenticate',
-                request_serializer=src_dot_pennsieve2_dot_protos_dot_agent__pb2.ReAuthenticateRequest.SerializeToString,
-                response_deserializer=src_dot_pennsieve2_dot_protos_dot_agent__pb2.UserResponse.FromString,
+                request_serializer=pennsieve2_dot_protos_dot_agent__pb2.ReAuthenticateRequest.SerializeToString,
+                response_deserializer=pennsieve2_dot_protos_dot_agent__pb2.UserResponse.FromString,
                 )
         self.UseDataset = channel.unary_unary(
                 '/v1.Agent/UseDataset',
-                request_serializer=src_dot_pennsieve2_dot_protos_dot_agent__pb2.UseDatasetRequest.SerializeToString,
-                response_deserializer=src_dot_pennsieve2_dot_protos_dot_agent__pb2.UseDatasetResponse.FromString,
+                request_serializer=pennsieve2_dot_protos_dot_agent__pb2.UseDatasetRequest.SerializeToString,
+                response_deserializer=pennsieve2_dot_protos_dot_agent__pb2.UseDatasetResponse.FromString,
                 )
 
 
@@ -249,103 +249,103 @@ def add_AgentServicer_to_server(servicer, server):
     rpc_method_handlers = {
             'CreateManifest': grpc.unary_unary_rpc_method_handler(
                     servicer.CreateManifest,
-                    request_deserializer=src_dot_pennsieve2_dot_protos_dot_agent__pb2.CreateManifestRequest.FromString,
-                    response_serializer=src_dot_pennsieve2_dot_protos_dot_agent__pb2.CreateManifestResponse.SerializeToString,
+                    request_deserializer=pennsieve2_dot_protos_dot_agent__pb2.CreateManifestRequest.FromString,
+                    response_serializer=pennsieve2_dot_protos_dot_agent__pb2.CreateManifestResponse.SerializeToString,
             ),
             'AddToManifest': grpc.unary_unary_rpc_method_handler(
                     servicer.AddToManifest,
-                    request_deserializer=src_dot_pennsieve2_dot_protos_dot_agent__pb2.AddToManifestRequest.FromString,
-                    response_serializer=src_dot_pennsieve2_dot_protos_dot_agent__pb2.SimpleStatusResponse.SerializeToString,
+                    request_deserializer=pennsieve2_dot_protos_dot_agent__pb2.AddToManifestRequest.FromString,
+                    response_serializer=pennsieve2_dot_protos_dot_agent__pb2.SimpleStatusResponse.SerializeToString,
             ),
             'RemoveFromManifest': grpc.unary_unary_rpc_method_handler(
                     servicer.RemoveFromManifest,
-                    request_deserializer=src_dot_pennsieve2_dot_protos_dot_agent__pb2.RemoveFromManifestRequest.FromString,
-                    response_serializer=src_dot_pennsieve2_dot_protos_dot_agent__pb2.SimpleStatusResponse.SerializeToString,
+                    request_deserializer=pennsieve2_dot_protos_dot_agent__pb2.RemoveFromManifestRequest.FromString,
+                    response_serializer=pennsieve2_dot_protos_dot_agent__pb2.SimpleStatusResponse.SerializeToString,
             ),
             'DeleteManifest': grpc.unary_unary_rpc_method_handler(
                     servicer.DeleteManifest,
-                    request_deserializer=src_dot_pennsieve2_dot_protos_dot_agent__pb2.DeleteManifestRequest.FromString,
-                    response_serializer=src_dot_pennsieve2_dot_protos_dot_agent__pb2.SimpleStatusResponse.SerializeToString,
+                    request_deserializer=pennsieve2_dot_protos_dot_agent__pb2.DeleteManifestRequest.FromString,
+                    response_serializer=pennsieve2_dot_protos_dot_agent__pb2.SimpleStatusResponse.SerializeToString,
             ),
             'ListManifests': grpc.unary_unary_rpc_method_handler(
                     servicer.ListManifests,
-                    request_deserializer=src_dot_pennsieve2_dot_protos_dot_agent__pb2.ListManifestsRequest.FromString,
-                    response_serializer=src_dot_pennsieve2_dot_protos_dot_agent__pb2.ListManifestsResponse.SerializeToString,
+                    request_deserializer=pennsieve2_dot_protos_dot_agent__pb2.ListManifestsRequest.FromString,
+                    response_serializer=pennsieve2_dot_protos_dot_agent__pb2.ListManifestsResponse.SerializeToString,
             ),
             'ListManifestFiles': grpc.unary_unary_rpc_method_handler(
                     servicer.ListManifestFiles,
-                    request_deserializer=src_dot_pennsieve2_dot_protos_dot_agent__pb2.ListManifestFilesRequest.FromString,
-                    response_serializer=src_dot_pennsieve2_dot_protos_dot_agent__pb2.ListManifestFilesResponse.SerializeToString,
+                    request_deserializer=pennsieve2_dot_protos_dot_agent__pb2.ListManifestFilesRequest.FromString,
+                    response_serializer=pennsieve2_dot_protos_dot_agent__pb2.ListManifestFilesResponse.SerializeToString,
             ),
             'RelocateManifestFiles': grpc.unary_unary_rpc_method_handler(
                     servicer.RelocateManifestFiles,
-                    request_deserializer=src_dot_pennsieve2_dot_protos_dot_agent__pb2.RelocateManifestFilesRequest.FromString,
-                    response_serializer=src_dot_pennsieve2_dot_protos_dot_agent__pb2.SimpleStatusResponse.SerializeToString,
+                    request_deserializer=pennsieve2_dot_protos_dot_agent__pb2.RelocateManifestFilesRequest.FromString,
+                    response_serializer=pennsieve2_dot_protos_dot_agent__pb2.SimpleStatusResponse.SerializeToString,
             ),
             'SyncManifest': grpc.unary_unary_rpc_method_handler(
                     servicer.SyncManifest,
-                    request_deserializer=src_dot_pennsieve2_dot_protos_dot_agent__pb2.SyncManifestRequest.FromString,
-                    response_serializer=src_dot_pennsieve2_dot_protos_dot_agent__pb2.SyncManifestResponse.SerializeToString,
+                    request_deserializer=pennsieve2_dot_protos_dot_agent__pb2.SyncManifestRequest.FromString,
+                    response_serializer=pennsieve2_dot_protos_dot_agent__pb2.SyncManifestResponse.SerializeToString,
             ),
             'ResetManifest': grpc.unary_unary_rpc_method_handler(
                     servicer.ResetManifest,
-                    request_deserializer=src_dot_pennsieve2_dot_protos_dot_agent__pb2.ResetManifestRequest.FromString,
-                    response_serializer=src_dot_pennsieve2_dot_protos_dot_agent__pb2.SimpleStatusResponse.SerializeToString,
+                    request_deserializer=pennsieve2_dot_protos_dot_agent__pb2.ResetManifestRequest.FromString,
+                    response_serializer=pennsieve2_dot_protos_dot_agent__pb2.SimpleStatusResponse.SerializeToString,
             ),
             'UploadManifest': grpc.unary_unary_rpc_method_handler(
                     servicer.UploadManifest,
-                    request_deserializer=src_dot_pennsieve2_dot_protos_dot_agent__pb2.UploadManifestRequest.FromString,
-                    response_serializer=src_dot_pennsieve2_dot_protos_dot_agent__pb2.SimpleStatusResponse.SerializeToString,
+                    request_deserializer=pennsieve2_dot_protos_dot_agent__pb2.UploadManifestRequest.FromString,
+                    response_serializer=pennsieve2_dot_protos_dot_agent__pb2.SimpleStatusResponse.SerializeToString,
             ),
             'CancelUpload': grpc.unary_unary_rpc_method_handler(
                     servicer.CancelUpload,
-                    request_deserializer=src_dot_pennsieve2_dot_protos_dot_agent__pb2.CancelUploadRequest.FromString,
-                    response_serializer=src_dot_pennsieve2_dot_protos_dot_agent__pb2.SimpleStatusResponse.SerializeToString,
+                    request_deserializer=pennsieve2_dot_protos_dot_agent__pb2.CancelUploadRequest.FromString,
+                    response_serializer=pennsieve2_dot_protos_dot_agent__pb2.SimpleStatusResponse.SerializeToString,
             ),
             'Version': grpc.unary_unary_rpc_method_handler(
                     servicer.Version,
-                    request_deserializer=src_dot_pennsieve2_dot_protos_dot_agent__pb2.VersionRequest.FromString,
-                    response_serializer=src_dot_pennsieve2_dot_protos_dot_agent__pb2.VersionResponse.SerializeToString,
+                    request_deserializer=pennsieve2_dot_protos_dot_agent__pb2.VersionRequest.FromString,
+                    response_serializer=pennsieve2_dot_protos_dot_agent__pb2.VersionResponse.SerializeToString,
             ),
             'Subscribe': grpc.unary_stream_rpc_method_handler(
                     servicer.Subscribe,
-                    request_deserializer=src_dot_pennsieve2_dot_protos_dot_agent__pb2.SubscribeRequest.FromString,
-                    response_serializer=src_dot_pennsieve2_dot_protos_dot_agent__pb2.SubscribeResponse.SerializeToString,
+                    request_deserializer=pennsieve2_dot_protos_dot_agent__pb2.SubscribeRequest.FromString,
+                    response_serializer=pennsieve2_dot_protos_dot_agent__pb2.SubscribeResponse.SerializeToString,
             ),
             'Unsubscribe': grpc.unary_unary_rpc_method_handler(
                     servicer.Unsubscribe,
-                    request_deserializer=src_dot_pennsieve2_dot_protos_dot_agent__pb2.SubscribeRequest.FromString,
-                    response_serializer=src_dot_pennsieve2_dot_protos_dot_agent__pb2.SubscribeResponse.SerializeToString,
+                    request_deserializer=pennsieve2_dot_protos_dot_agent__pb2.SubscribeRequest.FromString,
+                    response_serializer=pennsieve2_dot_protos_dot_agent__pb2.SubscribeResponse.SerializeToString,
             ),
             'Stop': grpc.unary_unary_rpc_method_handler(
                     servicer.Stop,
-                    request_deserializer=src_dot_pennsieve2_dot_protos_dot_agent__pb2.StopRequest.FromString,
-                    response_serializer=src_dot_pennsieve2_dot_protos_dot_agent__pb2.StopResponse.SerializeToString,
+                    request_deserializer=pennsieve2_dot_protos_dot_agent__pb2.StopRequest.FromString,
+                    response_serializer=pennsieve2_dot_protos_dot_agent__pb2.StopResponse.SerializeToString,
             ),
             'Ping': grpc.unary_unary_rpc_method_handler(
                     servicer.Ping,
-                    request_deserializer=src_dot_pennsieve2_dot_protos_dot_agent__pb2.PingRequest.FromString,
-                    response_serializer=src_dot_pennsieve2_dot_protos_dot_agent__pb2.PingResponse.SerializeToString,
+                    request_deserializer=pennsieve2_dot_protos_dot_agent__pb2.PingRequest.FromString,
+                    response_serializer=pennsieve2_dot_protos_dot_agent__pb2.PingResponse.SerializeToString,
             ),
             'GetUser': grpc.unary_unary_rpc_method_handler(
                     servicer.GetUser,
-                    request_deserializer=src_dot_pennsieve2_dot_protos_dot_agent__pb2.GetUserRequest.FromString,
-                    response_serializer=src_dot_pennsieve2_dot_protos_dot_agent__pb2.UserResponse.SerializeToString,
+                    request_deserializer=pennsieve2_dot_protos_dot_agent__pb2.GetUserRequest.FromString,
+                    response_serializer=pennsieve2_dot_protos_dot_agent__pb2.UserResponse.SerializeToString,
             ),
             'SwitchProfile': grpc.unary_unary_rpc_method_handler(
                     servicer.SwitchProfile,
-                    request_deserializer=src_dot_pennsieve2_dot_protos_dot_agent__pb2.SwitchProfileRequest.FromString,
-                    response_serializer=src_dot_pennsieve2_dot_protos_dot_agent__pb2.UserResponse.SerializeToString,
+                    request_deserializer=pennsieve2_dot_protos_dot_agent__pb2.SwitchProfileRequest.FromString,
+                    response_serializer=pennsieve2_dot_protos_dot_agent__pb2.UserResponse.SerializeToString,
             ),
             'ReAuthenticate': grpc.unary_unary_rpc_method_handler(
                     servicer.ReAuthenticate,
-                    request_deserializer=src_dot_pennsieve2_dot_protos_dot_agent__pb2.ReAuthenticateRequest.FromString,
-                    response_serializer=src_dot_pennsieve2_dot_protos_dot_agent__pb2.UserResponse.SerializeToString,
+                    request_deserializer=pennsieve2_dot_protos_dot_agent__pb2.ReAuthenticateRequest.FromString,
+                    response_serializer=pennsieve2_dot_protos_dot_agent__pb2.UserResponse.SerializeToString,
             ),
             'UseDataset': grpc.unary_unary_rpc_method_handler(
                     servicer.UseDataset,
-                    request_deserializer=src_dot_pennsieve2_dot_protos_dot_agent__pb2.UseDatasetRequest.FromString,
-                    response_serializer=src_dot_pennsieve2_dot_protos_dot_agent__pb2.UseDatasetResponse.SerializeToString,
+                    request_deserializer=pennsieve2_dot_protos_dot_agent__pb2.UseDatasetRequest.FromString,
+                    response_serializer=pennsieve2_dot_protos_dot_agent__pb2.UseDatasetResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -369,8 +369,8 @@ class Agent(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/v1.Agent/CreateManifest',
-            src_dot_pennsieve2_dot_protos_dot_agent__pb2.CreateManifestRequest.SerializeToString,
-            src_dot_pennsieve2_dot_protos_dot_agent__pb2.CreateManifestResponse.FromString,
+            pennsieve2_dot_protos_dot_agent__pb2.CreateManifestRequest.SerializeToString,
+            pennsieve2_dot_protos_dot_agent__pb2.CreateManifestResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -386,8 +386,8 @@ class Agent(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/v1.Agent/AddToManifest',
-            src_dot_pennsieve2_dot_protos_dot_agent__pb2.AddToManifestRequest.SerializeToString,
-            src_dot_pennsieve2_dot_protos_dot_agent__pb2.SimpleStatusResponse.FromString,
+            pennsieve2_dot_protos_dot_agent__pb2.AddToManifestRequest.SerializeToString,
+            pennsieve2_dot_protos_dot_agent__pb2.SimpleStatusResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -403,8 +403,8 @@ class Agent(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/v1.Agent/RemoveFromManifest',
-            src_dot_pennsieve2_dot_protos_dot_agent__pb2.RemoveFromManifestRequest.SerializeToString,
-            src_dot_pennsieve2_dot_protos_dot_agent__pb2.SimpleStatusResponse.FromString,
+            pennsieve2_dot_protos_dot_agent__pb2.RemoveFromManifestRequest.SerializeToString,
+            pennsieve2_dot_protos_dot_agent__pb2.SimpleStatusResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -420,8 +420,8 @@ class Agent(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/v1.Agent/DeleteManifest',
-            src_dot_pennsieve2_dot_protos_dot_agent__pb2.DeleteManifestRequest.SerializeToString,
-            src_dot_pennsieve2_dot_protos_dot_agent__pb2.SimpleStatusResponse.FromString,
+            pennsieve2_dot_protos_dot_agent__pb2.DeleteManifestRequest.SerializeToString,
+            pennsieve2_dot_protos_dot_agent__pb2.SimpleStatusResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -437,8 +437,8 @@ class Agent(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/v1.Agent/ListManifests',
-            src_dot_pennsieve2_dot_protos_dot_agent__pb2.ListManifestsRequest.SerializeToString,
-            src_dot_pennsieve2_dot_protos_dot_agent__pb2.ListManifestsResponse.FromString,
+            pennsieve2_dot_protos_dot_agent__pb2.ListManifestsRequest.SerializeToString,
+            pennsieve2_dot_protos_dot_agent__pb2.ListManifestsResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -454,8 +454,8 @@ class Agent(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/v1.Agent/ListManifestFiles',
-            src_dot_pennsieve2_dot_protos_dot_agent__pb2.ListManifestFilesRequest.SerializeToString,
-            src_dot_pennsieve2_dot_protos_dot_agent__pb2.ListManifestFilesResponse.FromString,
+            pennsieve2_dot_protos_dot_agent__pb2.ListManifestFilesRequest.SerializeToString,
+            pennsieve2_dot_protos_dot_agent__pb2.ListManifestFilesResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -471,8 +471,8 @@ class Agent(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/v1.Agent/RelocateManifestFiles',
-            src_dot_pennsieve2_dot_protos_dot_agent__pb2.RelocateManifestFilesRequest.SerializeToString,
-            src_dot_pennsieve2_dot_protos_dot_agent__pb2.SimpleStatusResponse.FromString,
+            pennsieve2_dot_protos_dot_agent__pb2.RelocateManifestFilesRequest.SerializeToString,
+            pennsieve2_dot_protos_dot_agent__pb2.SimpleStatusResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -488,8 +488,8 @@ class Agent(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/v1.Agent/SyncManifest',
-            src_dot_pennsieve2_dot_protos_dot_agent__pb2.SyncManifestRequest.SerializeToString,
-            src_dot_pennsieve2_dot_protos_dot_agent__pb2.SyncManifestResponse.FromString,
+            pennsieve2_dot_protos_dot_agent__pb2.SyncManifestRequest.SerializeToString,
+            pennsieve2_dot_protos_dot_agent__pb2.SyncManifestResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -505,8 +505,8 @@ class Agent(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/v1.Agent/ResetManifest',
-            src_dot_pennsieve2_dot_protos_dot_agent__pb2.ResetManifestRequest.SerializeToString,
-            src_dot_pennsieve2_dot_protos_dot_agent__pb2.SimpleStatusResponse.FromString,
+            pennsieve2_dot_protos_dot_agent__pb2.ResetManifestRequest.SerializeToString,
+            pennsieve2_dot_protos_dot_agent__pb2.SimpleStatusResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -522,8 +522,8 @@ class Agent(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/v1.Agent/UploadManifest',
-            src_dot_pennsieve2_dot_protos_dot_agent__pb2.UploadManifestRequest.SerializeToString,
-            src_dot_pennsieve2_dot_protos_dot_agent__pb2.SimpleStatusResponse.FromString,
+            pennsieve2_dot_protos_dot_agent__pb2.UploadManifestRequest.SerializeToString,
+            pennsieve2_dot_protos_dot_agent__pb2.SimpleStatusResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -539,8 +539,8 @@ class Agent(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/v1.Agent/CancelUpload',
-            src_dot_pennsieve2_dot_protos_dot_agent__pb2.CancelUploadRequest.SerializeToString,
-            src_dot_pennsieve2_dot_protos_dot_agent__pb2.SimpleStatusResponse.FromString,
+            pennsieve2_dot_protos_dot_agent__pb2.CancelUploadRequest.SerializeToString,
+            pennsieve2_dot_protos_dot_agent__pb2.SimpleStatusResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -556,8 +556,8 @@ class Agent(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/v1.Agent/Version',
-            src_dot_pennsieve2_dot_protos_dot_agent__pb2.VersionRequest.SerializeToString,
-            src_dot_pennsieve2_dot_protos_dot_agent__pb2.VersionResponse.FromString,
+            pennsieve2_dot_protos_dot_agent__pb2.VersionRequest.SerializeToString,
+            pennsieve2_dot_protos_dot_agent__pb2.VersionResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -573,8 +573,8 @@ class Agent(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_stream(request, target, '/v1.Agent/Subscribe',
-            src_dot_pennsieve2_dot_protos_dot_agent__pb2.SubscribeRequest.SerializeToString,
-            src_dot_pennsieve2_dot_protos_dot_agent__pb2.SubscribeResponse.FromString,
+            pennsieve2_dot_protos_dot_agent__pb2.SubscribeRequest.SerializeToString,
+            pennsieve2_dot_protos_dot_agent__pb2.SubscribeResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -590,8 +590,8 @@ class Agent(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/v1.Agent/Unsubscribe',
-            src_dot_pennsieve2_dot_protos_dot_agent__pb2.SubscribeRequest.SerializeToString,
-            src_dot_pennsieve2_dot_protos_dot_agent__pb2.SubscribeResponse.FromString,
+            pennsieve2_dot_protos_dot_agent__pb2.SubscribeRequest.SerializeToString,
+            pennsieve2_dot_protos_dot_agent__pb2.SubscribeResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -607,8 +607,8 @@ class Agent(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/v1.Agent/Stop',
-            src_dot_pennsieve2_dot_protos_dot_agent__pb2.StopRequest.SerializeToString,
-            src_dot_pennsieve2_dot_protos_dot_agent__pb2.StopResponse.FromString,
+            pennsieve2_dot_protos_dot_agent__pb2.StopRequest.SerializeToString,
+            pennsieve2_dot_protos_dot_agent__pb2.StopResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -624,8 +624,8 @@ class Agent(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/v1.Agent/Ping',
-            src_dot_pennsieve2_dot_protos_dot_agent__pb2.PingRequest.SerializeToString,
-            src_dot_pennsieve2_dot_protos_dot_agent__pb2.PingResponse.FromString,
+            pennsieve2_dot_protos_dot_agent__pb2.PingRequest.SerializeToString,
+            pennsieve2_dot_protos_dot_agent__pb2.PingResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -641,8 +641,8 @@ class Agent(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/v1.Agent/GetUser',
-            src_dot_pennsieve2_dot_protos_dot_agent__pb2.GetUserRequest.SerializeToString,
-            src_dot_pennsieve2_dot_protos_dot_agent__pb2.UserResponse.FromString,
+            pennsieve2_dot_protos_dot_agent__pb2.GetUserRequest.SerializeToString,
+            pennsieve2_dot_protos_dot_agent__pb2.UserResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -658,8 +658,8 @@ class Agent(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/v1.Agent/SwitchProfile',
-            src_dot_pennsieve2_dot_protos_dot_agent__pb2.SwitchProfileRequest.SerializeToString,
-            src_dot_pennsieve2_dot_protos_dot_agent__pb2.UserResponse.FromString,
+            pennsieve2_dot_protos_dot_agent__pb2.SwitchProfileRequest.SerializeToString,
+            pennsieve2_dot_protos_dot_agent__pb2.UserResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -675,8 +675,8 @@ class Agent(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/v1.Agent/ReAuthenticate',
-            src_dot_pennsieve2_dot_protos_dot_agent__pb2.ReAuthenticateRequest.SerializeToString,
-            src_dot_pennsieve2_dot_protos_dot_agent__pb2.UserResponse.FromString,
+            pennsieve2_dot_protos_dot_agent__pb2.ReAuthenticateRequest.SerializeToString,
+            pennsieve2_dot_protos_dot_agent__pb2.UserResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -692,7 +692,7 @@ class Agent(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/v1.Agent/UseDataset',
-            src_dot_pennsieve2_dot_protos_dot_agent__pb2.UseDatasetRequest.SerializeToString,
-            src_dot_pennsieve2_dot_protos_dot_agent__pb2.UseDatasetResponse.FromString,
+            pennsieve2_dot_protos_dot_agent__pb2.UseDatasetRequest.SerializeToString,
+            pennsieve2_dot_protos_dot_agent__pb2.UseDatasetResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
