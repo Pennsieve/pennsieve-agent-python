@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pennsieve2"
-version = "0.0.5post10"
+version = "0.0.5post11"
 description = "Pennsieve Python Client"
 readme = "README.md"
 license = "Apache-2.0"
@@ -33,7 +33,7 @@ tqdm = {version = ">=4.64"}
 protobuf = {version= ">=3.12.0"}
 
 [tool.poetry.extras]
-dev = ["black", "pytest", "flake8", "codecov", "grpcio", "grpcio-tools", "tqdm"]
+dev = ["black", "pytest", "flake8", "codecov", "grpcio", "grpcio-tools", "tqdm", "importlib-metadata"]
 
 [tool.poetry.urls]
 homepage = "https://app.pennsieve.io"
