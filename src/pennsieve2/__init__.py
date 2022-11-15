@@ -1,2 +1,3 @@
+from importlib_metadata import version
 from .pennsieve import Pennsieve
-from ._version import __version__
+__version__ = version(__package__)
