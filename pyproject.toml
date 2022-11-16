@@ -1,13 +1,13 @@
 [tool.poetry]
 name = "pennsieve2"
-version = "0.0.5post11"
+version = "0.0.5"
 description = "Pennsieve Python Client"
 readme = "README.md"
 license = "Apache-2.0"
 keywords = ["data science", "datasets"]
 authors = ["Patryk Orzechowski <patryk@upenn.edu>"]
 classifiers=[
-    "Development Status :: 1 - Planning",
+    "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
     "Intended Audience :: Information Technology",
     "Intended Audience :: Science/Research",
@@ -62,11 +62,10 @@ exclude = '''
 
 
 [build-system]
-build-backend = "poetry.masonry.api"
 requires = [
-    "setuptools",
-    "setuptools_scm[toml]>=6.2",
-    "poetry>=1.0"]
+    "poetry_core>=1.0.0",
+    "setuptools"]
+build-backend = "poetry.core.masonry.api"
 
 [tool.setuptools_scm]
 write_to = "src/pennsieve2/_version.py"
