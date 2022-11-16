@@ -5,8 +5,6 @@ dependencies:
     - make
     - compilers
     - python
-    # pip
-    #- pip=20.3.3 
     - pip:
         - grpcio
         - grpcio-tools
