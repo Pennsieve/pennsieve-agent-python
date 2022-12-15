@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pennsieve2"
-version = "0.0.5"
+version = "0.1.0dev0"
 description = "Pennsieve Python Client"
 readme = "README.md"
 license = "Apache-2.0"
@@ -40,7 +40,7 @@ dev = ["black", "pytest", "flake8", "codecov", "grpcio", "grpcio-tools", "tqdm",
 homepage = "https://app.pennsieve.io"
 documentation = "https://docs.pennsieve.io/docs/uploading-files-programmatically"
 repository = "https://github.com/pennsieve/pennsieve-agent-python"
-changelog = "https://github.com/pennsieve/pennsieve-agent-python/CHANGELOG"
+changelog = "https://github.com/pennsieve/pennsieve-agent-python/CHANGELOG.md"
 
 
 [tool.black]
