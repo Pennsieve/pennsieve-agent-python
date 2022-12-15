@@ -4,6 +4,7 @@ Copyright (c) 2022 Patryk Orzechowski | Wagenaar Lab | University of Pennsylvani
 
 import os
 import configparser
+import logging
 from pathlib import Path
 from .protos import agent_pb2
 
@@ -34,10 +35,40 @@ class UserProfile:
 
     """
 
-    def __init__(self, stub):
+    def __init__(
+        self,
+        stub,
+        api_host=None,
+        api_port=None,
+        api_key=None,
+        api_secret=None,
+        bucket=None,
+        chunk_size=None,
+        n_workers=None,
+        config_file=None,
+        profile_name=None,
+    ):
         self._stub = stub
-        self._parse_config()
+        if api_host is None or api_key is None or api_secret is None:
+            self._parse_config(config_file)
+        if api_host is not None:
+            os.environ["PENNSIEVE_API_HOST"] = api_host
+        if api_port is not None:
+            os.environ["PENNSIEVE_API_PORT"] = api_port
+        if api_key is not None:
+            os.environ["PENNSIEVE_API_KEY"] = api_key
+        if api_secret is not None:
+            os.environ["PENNSIEVE_API_SECRET"] = api_secret
+        if bucket is not None:
+            os.environ["PENNSIEVE_API_BUCKET"] = bucket
+        if chunk_size is not None:
+            os.environ["PENNSIEVE_AGENT_CHUNK_SIZE"] = chunk_size
+        if n_workers is not None:
+            os.environ["PENNSIEVE_AGENT_UPLOAD_WORKERS"] = n_workers
+
         self.reauthenticate()
+        if profile_name is not None:
+            self.switch(profile_name)
         self.whoami()
 
     def reauthenticate(self):
@@ -54,8 +85,8 @@ class UserProfile:
         self.api_host = "https://api.pennsieve.io"
         if "api_host" in self.config[response.profile]:
             self.api_host = self.config[response.profile]["api_host"]
-        print(response)
-        print(self.api_host)
+        logging.info(response)
+        logging.info(self.api_host)
         self.credentials = {
             "session_token": response.session_token,
             "organization_id": response.organization_id,
@@ -71,9 +102,9 @@ class UserProfile:
         profile : str
             a name of the profile in config file
         """
+        logging.info("Switching profile to: " + profile)
         request = agent_pb2.SwitchProfileRequest(profile=profile)
         response = self._stub.SwitchProfile(request=request)
-        self.whoami()
         return response
 
     def _parse_config(self, config_file=None):

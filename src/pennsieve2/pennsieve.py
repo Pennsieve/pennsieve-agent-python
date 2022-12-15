@@ -2,15 +2,24 @@
 Copyright (c) 2022 Patryk Orzechowski | Wagenaar Lab | University of Pennsylvania
 """
 
+import grpc
+import logging
+import requests
 import sys
 import traceback
-import grpc
-import requests
 
 from tqdm.auto import tqdm
 from .protos import agent_pb2_grpc, agent_pb2
 from .manifest import Manifest
 from .userProfile import UserProfile
+
+
+
+#Set it up to get info messages:
+#import logging
+#logging.basicConfig()
+#logging.root.setLevel(logging.INFO)
+#logging.basicConfig(level=logging.INFO)
 
 
 class Pennsieve:
@@ -53,7 +62,51 @@ class Pennsieve:
         Unsubscribes from notifications.
     """
 
-    def __init__(self, target="localhost:9000"):
+    def __init__(
+        self,
+        connect=True,
+        target="localhost:9000",
+        api_host=None,
+        api_port=None,
+        api_key=None,
+        api_secret=None,
+        bucket=None,
+        chunk_size=None,
+        n_workers=None,
+        config_file=None,
+        profile_name=None,
+    ):
+        self.headers = {
+            "Content-Type": "application/json",
+            "Accept": "application/json; charset=utf-8",
+        }
+        if connect:
+            self.connect(
+                target=target,
+                api_host=api_host,
+                api_port=api_port,
+                api_key=api_key,
+                api_secret=api_secret,
+                bucket=bucket,
+                chunk_size=chunk_size,
+                n_workers=n_workers,
+                config_file=config_file,
+                profile_name=profile_name,
+            )
+
+    def connect(
+        self,
+        target="localhost:9000",
+        api_host=None,
+        api_port=None,
+        api_key=None,
+        api_secret=None,
+        bucket=None,
+        chunk_size=None,
+        n_workers=None,
+        config_file=None,
+        profile_name=None,
+    ):
         """Initialization of Pennsieve Python agent
 
         Parameters:
@@ -71,10 +124,28 @@ class Pennsieve:
         assert self.stub is not None
 
         self.api = self
+        self.user = UserProfile(
+            self.stub,
+            api_host=api_host,
+            api_port=api_port,
+            api_key=api_key,
+            api_secret=api_secret,
+            bucket=bucket,
+            chunk_size=chunk_size,
+            n_workers=n_workers,
+            config_file=config_file,
+            profile_name=profile_name,
+        )
+        if self.user.credentials is not None:
+            self.headers.update(
+                {
+                    "Authorization": "Bearer " + self.user.credentials["session_token"],
+                    "X-ORGANIZATION-ID": self.user.credentials["organization_id"],
+                }
+            )
         self.manifest = Manifest(self.stub)
-        self.user = UserProfile(self.stub)
         self.datasets = self.get_datasets()
-        self.dataset = None
+        return self
 
     def _get_default_headers(self):
         """Returns default headers for Pennsieve."""
@@ -92,9 +163,9 @@ class Pennsieve:
             user : str
                 Current user credentials.
         """
-        return self.user.whoami()
+        return self.user  # .whoami()
 
-    def get_manifests(self):
+    def list_manifests(self):
         """Returns available manifest in form of a list
 
         Return:
@@ -167,23 +238,22 @@ class Pennsieve:
         if url.startswith("/"):
             url = self.user.api_host + url
         if "headers" not in kwargs:
-            headers = self._get_default_headers()
-        else:
-            headers = kwargs["headers"]
+            kwargs["headers"] = self.headers
         try:
+            logging.debug(str(kwargs))
             if method.lower() == "get":
-                response = requests.get(url=url, headers=headers, **kwargs)
+                response = requests.get(url=url, **kwargs)
             elif method.lower() == "post":
-                response = requests.post(url=url, headers=headers, **kwargs)
+                response = requests.post(url=url, **kwargs)
             elif method.lower() == "put":
-                response = requests.put(url=url, headers=headers, **kwargs)
+                response = requests.put(url=url, **kwargs)
             elif method.lower() == "delete":
-                response = requests.delete(url=url, headers=headers, **kwargs)
+                response = requests.delete(url=url, **kwargs)
             else:
                 raise NotImplementedError("Not implemented")
             response.raise_for_status()
         except requests.exceptions.HTTPError as http_err:
-            print(f"HTTP error occurred: {http_err}")
+            logging.error(f"HTTP error occurred: {http_err}")
         except:  # pylint: disable=W0702
             traceback.print_exc()
 
@@ -203,6 +273,12 @@ class Pennsieve:
         Return:
         --------
         String in JSON format with response from the server.
+
+        Example:
+        --------
+        p=Pennsieve()
+        p.get('https://api.pennsieve.io/discover/datasets', params={'limit':20})
+
         """
         return self.call(url, method="get", **kwargs)
 
@@ -260,7 +336,7 @@ class Pennsieve:
         """
         return self.call(url, method="delete", **kwargs)
 
-    def subscribe(self, subscriber_id):
+    def subscribe(self, subscriber_id, show_progress=False):
         """Creates a subscriber with id that would receive messages from the GO agent.
         Parameters:
         -----------
@@ -280,38 +356,30 @@ class Pennsieve:
             for key in key_list:
                 events_dict[key] = getattr(response, key)
             # decrypt all fields of the message
-            # print(str(d)) #debug
             if events_dict["type"] == 0:  # general info
-                print(str(events_dict["event_info"].details))
+                logging.debug(str(events_dict["event_info"].details))
             elif events_dict["type"] == 1:  # upload status: file_id, total, current, worker_id
                 file_id = events_dict["upload_status"].file_id
                 total = events_dict["upload_status"].total
                 current = events_dict["upload_status"].current
                 worker_id = events_dict["upload_status"].worker_id
 
-                pbar = tqdm(
-                    desc=file_id.split("/")[-1],
-                    total=total,
-                    unit="B",
-                    unit_scale=True,
-                    unit_divisor=1024,
-                    position=0,
-                    leave=True,
-                )
-                #                   for i in tqdm(worker_id, position=0, leave=True):
-                pbar.n = current
-                pbar.update()
-
-    #                pbar = tqdm(
-    #                pbar.update()
-    #                pbar.refresh()
-
-    #            elif events_dict['type'] == 3:  #sync status
-    #                sync_status   = events_dict['sync_status'].status
-    #                total         = events_dict['sync_status'].total
-    #                if sync_status == 2:
-    #                    print(f'Upload complete. Uploaded {total} file(s).')
-    #                    return
+                if show_progress and total > 0:
+                    pbar = tqdm(
+                        desc=file_id.split("/")[-1],
+                        total=total,
+                        unit="B",
+                        unit_scale=True,
+                        unit_divisor=1024,
+                        position=0,
+                        leave=True,
+                    )
+                    pbar.n = current
+                    pbar.update()
+                elif total > 0:
+                    logging.info(
+                        f"Worker: {worker_id} File: {file_id}  Progress: {current}/{total}"
+                    )
 
     def unsubscribe(self, subscriber_id):
         """Unsubscribes a subscriber with identifier id from receiving messages from the GO agent.
@@ -341,7 +409,7 @@ class Pennsieve:
         request = agent_pb2.VersionRequest()
         version_number = self.stub.Version(request=request).version
         log_level = self.stub.Version(request=request).log_level
-        print(f"Pennsieve Agent version: {version_number}, log level: {log_level}")
+        logging.info(f"Pennsieve Agent version: {version_number}, log level: {log_level}")
 
     def stop(self):
         """Stops the agent"""
