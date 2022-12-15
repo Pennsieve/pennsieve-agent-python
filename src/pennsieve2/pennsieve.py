@@ -16,10 +16,10 @@ from .userProfile import UserProfile
 
 
 #Set it up to get info messages:
-#import logging
-#logging.basicConfig()
-#logging.root.setLevel(logging.INFO)
-#logging.basicConfig(level=logging.INFO)
+import logging
+logging.basicConfig()
+logging.root.setLevel(logging.DEBUG)
+logging.basicConfig(level=logging.DEBUG)
 
 
 class Pennsieve:
@@ -409,7 +409,7 @@ class Pennsieve:
         request = agent_pb2.VersionRequest()
         version_number = self.stub.Version(request=request).version
         log_level = self.stub.Version(request=request).log_level
-        logging.info(f"Pennsieve Agent version: {version_number}, log level: {log_level}")
+        print(f"Pennsieve Agent version: {version_number}, log level: {log_level}")
 
     def stop(self):
         """Stops the agent"""

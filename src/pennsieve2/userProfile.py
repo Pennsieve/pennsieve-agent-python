@@ -66,9 +66,9 @@ class UserProfile:
         if n_workers is not None:
             os.environ["PENNSIEVE_AGENT_UPLOAD_WORKERS"] = n_workers
 
-        self.reauthenticate()
         if profile_name is not None:
             self.switch(profile_name)
+        self.reauthenticate()
         self.whoami()
 
     def reauthenticate(self):
