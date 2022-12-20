@@ -23,9 +23,9 @@ To install, run:
     pip install -U pennsieve2
 ```
 
-To install specific dev version, run:
+To install specific previous dev version, run:
 ```bash
-    pip install -U --index-url https://test.pypi.org/simple/ pennsieve2==0.0.5.post6
+    pip install -U pennsieve2==0.1.0.dev2 --extra-index-url https://test.pypi.org/simple
 ```
 
 Contributions
