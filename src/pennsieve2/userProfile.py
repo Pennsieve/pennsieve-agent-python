@@ -66,9 +66,9 @@ class UserProfile:
         if n_workers is not None:
             os.environ["PENNSIEVE_AGENT_UPLOAD_WORKERS"] = n_workers
 
-        self.reauthenticate()
         if profile_name is not None:
             self.switch(profile_name)
+        self.reauthenticate()
         self.whoami()
 
     def reauthenticate(self):
@@ -83,8 +83,8 @@ class UserProfile:
         self.session_token = response.session_token
         self.organization_id = response.organization_id
         self.api_host = "https://api.pennsieve.io"
-        if "api_host" in self.config[response.profile]:
-            self.api_host = self.config[response.profile]["api_host"]
+        if "api_host" in self.config[response.profile.lower()]:
+            self.api_host = self.config[response.profile.lower()]["api_host"]
         logging.info(response)
         logging.info(self.api_host)
         self.credentials = {

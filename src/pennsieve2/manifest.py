@@ -14,15 +14,19 @@ class Manifest:
     --------
     create(base_path):
         creates a new manifest with file(s) located in base_path
-    add(manifest_id, base_path, targetBasePath=''):
+    add(manifest_id, base_path, targetBasePath='', recursive=True, files=None):
         adds a file(s) from base_path to a manifest with manifest_id
         in order to store them at targetBasePath on the server
-    remove(manifest_id, file_id):
+    remove_file(manifest_id, file_id):
         removes a file with file_id from manifest with manifest_id
     delete(manifest_id):
         deletes a manifest with manifest_id
-    list():
+    list_manifests():
         lists all available manifests
+    get_manifest(manifest_id=None):
+        gets the most recent manifest, or the manifest specified by manifest_id
+    set_manifest(manifest_id=None):
+        sets the manifest specified by manifest_id
     list_files(manifest_id, offset, limit):
         lists files for manifest with manifest_id, starting from the number defined by offset
     upload(manifest_id):
@@ -64,7 +68,6 @@ class Manifest:
         response : str
             A response from the server
         """
-
         request = agent_pb2.CreateManifestRequest(
             base_path=os.path.abspath(base_path),
             target_base_path=target_base_path,
@@ -72,7 +75,7 @@ class Manifest:
             files=files,
         )
         manifests = self._stub.CreateManifest(request=request)
-        self.set_manifest(manifests.id)
+        self.set_manifest(manifests.manifest_id)
         return manifests
 
     def add(
@@ -100,7 +103,8 @@ class Manifest:
         response : str
             A response from the server
         """
-
+        if self.manifest is None:
+            return self.create(base_path=base_path, target_base_path=target_base_path, recursive=recursive, files=files)
         request = agent_pb2.AddToManifestRequest(
             manifest_id=self.get_manifest(manifest_id).id,
             base_path=os.path.abspath(base_path),
@@ -151,7 +155,7 @@ class Manifest:
         request = agent_pb2.DeleteManifestRequest(manifest_id=self.get_manifest(manifest_id).id)
         return self._stub.DeleteManifest(request=request)
 
-    def list_manifests(self, manifest_id=0):
+    def list_manifests(self):
         """Lists all available manifests.
 
         Parameters:
@@ -185,12 +189,10 @@ class Manifest:
                 return manifests[-1]
         else:
             self.manifest = None
+        return self.manifest
 
     def set_manifest(self, manifest_id=None):
         """Sets current manifest"""
-        #        manifests = self.list_manifests()
-        #        assert len(manifests) > 0, 'Please create a manifest by calling p.manifest.create()'
-
         manifests = self.list_manifests()
         assert len(manifests) > 0, "Please create a manifest by calling p.manifest.create()"
         if manifest_id is None:

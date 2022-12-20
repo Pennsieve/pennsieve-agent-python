@@ -18,8 +18,8 @@ from .userProfile import UserProfile
 #Set it up to get info messages:
 #import logging
 #logging.basicConfig()
-#logging.root.setLevel(logging.INFO)
-#logging.basicConfig(level=logging.INFO)
+#logging.root.setLevel(logging.DEBUG)
+#logging.basicConfig(level=logging.DEBUG)
 
 
 class Pennsieve:
@@ -38,14 +38,20 @@ class Pennsieve:
 
     Methods:
     --------
+    __init__()
+        sets headers for GET/POST requests + by default connects to the Pennsieve Agent
+    connect(...)
+        establishes a connection to the Pennsieve Agent
     get_user()
         Returns current user.
-    get_manifests()
-        Returns available manifest in form of a list.
-    get_datasets()
+    list_manifests()
+        Returns all available manifest in form of a list.
+    get_datasets(dataset_id)
         Returns available datasets in form of a list.
-    use_dataset(dataset_id)
+    set_dataset(dataset_id)
         specifies which dataset on the server will be used
+    use_dataset(dataset_id)
+        same as set_dataset(dataset_id)
     call(url, method, **kwargs)
         Invokes get/post/put/delete on the server endpoint defined in url.
     get(url, **kwargs)
@@ -60,6 +66,11 @@ class Pennsieve:
         Subscribes for notifications.
     unsubscribe(id)
         Unsubscribes from notifications.
+    agent_version()
+        Returns information on Pennsieve Agent version
+    stop()
+        Stops the Pennsieve Agent
+
     """
 
     def __init__(
@@ -143,8 +154,9 @@ class Pennsieve:
                     "X-ORGANIZATION-ID": self.user.credentials["organization_id"],
                 }
             )
-        self.manifest = Manifest(self.stub)
         self.datasets = self.get_datasets()
+        self.manifest = Manifest(self.stub)
+        print("Please set the dataset with use_dataset([name])")
         return self
 
     def _get_default_headers(self):
@@ -199,6 +211,9 @@ class Pennsieve:
             )
         return self.datasets
 
+    def set_dataset(self, dataset_id):
+        return self.use_dataset(dataset_id)
+
     def use_dataset(self, dataset_id):
         """Specifies which dataset on the server will be used
 
@@ -207,8 +222,11 @@ class Pennsieve:
             dataset_id : string
                 dataset name or AWS-like dataset id to which the changes will be applied
         """
+        self.get_datasets()
         if self.datasets and dataset_id in self.datasets.keys():
             self.dataset = self.datasets[dataset_id]
+        elif dataset_id in self.datasets.values():
+            self.dataset = dataset_id
         assert self.dataset is not None
         request = agent_pb2.UseDatasetRequest(dataset_id=self.dataset)
         return self.stub.UseDataset(request=request)
@@ -355,14 +373,19 @@ class Pennsieve:
             events_dict = {}
             for key in key_list:
                 events_dict[key] = getattr(response, key)
+
+            logging.debug(str(events_dict))
             # decrypt all fields of the message
+
             if events_dict["type"] == 0:  # general info
-                logging.debug(str(events_dict["event_info"].details))
+                logging.info(str(events_dict["event_info"].details))
             elif events_dict["type"] == 1:  # upload status: file_id, total, current, worker_id
+                logging.debug("UPLOAD STATUS: " + str(events_dict["upload_status"]))
                 file_id = events_dict["upload_status"].file_id
                 total = events_dict["upload_status"].total
                 current = events_dict["upload_status"].current
                 worker_id = events_dict["upload_status"].worker_id
+                status = events_dict["upload_status"].status
 
                 if show_progress and total > 0:
                     pbar = tqdm(
@@ -380,6 +403,8 @@ class Pennsieve:
                     logging.info(
                         f"Worker: {worker_id} File: {file_id}  Progress: {current}/{total}"
                     )
+                if status == 2: #status: COMPLETE
+                    logging.info("Upload completed.")
 
     def unsubscribe(self, subscriber_id):
         """Unsubscribes a subscriber with identifier id from receiving messages from the GO agent.
@@ -409,7 +434,7 @@ class Pennsieve:
         request = agent_pb2.VersionRequest()
         version_number = self.stub.Version(request=request).version
         log_level = self.stub.Version(request=request).log_level
-        logging.info(f"Pennsieve Agent version: {version_number}, log level: {log_level}")
+        print(f"Pennsieve Agent version: {version_number}, log level: {log_level}")
 
     def stop(self):
         """Stops the agent"""
