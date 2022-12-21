@@ -3,6 +3,7 @@ Copyright (c) 2022 Patryk Orzechowski | Wagenaar Lab | University of Pennsylvani
 """
 
 import os
+
 from .protos import agent_pb2
 
 
@@ -104,7 +105,12 @@ class Manifest:
             A response from the server
         """
         if self.manifest is None:
-            return self.create(base_path=base_path, target_base_path=target_base_path, recursive=recursive, files=files)
+            return self.create(
+                base_path=base_path,
+                target_base_path=target_base_path,
+                recursive=recursive,
+                files=files,
+            )
         request = agent_pb2.AddToManifestRequest(
             manifest_id=self.get_manifest(manifest_id).id,
             base_path=os.path.abspath(base_path),

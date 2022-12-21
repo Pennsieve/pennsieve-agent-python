@@ -2,24 +2,23 @@
 Copyright (c) 2022 Patryk Orzechowski | Wagenaar Lab | University of Pennsylvania
 """
 
-import grpc
 import logging
-import requests
 import sys
 import traceback
 
+import grpc
+import requests
 from tqdm.auto import tqdm
-from .protos import agent_pb2_grpc, agent_pb2
+
 from .manifest import Manifest
+from .protos import agent_pb2, agent_pb2_grpc
 from .userProfile import UserProfile
 
-
-
-#Set it up to get info messages:
-#import logging
-#logging.basicConfig()
-#logging.root.setLevel(logging.DEBUG)
-#logging.basicConfig(level=logging.DEBUG)
+# Set it up to get info messages:
+# import logging
+# logging.basicConfig()
+# logging.root.setLevel(logging.DEBUG)
+# logging.basicConfig(level=logging.DEBUG)
 
 
 class Pennsieve:
@@ -124,7 +123,20 @@ class Pennsieve:
         -----------
         target : str
             a socket with running GO agent
+        api_host : str
+            a host to connect to
+        api_port : str
+            a port to connect to
+        api_key, api_secret, bucket, chunk_size, n_workers : str
+            currently not used
+        config file : str
+            a path to ~/.pennsieve/config.ini file
+        profile name : str
+            a profile name to use from config file
+
         """
+        if api_host is not None and api_port is not None:
+            target = f"{api_host}:{api_port}"
         channel = grpc.insecure_channel(target)
         try:
             grpc.channel_ready_future(channel).result(timeout=100)
@@ -354,13 +366,16 @@ class Pennsieve:
         """
         return self.call(url, method="delete", **kwargs)
 
-    def subscribe(self, subscriber_id, show_progress=False):
+    def subscribe(self, subscriber_id, show_progress=False, callback=None):
         """Creates a subscriber with id that would receive messages from the GO agent.
         Parameters:
         -----------
-        id : int
+        subscriber_id : int
             an identifier of a subscriber
-
+        show_progress : bool
+            switches on/off progress bars from tqdm
+        callback : function
+            a function to capture events from Pennsieve Agent
         Return:
         -------
         response : str
@@ -373,6 +388,8 @@ class Pennsieve:
             events_dict = {}
             for key in key_list:
                 events_dict[key] = getattr(response, key)
+            if callback is not None:
+                callback(events_dict)
 
             logging.debug(str(events_dict))
             # decrypt all fields of the message
@@ -403,14 +420,14 @@ class Pennsieve:
                     logging.info(
                         f"Worker: {worker_id} File: {file_id}  Progress: {current}/{total}"
                     )
-                if status == 2: #status: COMPLETE
+                if status == 2:  # status: COMPLETE
                     logging.info("Upload completed.")
 
     def unsubscribe(self, subscriber_id):
         """Unsubscribes a subscriber with identifier id from receiving messages from the GO agent.
         Parameters:
         -----------
-        id : int
+        subscriber_id : int
             an identifier of a subscriber
 
         Return:

@@ -2,10 +2,11 @@
 Copyright (c) 2022 Patryk Orzechowski | Wagenaar Lab | University of Pennsylvania
 """
 
-import os
 import configparser
 import logging
+import os
 from pathlib import Path
+
 from .protos import agent_pb2
 
 
@@ -49,6 +50,7 @@ class UserProfile:
         profile_name=None,
     ):
         self._stub = stub
+        # overwriting config with environmental variables
         if api_host is None or api_key is None or api_secret is None:
             self._parse_config(config_file)
         if api_host is not None:
