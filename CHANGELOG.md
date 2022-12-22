@@ -1,3 +1,8 @@
+v0.1.1
+======
+ * Fixing imports
+ * Callback for subscribe() events
+
 v0.1.0
 ======
  * Improved manifest management (by default the last manifest is used)
