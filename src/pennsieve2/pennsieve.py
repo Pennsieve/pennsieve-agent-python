@@ -12,7 +12,10 @@ from tqdm.auto import tqdm
 
 from .manifest import Manifest
 from .protos import agent_pb2, agent_pb2_grpc
+from .protos.agent_pb2_grpc import AgentStub
+from .session import APISessionProvider, APISession
 from .userProfile import UserProfile
+
 
 # Set it up to get info messages:
 # import logging
@@ -73,49 +76,32 @@ class Pennsieve:
     """
 
     def __init__(
-        self,
-        connect=True,
-        target="localhost:9000",
-        api_host=None,
-        api_port=None,
-        api_key=None,
-        api_secret=None,
-        bucket=None,
-        chunk_size=None,
-        n_workers=None,
-        config_file=None,
-        profile_name=None,
+            self,
+            connect=True,
+            target="localhost:9000",
+            profile_name=None,
     ):
         self.headers = {
             "Content-Type": "application/json",
             "Accept": "application/json; charset=utf-8",
         }
+        self.stub = None
+        self.api = self
+        self.user = None
+        self.datasets = None
+        self.dataset = None
+        self.manifest = None
+        self.api_session_provider = None
         if connect:
             self.connect(
                 target=target,
-                api_host=api_host,
-                api_port=api_port,
-                api_key=api_key,
-                api_secret=api_secret,
-                bucket=bucket,
-                chunk_size=chunk_size,
-                n_workers=n_workers,
-                config_file=config_file,
                 profile_name=profile_name,
             )
 
     def connect(
-        self,
-        target="localhost:9000",
-        api_host=None,
-        api_port=None,
-        api_key=None,
-        api_secret=None,
-        bucket=None,
-        chunk_size=None,
-        n_workers=None,
-        config_file=None,
-        profile_name=None,
+            self,
+            target="localhost:9000",
+            profile_name=None,
     ):
         """Initialization of Pennsieve Python agent
 
@@ -123,20 +109,10 @@ class Pennsieve:
         -----------
         target : str
             a socket with running GO agent
-        api_host : str
-            a host to connect to
-        api_port : str
-            a port to connect to
-        api_key, api_secret, bucket, chunk_size, n_workers : str
-            currently not used
-        config file : str
-            a path to ~/.pennsieve/config.ini file
         profile name : str
             a profile name to use from config file
 
         """
-        if api_host is not None and api_port is not None:
-            target = f"{api_host}:{api_port}"
         channel = grpc.insecure_channel(target)
         try:
             grpc.channel_ready_future(channel).result(timeout=100)
@@ -145,27 +121,11 @@ class Pennsieve:
         else:
             self.stub = agent_pb2_grpc.AgentStub(channel)
         assert self.stub is not None
-
-        self.api = self
+        self.api_session_provider = AgentAPISessionProvider(self.stub)
         self.user = UserProfile(
             self.stub,
-            api_host=api_host,
-            api_port=api_port,
-            api_key=api_key,
-            api_secret=api_secret,
-            bucket=bucket,
-            chunk_size=chunk_size,
-            n_workers=n_workers,
-            config_file=config_file,
             profile_name=profile_name,
         )
-        if self.user.credentials is not None:
-            self.headers.update(
-                {
-                    "Authorization": "Bearer " + self.user.credentials["session_token"],
-                    "X-ORGANIZATION-ID": self.user.credentials["organization_id"],
-                }
-            )
         self.datasets = self.get_datasets()
         self.manifest = Manifest(self.stub)
         print("Please set the dataset with use_dataset([name])")
@@ -173,11 +133,12 @@ class Pennsieve:
 
     def _get_default_headers(self):
         """Returns default headers for Pennsieve."""
+        api_session: APISession = self.api_session_provider.get_api_session()
         return {
             "Content-Type": "application/json",
             "Accept": "application/json; charset=utf-8",
-            "Authorization": "Bearer " + self.user.credentials["session_token"],
-            "X-ORGANIZATION-ID": self.user.credentials["organization_id"],
+            "Authorization": "Bearer " + api_session.token,
+            "X-ORGANIZATION-ID": api_session.organization_node_id,
         }
 
     def get_user(self):
@@ -188,6 +149,11 @@ class Pennsieve:
                 Current user credentials.
         """
         return self.user  # .whoami()
+
+    def switch(self, profile_name):
+        self.datasets = None
+        self.dataset = None
+        self.user.switch(profile_name)
 
     def list_manifests(self):
         """Returns available manifest in form of a list
@@ -207,20 +173,19 @@ class Pennsieve:
             datasets : dict
                 a dictionary with user-defined names as keys and AWS ids as values
         """
-
-        response = self.get("/datasets")
-        self.dataset = None
-        if isinstance(response, list) and len(response) > 0:
-            self.datasets = dict(
-                map(
-                    lambda x: (x["content"]["name"], x["content"]["id"])
-                    if "content" in x.keys()
-                    and "name" in x["content"].keys()
-                    and "id" in x["content"].keys()
-                    else None,
-                    response,
+        if self.datasets is None:
+            response = self.get("/datasets")
+            if isinstance(response, list) and len(response) > 0:
+                self.datasets = dict(
+                    map(
+                        lambda x: (x["content"]["name"], x["content"]["id"])
+                        if "content" in x.keys()
+                           and "name" in x["content"].keys()
+                           and "id" in x["content"].keys()
+                        else None,
+                        response,
+                    )
                 )
-            )
         return self.datasets
 
     def set_dataset(self, dataset_id):
@@ -266,9 +231,14 @@ class Pennsieve:
 
         """
         if url.startswith("/"):
-            url = self.user.api_host + url
-        if "headers" not in kwargs:
-            kwargs["headers"] = self.headers
+            url = self.user.current_user.api_host + url
+
+        headers = self._get_default_headers()
+        # Let user add additional headers or override
+        if "headers" in kwargs:
+            headers.update(kwargs["headers"])
+        kwargs["headers"] = headers
+
         try:
             logging.debug(str(kwargs))
             if method.lower() == "get":
@@ -457,3 +427,17 @@ class Pennsieve:
         """Stops the agent"""
         request = agent_pb2.StopRequest()
         return self.stub.Stop(request=request)
+
+
+class AgentAPISessionProvider(APISessionProvider):
+
+    def __init__(self, stub: AgentStub):
+        super().__init__()
+        self._stub = stub
+
+    def new_api_session(self) -> APISession:
+        request = agent_pb2.ReAuthenticateRequest()
+        response = self._stub.ReAuthenticate(request=request)
+        return APISession(token=response.session_token,
+                          expiration=response.token_expire,
+                          organization_node_id=response.organization_id)
