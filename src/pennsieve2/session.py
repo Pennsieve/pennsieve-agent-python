@@ -66,15 +66,18 @@ class APISessionProvider(ABC):
 
     @abstractmethod
     def __init__(self):
-        self.api_session = None
+        self._api_session = None
 
     def get_api_session(self) -> APISession:
         """Returns a non-expired APISession
         """
-        if self.api_session is None or self.api_session.is_almost_expired():
-            self.api_session = self.new_api_session()
-        return self.api_session
+        if self._api_session is None or self._api_session.is_almost_expired():
+            self._api_session = self.new_api_session()
+        return self._api_session
 
     @abstractmethod
     def new_api_session(self) -> APISession:
         pass
+
+    def clear_session(self):
+        self._api_session = None

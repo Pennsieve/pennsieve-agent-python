@@ -68,5 +68,9 @@ class UserProfile:
             a name of the profile in config file
         """
         request = agent_pb2.SwitchProfileRequest(profile=profile)
-        self.current_user = self._stub.SwitchProfile(request=request)
+        switch_profile_response = self._stub.SwitchProfile(request=request)
+        logger.debug(f'switch profile response: {switch_profile_response}')
+        # SwitchProfile version of UserResponse does not include api_host for new profile.
+        self.current_user = self.whoami()
+        logger.debug(f"current_user switched to: {self.current_user}")
         logger.info(f"Switched profile to: {self.current_user.profile}")

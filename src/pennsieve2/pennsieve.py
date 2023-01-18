@@ -35,8 +35,6 @@ class Pennsieve:
         a manifest with files to be uploaded
     user : object
         class managing user credentials
-    datasets : dict
-        a dictionary with all the datasets the user has access to
 
     Methods:
     --------
@@ -49,7 +47,7 @@ class Pennsieve:
     list_manifests()
         Returns all available manifest in form of a list.
     get_datasets(dataset_id)
-        Returns available datasets in form of a list.
+        Returns available datasets in form of a dict.
     set_dataset(dataset_id)
         specifies which dataset on the server will be used
     use_dataset(dataset_id)
@@ -88,7 +86,7 @@ class Pennsieve:
         self.stub = None
         self.api = self
         self.user = None
-        self.datasets = None
+        self._datasets = None
         self.dataset = None
         self.manifest = None
         self.api_session_provider = None
@@ -126,7 +124,6 @@ class Pennsieve:
             self.stub,
             profile_name=profile_name,
         )
-        self.datasets = self.get_datasets()
         self.manifest = Manifest(self.stub)
         print("Please set the dataset with use_dataset([name])")
         return self
@@ -151,8 +148,10 @@ class Pennsieve:
         return self.user  # .whoami()
 
     def switch(self, profile_name):
-        self.datasets = None
+        self._datasets = None
         self.dataset = None
+        self.api_session_provider.clear_session()
+        self.manifest.manifest = None
         self.user.switch(profile_name)
 
     def list_manifests(self):
@@ -173,10 +172,10 @@ class Pennsieve:
             datasets : dict
                 a dictionary with user-defined names as keys and AWS ids as values
         """
-        if self.datasets is None:
+        if self._datasets is None:
             response = self.get("/datasets")
             if isinstance(response, list) and len(response) > 0:
-                self.datasets = dict(
+                self._datasets = dict(
                     map(
                         lambda x: (x["content"]["name"], x["content"]["id"])
                         if "content" in x.keys()
@@ -186,7 +185,7 @@ class Pennsieve:
                         response,
                     )
                 )
-        return self.datasets
+        return self._datasets
 
     def set_dataset(self, dataset_id):
         return self.use_dataset(dataset_id)
@@ -200,9 +199,9 @@ class Pennsieve:
                 dataset name or AWS-like dataset id to which the changes will be applied
         """
         self.get_datasets()
-        if self.datasets and dataset_id in self.datasets.keys():
-            self.dataset = self.datasets[dataset_id]
-        elif dataset_id in self.datasets.values():
+        if self._datasets and dataset_id in self._datasets.keys():
+            self.dataset = self._datasets[dataset_id]
+        elif dataset_id in self._datasets.values():
             self.dataset = dataset_id
         assert self.dataset is not None
         request = agent_pb2.UseDatasetRequest(dataset_id=self.dataset)
@@ -252,12 +251,11 @@ class Pennsieve:
             else:
                 raise NotImplementedError("Not implemented")
             response.raise_for_status()
+            return response.json()
         except requests.exceptions.HTTPError as http_err:
             logging.error(f"HTTP error occurred: {http_err}")
         except:  # pylint: disable=W0702
             traceback.print_exc()
-
-        return response.json()  # content.decode('utf-8'))
 
     def get(self, url, **kwargs):
         """Invokes GET endpoint on a server. Passing server name in url is optional.
