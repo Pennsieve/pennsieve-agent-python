@@ -47,8 +47,13 @@ class PythonAPISessionProvider(APISessionProvider):
 
         return api_session
 
+    def clear_session(self, new_api_host=None):
+        super().clear_session()
+        if new_api_host is not None:
+            self.api_host = new_api_host
+            self.cognito_config = None
+
     def close(self):
-        self._http_session.close()
         self.cognito_config = None
 
     def _initiate_auth(self):

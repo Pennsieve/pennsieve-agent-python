@@ -321,3 +321,6 @@ class AgentAPISessionProvider(APISessionProvider):
         return APISession(token=response.session_token,
                           expiration=response.token_expire,
                           organization_node_id=response.organization_id)
+
+    def close(self):
+        pass

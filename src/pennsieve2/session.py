@@ -79,5 +79,9 @@ class APISessionProvider(ABC):
     def new_api_session(self) -> APISession:
         pass
 
-    def clear_session(self):
+    def clear_session(self, new_api_host=None):
         self._api_session = None
+
+    @abstractmethod
+    def close(self):
+        pass

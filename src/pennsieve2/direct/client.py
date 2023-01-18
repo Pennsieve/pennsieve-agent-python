@@ -116,7 +116,7 @@ class HttpApiClient(AbstractClient):
     def reset_base_urls(self, api_host, api2_host):
         self.api_host = api_host
         self.api2_host = api2_host
-        self._api_session_provider.clear_session()
+        self._api_session_provider.clear_session(new_api_host=api_host)
 
     def close(self):
         self._http_session.close()
