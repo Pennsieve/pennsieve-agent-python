@@ -12,6 +12,8 @@ from tqdm.auto import tqdm
 from .direct.client import AbstractClient, HttpApiClient
 from .manifest import Manifest
 from .protos import agent_pb2, agent_pb2_grpc
+from .protos.agent_pb2_grpc import AgentStub
+from .session import APISessionProvider, APISession
 from .userProfile import UserProfile
 
 
@@ -121,9 +123,9 @@ class Pennsieve(AbstractClient):
             self.stub,
             profile_name=profile_name,
         )
-        self.http_api = HttpApiClient.for_agent(api_host=self.user.current_user.api_host,
-                                                api2_host=self.user.current_user.api2_host,
-                                                stub=self.stub)
+        self.http_api = self.build_http_api_client(api_host=self.user.current_user.api_host,
+                                                   api2_host=self.user.current_user.api2_host,
+                                                   stub=self.stub)
 
         self.manifest = Manifest(self.stub)
         print("Please set the dataset with use_dataset([name])")
@@ -143,7 +145,7 @@ class Pennsieve(AbstractClient):
         self.dataset = None
         self.manifest.manifest = None
         self.user.switch(profile_name)
-        self.http_api.set_base_urls(self.user.current_user.api_host, self.user.current_user.api2_host)
+        self.http_api.reset_base_urls(self.user.current_user.api_host, self.user.current_user.api2_host)
 
     def list_manifests(self):
         """Returns available manifest in form of a list
@@ -301,3 +303,21 @@ class Pennsieve(AbstractClient):
         """Stops the agent"""
         request = agent_pb2.StopRequest()
         return self.stub.Stop(request=request)
+
+    @staticmethod
+    def build_http_api_client(api_host, api2_host, stub: AgentStub):
+        return HttpApiClient(api_host, api2_host, AgentAPISessionProvider(stub))
+
+
+class AgentAPISessionProvider(APISessionProvider):
+
+    def __init__(self, stub: AgentStub):
+        super().__init__()
+        self._stub = stub
+
+    def new_api_session(self) -> APISession:
+        request = agent_pb2.ReAuthenticateRequest()
+        response = self._stub.ReAuthenticate(request=request)
+        return APISession(token=response.session_token,
+                          expiration=response.token_expire,
+                          organization_node_id=response.organization_id)

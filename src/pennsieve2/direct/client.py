@@ -4,8 +4,7 @@ from abc import ABC, abstractmethod
 import requests
 import traceback
 
-from pennsieve2.protos.agent_pb2_grpc import AgentStub
-from pennsieve2.session import APISessionProvider, AgentAPISessionProvider, APISession
+from pennsieve2.session import APISessionProvider, APISession
 
 logger = logging.getLogger(__name__)
 
@@ -95,10 +94,6 @@ class AbstractClient(ABC):
 
 class HttpApiClient(AbstractClient):
 
-    @classmethod
-    def for_agent(cls, api_host, api2_host, stub: AgentStub):
-        return cls(api_host, api2_host, AgentAPISessionProvider(stub))
-
     def __init__(self, api_host: str, api2_host: str, api_session_provider: APISessionProvider,
                  http_session: requests.Session = None):
         self.api_host = api_host
@@ -118,10 +113,13 @@ class HttpApiClient(AbstractClient):
     def delete(self, url, **kwargs):
         return self._call(url, method="delete", **kwargs)
 
-    def set_base_urls(self, api_host, api2_host):
+    def reset_base_urls(self, api_host, api2_host):
         self.api_host = api_host
         self.api2_host = api2_host
         self._api_session_provider.clear_session()
+
+    def close(self):
+        self._http_session.close()
 
     def _get_default_headers(self):
         """Returns default headers for Pennsieve."""

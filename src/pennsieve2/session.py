@@ -2,9 +2,6 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 import datetime
 
-from pennsieve2.protos import agent_pb2
-from pennsieve2.protos.agent_pb2_grpc import AgentStub
-
 
 class APISession:
     """Holds session info for Pennsieve API
@@ -84,17 +81,3 @@ class APISessionProvider(ABC):
 
     def clear_session(self):
         self._api_session = None
-
-
-class AgentAPISessionProvider(APISessionProvider):
-
-    def __init__(self, stub: AgentStub):
-        super().__init__()
-        self._stub = stub
-
-    def new_api_session(self) -> APISession:
-        request = agent_pb2.ReAuthenticateRequest()
-        response = self._stub.ReAuthenticate(request=request)
-        return APISession(token=response.session_token,
-                          expiration=response.token_expire,
-                          organization_node_id=response.organization_id)
