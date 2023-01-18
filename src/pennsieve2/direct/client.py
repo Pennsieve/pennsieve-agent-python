@@ -114,9 +114,12 @@ class HttpApiClient(AbstractClient):
         return self._call(url, method="delete", **kwargs)
 
     def reset_base_urls(self, api_host, api2_host):
-        self.api_host = api_host
-        self.api2_host = api2_host
-        self._api_session_provider.clear_session(new_api_host=api_host)
+        if self._api_session_provider.is_switchable():
+            self.api_host = api_host
+            self.api2_host = api2_host
+            self._api_session_provider.clear_session()
+        else:
+            raise RuntimeError(f'cannot switch profile of APISessionProvider {type(self._api_session_provider)}')
 
     def close(self):
         self._http_session.close()

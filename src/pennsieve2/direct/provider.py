@@ -47,11 +47,8 @@ class PythonAPISessionProvider(APISessionProvider):
 
         return api_session
 
-    def clear_session(self, new_api_host=None):
-        super().clear_session()
-        if new_api_host is not None:
-            self.api_host = new_api_host
-            self.cognito_config = None
+    def is_switchable(self):
+        return False
 
     def close(self):
         self.cognito_config = None
