@@ -47,8 +47,22 @@ class PythonAPISessionProvider(APISessionProvider):
 
         return api_session
 
-    def is_switchable(self):
-        return False
+    def clear_session(self, options: dict = None):
+        """
+        Clears the session and optionally resets the user's parameters.
+        :param options: an optional dict containing values for 'api_host', 'api_key', and 'api_secret'
+        :return:
+        """
+        super().clear_session(options)
+        if options:
+            if 'api_host' in options:
+                self.api_host = options['api_host']
+            if 'api_key' in options:
+                self.api_key = options['api_key']
+            if 'api_secret' in options:
+                self.api_secret = options['api_secret']
+            self.cognito_config = None
+            self.cognito_idp_client = None
 
     def close(self):
         self.cognito_config = None

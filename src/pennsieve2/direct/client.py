@@ -113,16 +113,25 @@ class HttpApiClient(AbstractClient):
     def delete(self, url, **kwargs):
         return self._call(url, method="delete", **kwargs)
 
-    def reset_base_urls(self, api_host, api2_host):
-        if self._api_session_provider.is_switchable():
-            self.api_host = api_host
-            self.api2_host = api2_host
-            self._api_session_provider.clear_session()
-        else:
-            raise RuntimeError(f'cannot switch profile of APISessionProvider {type(self._api_session_provider)}')
+    def reset_base_urls(self, api_host: str, api2_host: str, options: dict = None):
+        """
+        Resets the base urls of this client and clears the session provider. Optionally, passes the options dict to
+        the underlying session provider (along with api_host) in case that provider
+        needs additional information to reset for a new user/profile.
+        :param api_host:
+        :param api2_host:
+        :param options:
+        :return:
+        """
+        self.api_host = api_host
+        self.api2_host = api2_host
+        api_host_option = {'api_host': api_host}
+        options = dict(options, **api_host_option) if options else api_host_option
+        self._api_session_provider.clear_session(options)
 
     def close(self):
         self._http_session.close()
+        self._api_session_provider.close()
 
     def _get_default_headers(self):
         """Returns default headers for Pennsieve."""

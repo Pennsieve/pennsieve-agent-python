@@ -322,8 +322,5 @@ class AgentAPISessionProvider(APISessionProvider):
                           expiration=response.token_expire,
                           organization_node_id=response.organization_id)
 
-    def is_switchable(self):
-        return True
-
     def close(self):
         pass

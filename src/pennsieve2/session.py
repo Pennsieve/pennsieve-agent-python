@@ -79,12 +79,8 @@ class APISessionProvider(ABC):
     def new_api_session(self) -> APISession:
         pass
 
-    def clear_session(self):
+    def clear_session(self, options: dict = None):
         self._api_session = None
-
-    @abstractmethod
-    def is_switchable(self):
-        pass
 
     @abstractmethod
     def close(self):
