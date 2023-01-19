@@ -82,6 +82,5 @@ class APISessionProvider(ABC):
     def clear_session(self, options: dict = None):
         self._api_session = None
 
-    @abstractmethod
     def close(self):
         pass

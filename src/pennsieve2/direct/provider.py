@@ -65,7 +65,9 @@ class PythonAPISessionProvider(APISessionProvider):
             self.cognito_idp_client = None
 
     def close(self):
+        super().close()
         self.cognito_config = None
+        self.cognito_idp_client = None
 
     def _initiate_auth(self):
         if self.cognito_idp_client is None:

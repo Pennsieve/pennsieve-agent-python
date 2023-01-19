@@ -79,10 +79,6 @@ class Pennsieve(AbstractClient):
             target="localhost:9000",
             profile_name=None,
     ):
-        self.headers = {
-            "Content-Type": "application/json",
-            "Accept": "application/json; charset=utf-8",
-        }
         self.stub = None
         self.api = self
         self.user = None
@@ -321,6 +317,3 @@ class AgentAPISessionProvider(APISessionProvider):
         return APISession(token=response.session_token,
                           expiration=response.token_expire,
                           organization_node_id=response.organization_id)
-
-    def close(self):
-        pass
