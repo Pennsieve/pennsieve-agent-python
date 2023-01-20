@@ -56,3 +56,12 @@ Documentation
 
 Client and command line documentation can be found on [Pennsieve’s documentation website](https://docs.pennsieve.io/docs/uploading-files-programmatically).
 
+Development
+-------------
+
+This project uses [Poetry](https://python-poetry.org/) to manage dependencies in `pyproject.toml`. To set up a development environment run
+```bash
+  poetry install
+```
+from the root directory to install the projects dependencies. Some IDEs (IntelliJ Idea for example) can create a Poetry Python
+environment as well.
