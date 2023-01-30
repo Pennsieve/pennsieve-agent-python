@@ -6,7 +6,7 @@ readme = "README.md"
 license = "Apache-2.0"
 keywords = ["data science", "datasets"]
 authors = ["Patryk Orzechowski <patryk@upenn.edu>"]
-classifiers=[
+classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
     "Intended Audience :: Information Technology",
@@ -25,27 +25,20 @@ classifiers=[
 
 
 [tool.poetry.dependencies]
-black = {version = ">=20.8b1", optional = true}
-codecov = {version = ">=2.0.8", optional = true}
-pytest = {version = ">=4.4", optional = true}
 python = ">=3.8,<4.0"
-grpcio = {version = ">=1.50"}
-grpcio_tools = {version = ">=1.50"}
-tqdm = {version = ">=4.64"}
-protobuf = {version= ">=3.12.0"}
-requests = {version= ">=2.28.0"}
+grpcio = { version = "^1.51" }
+grpcio_tools = { version = "^1.51" }
+tqdm = { version = "^4.64" }
+protobuf = { version = "^4.21" }
+requests = { version = "^2.28" }
+pyjwt = { version = "^2.6" }
+boto3 = { version = "^1.26" }
 
 [tool.poetry.dev-dependencies]
-black = {version = ">=20.8b1", optional = true}
-codecov = {version = ">=2.0.8", optional = true}
-pytest = {version = ">=4.4", optional = true}
-python = ">=3.8,<4.0"
-grpcio = {version = ">=1.50"}
-grpcio_tools = {version = ">=1.50"}
-tqdm = {version = ">=4.64"}
-protobuf = {version= ">=3.12.0"}
-requests = {version= ">=2.28.0"}
-
+black = { version = "^20.8b1" }
+codecov = { version = "^2.0.8" }
+pytest = { version = "^7.2" }
+build = { version = "^0.10"}
 
 [tool.poetry.extras]
 dev = ["black", "pytest", "flake8", "codecov"]
@@ -82,8 +75,10 @@ requires = [
     "setuptools",
     "protobuf",
     "grpcio",
-    "tqdm", 
-    "requests"
+    "tqdm",
+    "requests",
+    "pyjwt",
+    "boto3"
 ]
 build-backend = "poetry.core.masonry.api"
 
@@ -97,5 +92,5 @@ testpaths = [
     "tests",
 ]
 pythonpath = [
-  ".", "src",
+    ".", "src",
 ]

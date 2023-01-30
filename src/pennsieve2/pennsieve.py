@@ -1,18 +1,22 @@
 """
 Copyright (c) 2022 Patryk Orzechowski | Wagenaar Lab | University of Pennsylvania
 """
+from __future__ import annotations
 
 import logging
 import sys
-import traceback
 
 import grpc
-import requests
 from tqdm.auto import tqdm
 
+from .direct import API_HOST_DEFAULT, API2_HOST_DEFAULT
+from .direct.client import AbstractClient, HttpApiClient, BaseHttpApiClient
 from .manifest import Manifest
 from .protos import agent_pb2, agent_pb2_grpc
+from .protos.agent_pb2_grpc import AgentStub
+from .session import APISessionProvider, APISession
 from .userProfile import UserProfile
+
 
 # Set it up to get info messages:
 # import logging
@@ -21,7 +25,7 @@ from .userProfile import UserProfile
 # logging.basicConfig(level=logging.DEBUG)
 
 
-class Pennsieve:
+class Pennsieve(AbstractClient):
     """The main class of Python Pennsieve agent
 
     Attributes:
@@ -32,8 +36,6 @@ class Pennsieve:
         a manifest with files to be uploaded
     user : object
         class managing user credentials
-    datasets : dict
-        a dictionary with all the datasets the user has access to
 
     Methods:
     --------
@@ -46,7 +48,7 @@ class Pennsieve:
     list_manifests()
         Returns all available manifest in form of a list.
     get_datasets(dataset_id)
-        Returns available datasets in form of a list.
+        Returns available datasets in form of a dict.
     set_dataset(dataset_id)
         specifies which dataset on the server will be used
     use_dataset(dataset_id)
@@ -73,49 +75,50 @@ class Pennsieve:
     """
 
     def __init__(
-        self,
-        connect=True,
-        target="localhost:9000",
-        api_host=None,
-        api_port=None,
-        api_key=None,
-        api_secret=None,
-        bucket=None,
-        chunk_size=None,
-        n_workers=None,
-        config_file=None,
-        profile_name=None,
+            self,
+            connect=True,
+            target="localhost:9000",
+            profile_name=None,
+            http_api_client=None
     ):
-        self.headers = {
-            "Content-Type": "application/json",
-            "Accept": "application/json; charset=utf-8",
-        }
+        """Creates a Pennsieve Python client
+
+            Parameters:
+            -----------
+            connect : bool
+                connect to Pennsieve Agent if true (default is true)
+            target : str
+                address of the Pennsieve Agent (default is 'localhost:9000' which is the Agent's default address)
+            profile name : str
+                a profile name to use from config file (default is None which will use the currently active profile)
+            http_api_client : BaseHttpApiClient
+                allows override of the default client. The default client depends on the value of connect.
+                If connect is True, the default client uses the Agent to get authentication information.
+                If connect is False, the default client does no authentication and can only be used to
+                call public Discover API endpoints. If connect is subsequently called, this client
+                will be replaced by one that uses the Agent as in the 'connect=True' case.
+
+        """
+        self.stub = None
+        self.api = self
+        self.user = None
+        self._datasets = None
+        self.dataset = None
+        self.manifest = None
+        if http_api_client is None:
+            self.http_api: BaseHttpApiClient = self.build_no_auth_http_api_client()
+        else:
+            self.http_api: HttpApiClient = http_api_client
         if connect:
             self.connect(
                 target=target,
-                api_host=api_host,
-                api_port=api_port,
-                api_key=api_key,
-                api_secret=api_secret,
-                bucket=bucket,
-                chunk_size=chunk_size,
-                n_workers=n_workers,
-                config_file=config_file,
                 profile_name=profile_name,
             )
 
     def connect(
-        self,
-        target="localhost:9000",
-        api_host=None,
-        api_port=None,
-        api_key=None,
-        api_secret=None,
-        bucket=None,
-        chunk_size=None,
-        n_workers=None,
-        config_file=None,
-        profile_name=None,
+            self,
+            target="localhost:9000",
+            profile_name=None,
     ):
         """Initialization of Pennsieve Python agent
 
@@ -123,20 +126,10 @@ class Pennsieve:
         -----------
         target : str
             a socket with running GO agent
-        api_host : str
-            a host to connect to
-        api_port : str
-            a port to connect to
-        api_key, api_secret, bucket, chunk_size, n_workers : str
-            currently not used
-        config file : str
-            a path to ~/.pennsieve/config.ini file
         profile name : str
             a profile name to use from config file
 
         """
-        if api_host is not None and api_port is not None:
-            target = f"{api_host}:{api_port}"
         channel = grpc.insecure_channel(target)
         try:
             grpc.channel_ready_future(channel).result(timeout=100)
@@ -145,40 +138,17 @@ class Pennsieve:
         else:
             self.stub = agent_pb2_grpc.AgentStub(channel)
         assert self.stub is not None
-
-        self.api = self
         self.user = UserProfile(
             self.stub,
-            api_host=api_host,
-            api_port=api_port,
-            api_key=api_key,
-            api_secret=api_secret,
-            bucket=bucket,
-            chunk_size=chunk_size,
-            n_workers=n_workers,
-            config_file=config_file,
             profile_name=profile_name,
         )
-        if self.user.credentials is not None:
-            self.headers.update(
-                {
-                    "Authorization": "Bearer " + self.user.credentials["session_token"],
-                    "X-ORGANIZATION-ID": self.user.credentials["organization_id"],
-                }
-            )
-        self.datasets = self.get_datasets()
+        self.http_api = self.build_agent_http_api_client(api_host=self.user.current_user.api_host,
+                                                         api2_host=self.user.current_user.api2_host,
+                                                         stub=self.stub)
+
         self.manifest = Manifest(self.stub)
         print("Please set the dataset with use_dataset([name])")
         return self
-
-    def _get_default_headers(self):
-        """Returns default headers for Pennsieve."""
-        return {
-            "Content-Type": "application/json",
-            "Accept": "application/json; charset=utf-8",
-            "Authorization": "Bearer " + self.user.credentials["session_token"],
-            "X-ORGANIZATION-ID": self.user.credentials["organization_id"],
-        }
 
     def get_user(self):
         """Returns current user.
@@ -188,6 +158,13 @@ class Pennsieve:
                 Current user credentials.
         """
         return self.user  # .whoami()
+
+    def switch(self, profile_name):
+        self._datasets = None
+        self.dataset = None
+        self.manifest.manifest = None
+        self.user.switch(profile_name)
+        self.http_api.reset_base_urls(self.user.current_user.api_host, self.user.current_user.api2_host)
 
     def list_manifests(self):
         """Returns available manifest in form of a list
@@ -207,21 +184,20 @@ class Pennsieve:
             datasets : dict
                 a dictionary with user-defined names as keys and AWS ids as values
         """
-
-        response = self.get("/datasets")
-        self.dataset = None
-        if isinstance(response, list) and len(response) > 0:
-            self.datasets = dict(
-                map(
-                    lambda x: (x["content"]["name"], x["content"]["id"])
-                    if "content" in x.keys()
-                    and "name" in x["content"].keys()
-                    and "id" in x["content"].keys()
-                    else None,
-                    response,
+        if self._datasets is None:
+            response = self.get("/datasets")
+            if isinstance(response, list) and len(response) > 0:
+                self._datasets = dict(
+                    map(
+                        lambda x: (x["content"]["name"], x["content"]["id"])
+                        if "content" in x.keys()
+                           and "name" in x["content"].keys()
+                           and "id" in x["content"].keys()
+                        else None,
+                        response,
+                    )
                 )
-            )
-        return self.datasets
+        return self._datasets
 
     def set_dataset(self, dataset_id):
         return self.use_dataset(dataset_id)
@@ -235,136 +211,25 @@ class Pennsieve:
                 dataset name or AWS-like dataset id to which the changes will be applied
         """
         self.get_datasets()
-        if self.datasets and dataset_id in self.datasets.keys():
-            self.dataset = self.datasets[dataset_id]
-        elif dataset_id in self.datasets.values():
+        if self._datasets and dataset_id in self._datasets.keys():
+            self.dataset = self._datasets[dataset_id]
+        elif dataset_id in self._datasets.values():
             self.dataset = dataset_id
         assert self.dataset is not None
         request = agent_pb2.UseDatasetRequest(dataset_id=self.dataset)
         return self.stub.UseDataset(request=request)
 
-    def call(self, url, method, **kwargs):
-        """Calls get/post/put/delete endpoints directly on the server
-
-        Parameters:
-        -----------
-        url : str
-            address of the server to be called (e.g. api.pennsieve.io)
-        method : str
-            get, post, put or delete - an endpoint to be invoked
-        kwargs : dict
-            a dictionary storing additional information, e.g. json
-            contains request payload required for some of the enpoints (e.g. post)
-
-        Raises:
-        -------
-            requests.exceptions.HTTPError : in case of http error
-            Exception : in case of other error
-        Return:
-        --------
-        String in JSON format with response from the server.
-
-        """
-        if url.startswith("/"):
-            url = self.user.api_host + url
-        if "headers" not in kwargs:
-            kwargs["headers"] = self.headers
-        try:
-            logging.debug(str(kwargs))
-            if method.lower() == "get":
-                response = requests.get(url=url, **kwargs)
-            elif method.lower() == "post":
-                response = requests.post(url=url, **kwargs)
-            elif method.lower() == "put":
-                response = requests.put(url=url, **kwargs)
-            elif method.lower() == "delete":
-                response = requests.delete(url=url, **kwargs)
-            else:
-                raise NotImplementedError("Not implemented")
-            response.raise_for_status()
-        except requests.exceptions.HTTPError as http_err:
-            logging.error(f"HTTP error occurred: {http_err}")
-        except:  # pylint: disable=W0702
-            traceback.print_exc()
-
-        return response.json()  # content.decode('utf-8'))
-
     def get(self, url, **kwargs):
-        """Invokes GET endpoint on a server. Passing server name in url is optional.
-
-        Parameters:
-        -----------
-        url : str
-            the address of the server endpoint to be called (e.g. api.pennsieve.io/datasets).
-            The name of the server can be ommitted.
-        kwargs : dict
-            a dictionary storing additional information
-
-        Return:
-        --------
-        String in JSON format with response from the server.
-
-        Example:
-        --------
-        p=Pennsieve()
-        p.get('https://api.pennsieve.io/discover/datasets', params={'limit':20})
-
-        """
-        return self.call(url, method="get", **kwargs)
+        return self.http_api.get(url, **kwargs)
 
     def post(self, url, json, **kwargs):
-        """Invokes POST endpoint on a server. Passing server name in url is optional.
-
-        Parameters:
-        -----------
-        url : str
-            the address of the server endpoint to be called (e.g. api.pennsieve.io/datasets).
-            The name of the server can be omitted.
-        json : dict
-            a request payload with parameters defined by a given endpoint
-        kwargs : dict
-            additional information
-
-        Return:
-        --------
-        String in JSON format with response from the server.
-        """
-        return self.call(url, method="post", json=json, **kwargs)
+        return self.http_api.post(url, json=json, **kwargs)
 
     def put(self, url, json, **kwargs):
-        """Invokes PUT endpoint on a server. Passing server name in url is optional.
-
-        Parameters:
-        -----------
-        url : str
-            the address of the server endpoint to be called (e.g. api.pennsieve.io/datasets).
-            The name of the server can be omitted.
-        json : dict
-            a request payload with parameters defined by a given endpoint
-        kwargs : dict
-            additional information
-
-        Return:
-        --------
-        String in JSON format with response from the server.
-        """
-        return self.call(url, method="put", json=json, **kwargs)
+        return self.http_api.put(url, json=json, **kwargs)
 
     def delete(self, url, **kwargs):
-        """Invokes DELETE endpoint on a server. Passing server name in url is optional.
-
-        Parameters:
-        -----------
-        url : str
-            the address of the server endpoint to be called. The name of the server can be omitted.
-        kwargs : dict
-            additional information
-
-        Return:
-        --------
-        String in JSON format with response from the server.
-        """
-        return self.call(url, method="delete", **kwargs)
+        return self.http_api.delete(url, **kwargs)
 
     def subscribe(self, subscriber_id, show_progress=False, callback=None):
         """Creates a subscriber with id that would receive messages from the GO agent.
@@ -457,3 +322,25 @@ class Pennsieve:
         """Stops the agent"""
         request = agent_pb2.StopRequest()
         return self.stub.Stop(request=request)
+
+    @staticmethod
+    def build_agent_http_api_client(api_host, api2_host, stub: AgentStub):
+        return HttpApiClient(api_host, api2_host, AgentAPISessionProvider(stub))
+
+    @staticmethod
+    def build_no_auth_http_api_client():
+        return BaseHttpApiClient(API_HOST_DEFAULT, API2_HOST_DEFAULT)
+
+
+class AgentAPISessionProvider(APISessionProvider):
+
+    def __init__(self, stub: AgentStub):
+        super().__init__()
+        self._stub = stub
+
+    def new_api_session(self) -> APISession:
+        request = agent_pb2.ReAuthenticateRequest()
+        response = self._stub.ReAuthenticate(request=request)
+        return APISession(token=response.session_token,
+                          expiration=response.token_expire,
+                          organization_node_id=response.organization_id)
