@@ -9,7 +9,8 @@ import sys
 import grpc
 from tqdm.auto import tqdm
 
-from .direct.client import AbstractClient, HttpApiClient
+from .direct import API_HOST_DEFAULT, API2_HOST_DEFAULT
+from .direct.client import AbstractClient, HttpApiClient, BaseHttpApiClient
 from .manifest import Manifest
 from .protos import agent_pb2, agent_pb2_grpc
 from .protos.agent_pb2_grpc import AgentStub
@@ -78,14 +79,36 @@ class Pennsieve(AbstractClient):
             connect=True,
             target="localhost:9000",
             profile_name=None,
+            http_api_client=None
     ):
+        """Creates a Pennsieve Python client
+
+            Parameters:
+            -----------
+            connect : bool
+                connect to Pennsieve Agent if true (default is true)
+            target : str
+                address of the Pennsieve Agent (default is 'localhost:9000' which is the Agent's default address)
+            profile name : str
+                a profile name to use from config file (default is None which will use the currently active profile)
+            http_api_client : BaseHttpApiClient
+                allows override of the default client. The default client depends on the value of connect.
+                If connect is True, the default client uses the Agent to get authentication information.
+                If connect is False, the default client does no authentication and can only be used to
+                call public Discover API endpoints. If connect is subsequently called, this client
+                will be replaced by one that uses the Agent as in the 'connect=True' case.
+
+        """
         self.stub = None
         self.api = self
         self.user = None
         self._datasets = None
         self.dataset = None
         self.manifest = None
-        self.http_api: HttpApiClient | None = None
+        if http_api_client is None:
+            self.http_api: BaseHttpApiClient = self.build_no_auth_http_api_client()
+        else:
+            self.http_api: HttpApiClient = http_api_client
         if connect:
             self.connect(
                 target=target,
@@ -119,9 +142,9 @@ class Pennsieve(AbstractClient):
             self.stub,
             profile_name=profile_name,
         )
-        self.http_api = self.build_http_api_client(api_host=self.user.current_user.api_host,
-                                                   api2_host=self.user.current_user.api2_host,
-                                                   stub=self.stub)
+        self.http_api = self.build_agent_http_api_client(api_host=self.user.current_user.api_host,
+                                                         api2_host=self.user.current_user.api2_host,
+                                                         stub=self.stub)
 
         self.manifest = Manifest(self.stub)
         print("Please set the dataset with use_dataset([name])")
@@ -301,8 +324,12 @@ class Pennsieve(AbstractClient):
         return self.stub.Stop(request=request)
 
     @staticmethod
-    def build_http_api_client(api_host, api2_host, stub: AgentStub):
+    def build_agent_http_api_client(api_host, api2_host, stub: AgentStub):
         return HttpApiClient(api_host, api2_host, AgentAPISessionProvider(stub))
+
+    @staticmethod
+    def build_no_auth_http_api_client():
+        return BaseHttpApiClient(API_HOST_DEFAULT, API2_HOST_DEFAULT)
 
 
 class AgentAPISessionProvider(APISessionProvider):

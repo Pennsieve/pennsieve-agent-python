@@ -92,13 +92,13 @@ class AbstractClient(ABC):
         pass
 
 
-class HttpApiClient(AbstractClient):
+class BaseHttpApiClient(AbstractClient):
+    DEFAULT_HEADERS = {"Content-Type": "application/json",
+                       "Accept": "application/json; charset=utf-8"}
 
-    def __init__(self, api_host: str, api2_host: str, api_session_provider: APISessionProvider,
-                 http_session: requests.Session = None):
+    def __init__(self, api_host: str, api2_host: str, http_session: requests.Session = None):
         self.api_host = api_host
         self.api2_host = api2_host
-        self._api_session_provider = api_session_provider
         self._http_session = requests.Session() if http_session is None else http_session
 
     def get(self, url, **kwargs):
@@ -113,35 +113,22 @@ class HttpApiClient(AbstractClient):
     def delete(self, url, **kwargs):
         return self._call(url, method="delete", **kwargs)
 
-    def reset_base_urls(self, api_host: str, api2_host: str, options: dict = None):
+    def reset_base_urls(self, api_host: str, api2_host: str):
         """
-        Resets the base urls of this client and clears the session provider. Optionally, passes the options dict to
-        the underlying session provider (along with api_host) in case that provider
-        needs additional information to reset for a new user/profile.
+        Resets the base urls of this client
         :param api_host:
         :param api2_host:
-        :param options:
         :return:
         """
         self.api_host = api_host
         self.api2_host = api2_host
-        api_host_option = {'api_host': api_host}
-        options = dict(options, **api_host_option) if options else api_host_option
-        self._api_session_provider.clear_session(options)
 
     def close(self):
         self._http_session.close()
-        self._api_session_provider.close()
 
     def _get_default_headers(self):
         """Returns default headers for Pennsieve."""
-        api_session: APISession = self._api_session_provider.get_api_session()
-        return {
-            "Content-Type": "application/json",
-            "Accept": "application/json; charset=utf-8",
-            "Authorization": "Bearer " + api_session.token,
-            "X-ORGANIZATION-ID": api_session.organization_node_id,
-        }
+        return self.DEFAULT_HEADERS
 
     def _call(self, url, method, **kwargs):
         """Calls get/post/put/delete endpoints directly on the server
@@ -193,3 +180,37 @@ class HttpApiClient(AbstractClient):
             logger.error(f"HTTP error occurred: {http_err}")
         except:  # pylint: disable=W0702
             traceback.print_exc()
+
+
+class HttpApiClient(BaseHttpApiClient):
+
+    def __init__(self, api_host: str, api2_host: str, api_session_provider: APISessionProvider,
+                 http_session: requests.Session = None):
+        super().__init__(api_host, api2_host, http_session)
+        self._api_session_provider = api_session_provider
+
+    def reset_base_urls(self, api_host: str, api2_host: str, options: dict = None):
+        """
+        Resets the base urls of this client and clears the session provider. Optionally, passes the options dict to
+        the underlying session provider (along with api_host) in case that provider
+        needs additional information to reset for a new user/profile.
+        :param api_host:
+        :param api2_host:
+        :param options:
+        :return:
+        """
+        super().reset_base_urls(api_host, api2_host)
+        api_host_option = {'api_host': api_host}
+        options = dict(options, **api_host_option) if options else api_host_option
+        self._api_session_provider.clear_session(options)
+
+    def close(self):
+        super().close()
+        self._api_session_provider.close()
+
+    def _get_default_headers(self):
+        """Returns default headers for Pennsieve."""
+        api_session: APISession = self._api_session_provider.get_api_session()
+        return dict(super()._get_default_headers(), **{"Authorization": "Bearer " + api_session.token,
+                                                       "X-ORGANIZATION-ID": api_session.organization_node_id,
+                                                       })
