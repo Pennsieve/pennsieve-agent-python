@@ -1,3 +1,9 @@
+v0.1.2
+======
+ * Slimmed version without unused arguments
+ * Fixed HTTP calls for users not using Pennsieve Agent
+ * Added unit tests
+
 v0.1.1
 ======
  * Fixing imports
