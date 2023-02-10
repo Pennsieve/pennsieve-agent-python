@@ -42,9 +42,10 @@ class UserProfile:
             profile_name=None,
     ):
         self._stub = stub
-        if profile_name is not None:
+        if profile_name is None:
+            self.current_user: UserResponse = self.whoami()
+        else:
             self.switch(profile_name)
-        self.current_user: UserResponse = self.whoami()
         logger.info(f"current profile is {self.current_user.profile}")
 
     def reauthenticate(self):
@@ -68,9 +69,9 @@ class UserProfile:
             a name of the profile in config file
         """
         request = agent_pb2.SwitchProfileRequest(profile=profile)
-        switch_profile_response = self._stub.SwitchProfile(request=request)
-        logger.debug(f'switch profile response: {switch_profile_response}')
-        # SwitchProfile version of UserResponse does not include api_host for new profile.
-        self.current_user = self.whoami()
+        self.current_user = self._stub.SwitchProfile(request=request)
         logger.debug(f"current_user switched to: {self.current_user}")
+        # Versions of the Agent prior to 1.3.1 did not populate the api_host field in SwitchProfile responses.
+        if self.current_user.api_host == '':
+            logger.warning(f'Base API URL missing from SwitchProfile response. Update Agent to version >= 1.3.2')
         logger.info(f"Switched profile to: {self.current_user.profile}")
