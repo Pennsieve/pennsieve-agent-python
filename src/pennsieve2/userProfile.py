@@ -37,9 +37,9 @@ class UserProfile:
     """
 
     def __init__(
-            self,
-            stub,
-            profile_name=None,
+        self,
+        stub,
+        profile_name=None,
     ):
         self._stub = stub
         if profile_name is None:
@@ -73,5 +73,7 @@ class UserProfile:
         logger.debug(f"current_user switched to: {self.current_user}")
         # Versions of the Agent prior to 1.3.1 did not populate the api_host field in SwitchProfile responses.
         if self.current_user.api_host == "":
-            logger.warning(f"Base API URL missing from SwitchProfile response. Update Agent to version >= 1.3.2")
+            logger.warning(
+                f"Base API URL missing from SwitchProfile response. Update Agent to version >= 1.3.2"
+            )
         logger.info(f"Switched profile to: {self.current_user.profile}")

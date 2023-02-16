@@ -445,7 +445,6 @@ _sym_db.RegisterMessage(RelocateManifestFilesRequest)
 
 _AGENT = DESCRIPTOR.services_by_name["Agent"]
 if _descriptor._USE_C_DESCRIPTORS == False:
-
     DESCRIPTOR._options = None
     DESCRIPTOR._serialized_options = b"Z+github.com/pennsieve/pennsieve-agent/api/v1"
     _SUBSCRIBEREQUEST._serialized_start = 37
