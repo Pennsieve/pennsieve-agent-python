@@ -76,10 +76,11 @@ class Pennsieve(AbstractClient):
 
     def __init__(
             self,
-            connect=True,
-            target="localhost:9000",
-            profile_name=None,
-            http_api_client=None
+            connect: bool = True,
+            target: str = "localhost:9000",
+            connect_timeout_seconds: float | None = 100,
+            profile_name: str | None = None,
+            http_api_client: BaseHttpApiClient | None = None,
     ):
         """Creates a Pennsieve Python client
 
@@ -89,6 +90,9 @@ class Pennsieve(AbstractClient):
                 connect to Pennsieve Agent if true (default is true)
             target : str
                 address of the Pennsieve Agent (default is 'localhost:9000' which is the Agent's default address)
+            connect_timeout_seconds: float | None
+                number of seconds to wait for the initial connection to the Agent
+                (default is 100 seconds, None means no timeout)
             profile name : str
                 a profile name to use from config file (default is None which will use the currently active profile)
             http_api_client : BaseHttpApiClient
@@ -106,19 +110,21 @@ class Pennsieve(AbstractClient):
         self.dataset = None
         self.manifest = None
         if http_api_client is None:
-            self.http_api: BaseHttpApiClient = self.build_no_auth_http_api_client()
+            self.http_api = self.build_no_auth_http_api_client()
         else:
-            self.http_api: HttpApiClient = http_api_client
+            self.http_api = http_api_client
         if connect:
             self.connect(
                 target=target,
                 profile_name=profile_name,
+                connect_timeout_seconds=connect_timeout_seconds
             )
 
     def connect(
             self,
-            target="localhost:9000",
-            profile_name=None,
+            target: str = "localhost:9000",
+            connect_timeout_seconds: float | None = 100,
+            profile_name: str | None = None,
     ):
         """Initialization of Pennsieve Python agent
 
@@ -126,13 +132,16 @@ class Pennsieve(AbstractClient):
         -----------
         target : str
             a socket with running GO agent
+        connect_timeout_seconds: float | None
+                number of seconds to wait for the initial connection to the Agent
+                (default is 100 seconds, None means no timeout)
         profile name : str
             a profile name to use from config file
 
         """
         channel = grpc.insecure_channel(target)
         try:
-            grpc.channel_ready_future(channel).result(timeout=100)
+            grpc.channel_ready_future(channel).result(timeout=connect_timeout_seconds)
         except grpc.FutureTimeoutError:
             sys.exit("Error connecting to server")
         else:
@@ -324,11 +333,11 @@ class Pennsieve(AbstractClient):
         return self.stub.Stop(request=request)
 
     @staticmethod
-    def build_agent_http_api_client(api_host, api2_host, stub: AgentStub):
+    def build_agent_http_api_client(api_host, api2_host, stub: AgentStub) -> HttpApiClient:
         return HttpApiClient(api_host, api2_host, AgentAPISessionProvider(stub))
 
     @staticmethod
-    def build_no_auth_http_api_client():
+    def build_no_auth_http_api_client() -> BaseHttpApiClient:
         return BaseHttpApiClient(API_HOST_DEFAULT, API2_HOST_DEFAULT)
 
 
