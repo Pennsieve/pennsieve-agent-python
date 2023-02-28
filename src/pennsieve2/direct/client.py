@@ -1,10 +1,10 @@
 import logging
+import traceback
 from abc import ABC, abstractmethod
 
 import requests
-import traceback
 
-from pennsieve2.session import APISessionProvider, APISession
+from pennsieve2.session import APISession, APISessionProvider
 
 logger = logging.getLogger(__name__)
 
@@ -93,8 +93,10 @@ class AbstractClient(ABC):
 
 
 class BaseHttpApiClient(AbstractClient):
-    DEFAULT_HEADERS = {"Content-Type": "application/json",
-                       "Accept": "application/json; charset=utf-8"}
+    DEFAULT_HEADERS = {
+        "Content-Type": "application/json",
+        "Accept": "application/json; charset=utf-8",
+    }
 
     def __init__(self, api_host: str, api2_host: str, http_session: requests.Session = None):
         self.api_host = api_host
@@ -183,9 +185,13 @@ class BaseHttpApiClient(AbstractClient):
 
 
 class HttpApiClient(BaseHttpApiClient):
-
-    def __init__(self, api_host: str, api2_host: str, api_session_provider: APISessionProvider,
-                 http_session: requests.Session = None):
+    def __init__(
+        self,
+        api_host: str,
+        api2_host: str,
+        api_session_provider: APISessionProvider,
+        http_session: requests.Session = None,
+    ):
         super().__init__(api_host, api2_host, http_session)
         self._api_session_provider = api_session_provider
 
@@ -200,7 +206,7 @@ class HttpApiClient(BaseHttpApiClient):
         :return:
         """
         super().reset_base_urls(api_host, api2_host)
-        api_host_option = {'api_host': api_host}
+        api_host_option = {"api_host": api_host}
         options = dict(options, **api_host_option) if options else api_host_option
         self._api_session_provider.clear_session(options)
 
@@ -211,6 +217,10 @@ class HttpApiClient(BaseHttpApiClient):
     def _get_default_headers(self):
         """Returns default headers for Pennsieve."""
         api_session: APISession = self._api_session_provider.get_api_session()
-        return dict(super()._get_default_headers(), **{"Authorization": "Bearer " + api_session.token,
-                                                       "X-ORGANIZATION-ID": api_session.organization_node_id,
-                                                       })
+        return dict(
+            super()._get_default_headers(),
+            **{
+                "Authorization": "Bearer " + api_session.token,
+                "X-ORGANIZATION-ID": api_session.organization_node_id,
+            },
+        )
