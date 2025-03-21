@@ -1,7 +1,8 @@
 syntax = "proto3";
 
-option go_package = "github.com/pennsieve/pennsieve-agent/api/v1";
 package v1;
+
+option go_package = "github.com/pennsieve/pennsieve-agent/api/v1";
 
 service Agent {
 	// Manifest Endpoints
@@ -19,6 +20,13 @@ service Agent {
 	rpc UploadManifest(UploadManifestRequest) returns (SimpleStatusResponse) {}
 	rpc CancelUpload(CancelUploadRequest) returns (SimpleStatusResponse) {}
 
+	// Download and Map Endpoints
+	rpc Download(DownloadRequest) returns (DownloadResponse) {}
+	rpc CancelDownload(CancelDownloadRequest) returns (SimpleStatusResponse) {}
+	rpc Map(MapRequest) returns (SimpleStatusResponse) {}
+	rpc Pull(PullRequest) returns (SimpleStatusResponse) {}
+	rpc GetMapDiff(MapDiffRequest) returns (MapDiffResponse) {}
+
 	// Server Endpoints
 	rpc Version(VersionRequest) returns (VersionResponse) {}
 	rpc Subscribe(SubscribeRequest) returns (stream SubscribeResponse) {}
@@ -34,16 +42,102 @@ service Agent {
 	// Datasets Endpoints
 	rpc UseDataset(UseDatasetRequest) returns (UseDatasetResponse) {}
 
+	// Workflow Endpoints
+	rpc StartWorkflow(StartWorkflowRequest) returns (WorkflowResponse){}
+
+	// Account Endpoints
+	rpc Register(RegisterRequest) returns (RegisterResponse){}
+
+	// Timeseries Endpoints
+	rpc GetTimeseriesChannels(GetTimeseriesChannelsRequest) returns (GetTimeseriesChannelsResponse) {}
+	rpc GetTimeseriesRangeForChannels(GetTimeseriesRangeRequest) returns (stream GetTimeseriesRangeResponse) {}
+	rpc ResetCache(ResetCacheRequest) returns (SimpleStatusResponse) {}
+}
+
+message PullRequest {
+	string path = 1;
 }
 
 message SubscribeRequest {
 	int32 id = 1;
 }
 
+message ResetCacheRequest {
+	optional string id = 1;
+}
+
+message GetTimeseriesChannelsRequest {
+	string dataset_id = 1;
+	string package_id = 2;
+	bool refresh = 3;
+
+}
+
+message TimeseriesChannel {
+	string id = 1;
+	string name = 2;
+	uint64 start_time = 3;
+	uint64 end_time = 4;
+	string unit = 5;
+	float rate = 6;
+}
+
+message GetTimeseriesChannelsResponse {
+	repeated TimeseriesChannel channel = 1;
+}
+
+message GetTimeseriesRangeRequest {
+	string dataset_id = 1;
+	string package_id = 2;
+	string channel_id = 3;
+	float start_time = 4;
+	float end_time = 5;
+	bool refresh = 6;
+	bool relative_time = 7;
+}
+
+message GetTimeseriesRangeResponse {
+
+	message ChannelInfo {
+		string channel_id = 1;
+		string name = 2;
+		string unit = 3;
+		float rate = 4;
+	}
+
+	message RangeData {
+		uint64 start = 1;
+		uint64 end = 2;
+		float rate = 3;
+		string channel_id = 4;
+		repeated float data = 5;
+	}
+
+	enum MessageType {
+		RANGE_STATUS = 0;
+		RANGE_DATA = 1;
+		CHANNEL_INFO = 2;
+		ERROR = 3;
+	}
+
+	message ErrorData {
+		string info = 1;
+	}
+
+	MessageType type = 1;
+	oneof message_data {
+		ErrorData error = 2;
+		RangeData data = 3;
+		ChannelInfo channel = 4;
+	}
+}
+
+
 message SubscribeResponse {
 	message EventResponse {
 		string details = 1;
 	}
+
 	message UploadResponse {
 		string file_id = 1;
 		int64 total = 2;
@@ -57,6 +151,20 @@ message SubscribeResponse {
 			COMPLETE = 2;
 		}
 	}
+
+	message DownloadStatusResponse {
+		string file_id = 1;
+		int64 total = 2;
+		int64 current = 3;
+		DownloadStatus status = 4;
+
+		enum DownloadStatus{
+			INIT = 0;
+			IN_PROGRESS = 1;
+			COMPLETE = 2;
+		}
+	}
+
 	message SyncResponse {
 		enum SyncStatus{
 			INIT = 0;
@@ -75,12 +183,16 @@ message SubscribeResponse {
 		UPLOAD_STATUS = 1;	// Upload Status Message
 		UPLOAD_CANCEL = 2; // Upload was cancelled
 		SYNC_STATUS = 3; // Sync Status message
+		DOWNLOAD_STATUS = 4; // Download Status Message
+		DOWNLOAD_CANCEL = 5; // Download was cancelled
 	}
 	MessageType type = 8;
 	oneof message_data {
 		UploadResponse upload_status = 9;
 		EventResponse event_info = 10;
 		SyncResponse sync_status = 11;
+		DownloadStatusResponse download_status = 12;
+
 	}
 }
 
@@ -90,6 +202,11 @@ message SimpleStatusResponse {
 
 message CancelUploadRequest {
 	int32 manifest_id = 1;
+	bool cancel_all = 2;
+}
+
+message CancelDownloadRequest {
+	optional string id = 1;
 	bool cancel_all = 2;
 }
 
@@ -250,4 +367,113 @@ message RelocateManifestFilesRequest {
 	int32 manifest_id = 1;
 	string path = 2;
 	string updated_path = 3;
+}
+
+message StartWorkflowRequest{
+	int32 manifest_id = 1;
+	string workflowFlag = 2;
+}
+
+message WorkflowResponse{
+
+	enum WorkflowType{
+		PATH = 0;  	// File indexed locally
+		NAMED = 1;
+	}
+	bool success = 1;
+	string derivatives = 2;
+	WorkflowType workflowType = 3;
+
+}
+
+message RegisterRequest{
+	Account account = 1;
+	Credentials credentials = 2;
+
+}
+message RegisterResponse{
+	string account_id = 1;
+}
+
+message Account {
+	enum AccountType {
+		AWS = 0;
+		Azure = 1;
+	}
+
+	AccountType type = 1;
+}
+
+message Credentials {
+	string profile = 1;
+}
+
+message MapRequest {
+	string dataset_id = 1;
+	string target_folder = 2;
+}
+
+message DownloadRequest {
+
+	enum DownloadType {
+		PACKAGE = 0;
+		DATASET = 1;
+	}
+
+	DownloadType type = 1;
+
+	oneof data {
+		DownloadDatasetRequest dataset = 9;
+		DownloadPackageRequest package = 10;
+	}
+}
+
+message DownloadDatasetRequest {
+	string dataset_id = 1;
+	string target_folder = 2;
+}
+
+message DownloadPackageRequest {
+	string package_id = 1;
+	bool get_presigned_url = 2;
+}
+
+message DownloadResponse {
+	enum ResponseType {
+		PRESIGNED_URL = 0;
+		DOWNLOAD = 1;
+	}
+
+	ResponseType type = 1;
+	string status = 2;
+	repeated string url = 3;
+}
+
+message MapDiffRequest {
+	string path = 1;
+}
+
+message fileInfo {
+	string package_id = 1;
+	string path = 2;
+	string name = 3;
+	string message = 4;
+}
+
+message packageStatus {
+	enum StatusType {
+		ADDED = 0;
+		RENAMED = 1;
+		DELETED = 2;
+		CHANGED = 3;
+		MOVED = 4;
+		MOVED_RENAMED = 5;
+	}
+
+	fileInfo content = 1;
+	StatusType changeType = 2;
+}
+
+message MapDiffResponse {
+	repeated packageStatus files = 1;
 }

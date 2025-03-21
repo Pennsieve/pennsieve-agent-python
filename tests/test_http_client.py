@@ -1,4 +1,4 @@
-from pennsieve2.direct import HttpApiClient
+from pennsieve.direct import HttpApiClient
 from tests.conftest import MockAPISessionProvider
 
 DEFAULT_EXPECTED_HEADERS = {

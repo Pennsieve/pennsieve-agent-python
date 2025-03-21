@@ -1,6 +1,6 @@
 import datetime
 
-from pennsieve2.session import APISession
+from pennsieve.session import APISession
 from tests.conftest import MockAPISessionProvider
 
 

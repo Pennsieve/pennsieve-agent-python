@@ -1,11 +1,11 @@
 [tool.poetry]
-name = "pennsieve2"
-version = "0.1.2"
+name = "pennsieve"
+version = "7.0.0"
 description = "Pennsieve Python Client"
 readme = "README.md"
 license = "Apache-2.0"
 keywords = ["data science", "datasets"]
-authors = ["Patryk Orzechowski <patryk@upenn.edu>"]
+authors = ["Pennsieve Team <support@pennsieve.net>"]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
@@ -85,7 +85,7 @@ requires = [
 build-backend = "poetry.core.masonry.api"
 
 [tool.setuptools_scm]
-write_to = "src/pennsieve2/_version.py"
+write_to = "src/pennsieve/_version.py"
 version_scheme = "release-branch-semver"
 
 [tool.pytest.ini_options]

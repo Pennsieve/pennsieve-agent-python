@@ -20,12 +20,12 @@ Installation
 To install, run:
 
 ```bash
-    pip install -U pennsieve2
+    pip install -U pennsieve
 ```
 
 To install specific previous dev version, run:
 ```bash
-    pip install -U pennsieve2==0.1.0.dev2 --extra-index-url https://test.pypi.org/simple
+    pip install -U pennsieve==0.1.0.dev2 --extra-index-url https://test.pypi.org/simple
 ```
 
 Contributions
@@ -34,9 +34,9 @@ Contributions
 To update gRPC python files, execute from the src folder:
 
 ```bash
-    rm src/pennsieve2/protos/agent_pb2*
+    rm src/pennsieve/protos/agent_pb2*
     cd src
-    python3.9 -m grpc_tools.protoc --python_out=. -I. --grpc_python_out=. pennsieve2/protos/agent.proto
+    python3.9 -m grpc_tools.protoc --python_out=. -I. --grpc_python_out=. pennsieve/protos/agent.proto
 ```
 Notice, this command does not produce a valid agent_pb2.py file when executed for Python3.10 or formatted by black - it does not use reflection and is reported as error for Flake8.
 

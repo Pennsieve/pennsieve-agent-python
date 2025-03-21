@@ -77,7 +77,7 @@ class Pennsieve(AbstractClient):
         self,
         connect: bool = True,
         target: str = "localhost:9000",
-        connect_timeout_seconds: float | None = 100,
+        connect_timeout_seconds: float | None = 1,
         profile_name: str | None = None,
         http_api_client: BaseHttpApiClient | None = None,
     ):
@@ -102,6 +102,7 @@ class Pennsieve(AbstractClient):
             will be replaced by one that uses the Agent as in the 'connect=True' case.
 
         """
+
         self.stub = None
         self.api = self
         self.user = None
@@ -122,7 +123,7 @@ class Pennsieve(AbstractClient):
     def connect(
         self,
         target: str = "localhost:9000",
-        connect_timeout_seconds: float | None = 100,
+        connect_timeout_seconds: float | None = 1,
         profile_name: str | None = None,
     ):
         """Initialization of Pennsieve Python agent
@@ -142,7 +143,13 @@ class Pennsieve(AbstractClient):
         try:
             grpc.channel_ready_future(channel).result(timeout=connect_timeout_seconds)
         except grpc.FutureTimeoutError:
-            sys.exit("Error connecting to server")
+            print("""Error connecting to the Pennsieve Agent
+            
+Please start the Pennsieve agent in the terminal using 'pennsieve agent', or
+initialize the Pennsieve Python Client without Agent support by providing
+the 'connect=false' parameter.
+            """)
+            return
         else:
             self.stub = agent_pb2_grpc.AgentStub(channel)
         assert self.stub is not None
