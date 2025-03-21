@@ -2,8 +2,8 @@ import os
 
 import requests
 
-from pennsieve2.direct.client import HttpApiClient
-from pennsieve2.direct.provider import PythonAPISessionProvider
+from pennsieve.direct.client import HttpApiClient
+from pennsieve.direct.provider import PythonAPISessionProvider
 
 API_HOST_DEFAULT = "https://api.pennsieve.io"
 
@@ -33,7 +33,7 @@ def new_client_from_config(config_file=None, profile_name=None) -> HttpApiClient
             return config_value
         return default_value
 
-    from pennsieve2.direct.config import Config
+    from pennsieve.direct.config import Config
 
     config = Config(config_file, profile_name)
     api_key = _resolve_param_from_config(config, "api_token")

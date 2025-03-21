@@ -7,28 +7,74 @@ on:
       - completed
 
 jobs:
-  deploy:
+  build:
+    name: Build distribution 📦
     runs-on: ubuntu-latest
+
     steps:
-    - uses: actions/checkout@master
-    - name: Set up Python 3.10
-      uses: actions/setup-python@v3
-      with:
-        python-version: "3.10"
-    - name: Install pypa/build
-      run: |
-        python -m pip install build --user
-    - name: Build a binary wheel and a source tarball
-      run: |
-        python -m build --sdist --wheel --outdir dist/ .
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+      - name: Install pypa/build
+        run: >-
+          python3 -m
+          pip install
+          build
+          --user
+      - name: Build a binary wheel and a source tarball
+        run: python3 -m build
+      - name: Store the distribution packages
+        uses: actions/upload-artifact@v4
+        with:
+          name: python-package-distributions
+          path: dist/
+
+  publish-to-pypi:
+    name: >-
+      Publish Python 🐍 distribution 📦 to PyPI
+    if: startsWith(github.ref, 'refs/tags/')  # only publish to PyPI on tag pushes
+    needs:
+      - build
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/p/pennsieve  # Replace <package-name> with your PyPI project name
+    permissions:
+      id-token: write  # IMPORTANT: mandatory for trusted
+    steps:
+      - name: Download all the dists
+        uses: actions/download-artifact@v4
+        with:
+          name: python-package-distributions
+          path: dist/
+      - name: Publish distribution 📦 to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+
+#  deploy:
+#    runs-on: ubuntu-latest
+#    steps:
+#    - uses: actions/checkout@master
+#    - name: Set up Python 3.10
+#      uses: actions/setup-python@v3
+#      with:
+#        python-version: "3.10"
+#    - name: Install pypa/build
+#      run: |
+#        python -m pip install build --user
+#    - name: Build a binary wheel and a source tarball
+#      run: |
+#        python -m build --sdist --wheel --outdir dist/ .
 #    - name: Publish distribution to Test PyPI
 #      uses: pypa/gh-action-pypi-publish@release/v1
 #      with:
 #        password: ${{ secrets.TEST_PYPI_API_TOKEN }}
 #        repository_url: https://test.pypi.org/legacy/
 #        verify_metadata: false
-    - name: Publish distribution to PyPI
-      if: startsWith(github.ref, 'refs/tags/v')
-      uses: pypa/gh-action-pypi-publish@release/v1
-      with:
-        password: ${{ secrets.PYPI_API_TOKEN }}
+#    - name: Publish distribution to PyPI
+#      if: startsWith(github.ref, 'refs/tags/v')
+#      uses: pypa/gh-action-pypi-publish@release/v1
+

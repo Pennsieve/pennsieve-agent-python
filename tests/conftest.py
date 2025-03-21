@@ -4,7 +4,7 @@ from unittest.mock import patch
 
 import pytest
 
-from pennsieve2.session import APISession, APISessionProvider
+from pennsieve.session import APISession, APISessionProvider
 
 
 @pytest.fixture(scope="session")

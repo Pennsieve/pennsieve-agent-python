@@ -1,9 +1,9 @@
 import os
 from unittest.mock import patch
 
-from pennsieve2.direct import (API_HOST_DEFAULT, new_client,
+from pennsieve.direct import (API_HOST_DEFAULT, new_client,
                                new_client_from_config)
-from pennsieve2.direct.provider import PythonAPISessionProvider
+from pennsieve.direct.provider import PythonAPISessionProvider
 
 
 def test_constructor_params():

@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 
 import requests
 
-from pennsieve2.session import APISession, APISessionProvider
+from pennsieve.session import APISession, APISessionProvider
 
 logger = logging.getLogger(__name__)
 

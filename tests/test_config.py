@@ -2,7 +2,7 @@ import os
 
 import pytest
 
-from pennsieve2.direct.config import Config
+from pennsieve.direct.config import Config
 
 
 def test_no_error_for_unaccessed_missing_config_file():
