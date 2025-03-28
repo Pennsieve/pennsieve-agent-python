@@ -15,6 +15,7 @@ from .manifest import Manifest
 from .protos import agent_pb2, agent_pb2_grpc
 from .protos.agent_pb2_grpc import AgentStub
 from .session import APISession, APISessionProvider
+from .timeSeries import TimeSeries
 from .userProfile import UserProfile
 
 # Set it up to get info messages:
@@ -109,6 +110,7 @@ class Pennsieve(AbstractClient):
         self._datasets = None
         self.dataset = None
         self.manifest = None
+        self.timeseries = None
         if http_api_client is None:
             self.http_api = self.build_no_auth_http_api_client()
         else:
@@ -164,6 +166,7 @@ the 'connect=false' parameter.
         )
 
         self.manifest = Manifest(self.stub)
+        self.timeseries = TimeSeries(self.stub)
         print("Please set the dataset with use_dataset([name])")
         return self
 
