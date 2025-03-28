@@ -76,7 +76,7 @@ class TimeSeries:
             start_time=start_time,
             end_time=end_time,
             refresh=is_refresh,
-            relative_time=is_relative_time
+            relative_time=is_relative_time,
         )
 
         resultMap = {}
