@@ -59,7 +59,16 @@ class TimeSeries:
         response = self._stub.GetTimeseriesChannels(request=request)
         return response.channel
 
-    def getRangeForChannels(self, dataset_id, package_id, channel_ids, start_time, end_time, is_refresh, is_relative_time):
+    def getRangeForChannels(
+        self,
+        dataset_id,
+        package_id,
+        channel_ids,
+        start_time,
+        end_time,
+        is_refresh,
+        is_relative_time,
+    ):
         request = agent_pb2.GetTimeseriesRangeRequest(
             dataset_id=dataset_id,
             package_id=package_id,
