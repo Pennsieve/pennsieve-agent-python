@@ -4,9 +4,6 @@ import pandas as pd
 from .protos import agent_pb2
 from .protos.agent_pb2 import GetTimeseriesChannelsResponse
 import pandas as pd
-import numpy as np
-
-
 
 class TimeSeries:
     """
