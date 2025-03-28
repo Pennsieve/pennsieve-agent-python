@@ -79,8 +79,10 @@ class TimeSeries:
                 values = list(response.data.data)
                 index = np.linspace(response.data.start, response.data.end, len(values))
                 newVec = pd.Series(values, index=index, name=response.data.channel_id)
-                if response.data.channel_id in resultMap :
-                    resultMap[response.data.channel_id] = pd.concat([resultMap[response.data.channel_id],newVec])
+                if response.data.channel_id in resultMap:
+                    resultMap[response.data.channel_id] = pd.concat(
+                        [resultMap[response.data.channel_id], newVec]
+                    )
                 else:
                     resultMap[response.data.channel_id] = newVec
 
