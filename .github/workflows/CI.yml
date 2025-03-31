@@ -1,5 +1,7 @@
 name: CI
-on: 
+on:
+  release:
+    types: [released]
   push:
     branches:
       - main
