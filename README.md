@@ -65,3 +65,7 @@ This project uses [Poetry](https://python-poetry.org/) to manage dependencies in
 ```
 from the root directory to install the projects dependencies. Some IDEs (IntelliJ Idea for example) can create a Poetry Python
 environment as well.
+
+Installing from TestPypi
+------------------------
+python -m pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple pennsieve
