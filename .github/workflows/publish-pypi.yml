@@ -1,6 +1,9 @@
 name: Upload Python Package
 
 on:
+  push:
+    tags:
+      - '*.*.*'  # Match anything resembling semver
   workflow_run:
     workflows: ["CI"]
     types:
