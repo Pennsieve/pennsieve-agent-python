@@ -1,10 +1,9 @@
 
+import numpy as np
+import pandas as pd
 from .protos import agent_pb2
 from .protos.agent_pb2 import GetTimeseriesChannelsResponse
 import pandas as pd
-import numpy as np
-
-
 
 class TimeSeries:
     """
@@ -60,7 +59,16 @@ class TimeSeries:
         response = self._stub.GetTimeseriesChannels(request=request)
         return response.channel
 
-    def getRangeForChannels(self, dataset_id, package_id, channel_ids, start_time, end_time, is_refresh, is_relative_time):
+    def getRangeForChannels(
+        self,
+        dataset_id,
+        package_id,
+        channel_ids,
+        start_time,
+        end_time,
+        is_refresh,
+        is_relative_time,
+    ):
         request = agent_pb2.GetTimeseriesRangeRequest(
             dataset_id=dataset_id,
             package_id=package_id,
@@ -68,7 +76,7 @@ class TimeSeries:
             start_time=start_time,
             end_time=end_time,
             refresh=is_refresh,
-            relative_time=is_relative_time
+            relative_time=is_relative_time,
         )
 
         resultMap = {}
@@ -79,8 +87,10 @@ class TimeSeries:
                 values = list(response.data.data)
                 index = np.linspace(response.data.start, response.data.end, len(values))
                 newVec = pd.Series(values, index=index, name=response.data.channel_id)
-                if response.data.channel_id in resultMap :
-                    resultMap[response.data.channel_id] = pd.concat([resultMap[response.data.channel_id],newVec])
+                if response.data.channel_id in resultMap:
+                    resultMap[response.data.channel_id] = pd.concat(
+                        [resultMap[response.data.channel_id], newVec]
+                    )
                 else:
                     resultMap[response.data.channel_id] = newVec
 
