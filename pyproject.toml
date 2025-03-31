@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pennsieve"
-version = "7.0.0"
+version = "7.0.1"
 description = "Pennsieve Python Client"
 readme = "README.md"
 license = "Apache-2.0"
