@@ -89,7 +89,7 @@ your transfer characteristics — e.g. pulls over a very slow link with large
 individual files, or tighter CI smoke-tests where you want to fail faster.
 
 ```python
-client.map.wait_for_pull(target_folder, idle_timeout=3600)              # 1 hour
+client.map.wait_for_pull(target_folder, idle_timeout=3600)  # 1 hour
 client.map.wait_for_push(expected_files=N, subscriber_id=..., idle_timeout=60)  # 1 minute
 ```
 
