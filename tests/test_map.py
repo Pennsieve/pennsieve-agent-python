@@ -152,7 +152,7 @@ class _FakeSubscribeResponse:
 
 def test_wait_for_push_counts_complete_events():
     events = [
-        _FakeSubscribeResponse(type_=0),                  # general info -- ignored
+        _FakeSubscribeResponse(type_=0),  # general info -- ignored
         _FakeSubscribeResponse(type_=1, upload_status_code=1),  # IN_PROGRESS
         _FakeSubscribeResponse(type_=1, upload_status_code=2),  # COMPLETE #1
         _FakeSubscribeResponse(type_=1, upload_status_code=2),  # COMPLETE #2

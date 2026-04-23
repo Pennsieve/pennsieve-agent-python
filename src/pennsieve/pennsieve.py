@@ -1,6 +1,7 @@
 """
 Copyright (c) 2022 Patryk Orzechowski | Wagenaar Lab | University of Pennsylvania
 """
+
 from __future__ import annotations
 
 import logging
@@ -214,11 +215,13 @@ the 'connect=false' parameter.
             if isinstance(response, list) and len(response) > 0:
                 self._datasets = dict(
                     map(
-                        lambda x: (x["content"]["name"], x["content"]["id"])
-                        if "content" in x.keys()
-                        and "name" in x["content"].keys()
-                        and "id" in x["content"].keys()
-                        else None,
+                        lambda x: (
+                            (x["content"]["name"], x["content"]["id"])
+                            if "content" in x.keys()
+                            and "name" in x["content"].keys()
+                            and "id" in x["content"].keys()
+                            else None
+                        ),
                         response,
                     )
                 )
