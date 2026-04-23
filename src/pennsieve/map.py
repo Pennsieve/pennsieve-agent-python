@@ -59,7 +59,7 @@ class Map:
         """
         request = agent_pb2.MapRequest(
             dataset_id=dataset_id,
-            target_folder=str(target_folder),
+            target_folder=_abspath(target_folder),
         )
         return self._stub.Map(request=request)
 
@@ -71,7 +71,7 @@ class Map:
         once the pull has been kicked off — work continues in the background.
         Use `wait_for_pull` to block until it finishes.
         """
-        request = agent_pb2.PullRequest(path=str(path))
+        request = agent_pb2.PullRequest(path=_abspath(path))
         return self._stub.Pull(request=request)
 
     def push(self, path: str):
@@ -81,12 +81,12 @@ class Map:
         are ignored by the agent today). Returns immediately; use
         `wait_for_push` with the expected file count to block.
         """
-        request = agent_pb2.PushRequest(path=str(path))
+        request = agent_pb2.PushRequest(path=_abspath(path))
         return self._stub.Push(request=request)
 
     def diff(self, path: str):
         """Return local vs. remote diff for the mapped dataset at `path`."""
-        request = agent_pb2.MapDiffRequest(path=str(path))
+        request = agent_pb2.MapDiffRequest(path=_abspath(path))
         return self._stub.GetMapDiff(request=request)
 
     # ---------- wait helpers ----------
@@ -226,6 +226,10 @@ class Map:
             # is expected.
             raise error[0]
         return completed
+
+
+def _abspath(path: str) -> str:
+    return os.path.abspath(os.path.expanduser(str(path)))
 
 
 def _read_local_state_paths(state_path: Path) -> set[str]:
