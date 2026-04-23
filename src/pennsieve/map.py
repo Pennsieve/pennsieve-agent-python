@@ -38,10 +38,12 @@ class Map:
         Upload any new local files under `path` back to the mapped dataset.
     diff(path):
         Return added / changed / renamed / moved / deleted file status.
-    wait_for_pull(target_folder, timeout=...):
-        Block until pulled files appear in state.json.
-    wait_for_push(expected_files, subscriber_id, timeout=...):
-        Block until upload_status COMPLETE events match expected_files.
+    wait_for_pull(target_folder, idle_timeout=...):
+        Block until pulled files appear in state.json. Fails only if no new
+        files appear within `idle_timeout` seconds — total duration unbounded.
+    wait_for_push(expected_files, subscriber_id, idle_timeout=...):
+        Block until upload_status COMPLETE events match expected_files. Fails
+        only if no upload-status event arrives within `idle_timeout` seconds.
     """
 
     def __init__(self, stub):
@@ -93,7 +95,7 @@ class Map:
         self,
         target_folder: str,
         expected_relative_paths: Optional[Iterable[str]] = None,
-        timeout: float = 300.0,
+        idle_timeout: float = 1800.0,
         poll_interval: float = 0.5,
     ) -> None:
         """Block until expected files are pulled.
@@ -111,14 +113,19 @@ class Map:
         which the agent writes with forward slashes relative to the
         dataset root.
 
-        Raises TimeoutError if the deadline elapses.
+        `idle_timeout` is the max seconds allowed between progress events
+        (a new file appearing in state.json). The deadline resets each time
+        the local-files set grows, so total duration is unbounded — fits
+        TB/PB-scale pulls where a single file can take hours. Raises
+        TimeoutError only if no new file appears within `idle_timeout`.
         """
         state_path = Path(target_folder) / ".pennsieve" / "state.json"
         expected: Optional[set[str]] = None
         if expected_relative_paths is not None:
             expected = {p.replace("\\", "/").lstrip("/") for p in expected_relative_paths}
 
-        deadline = time.monotonic() + timeout
+        last_progress = time.monotonic()
+        last_count = 0
         while True:
             local_paths = _read_local_state_paths(state_path)
 
@@ -129,10 +136,15 @@ class Map:
                 if expected.issubset(local_paths):
                     return
 
-            if time.monotonic() >= deadline:
+            if len(local_paths) > last_count:
+                last_count = len(local_paths)
+                last_progress = time.monotonic()
+
+            if time.monotonic() - last_progress >= idle_timeout:
                 missing = expected - local_paths if expected is not None else set()
                 raise TimeoutError(
-                    f"wait_for_pull timed out after {timeout}s; "
+                    f"wait_for_pull: no new files in {idle_timeout}s "
+                    f"(have {last_count}); "
                     f"missing {len(missing)} file(s): {sorted(missing)[:5]}"
                 )
             time.sleep(poll_interval)
@@ -141,7 +153,7 @@ class Map:
         self,
         expected_files: int,
         subscriber_id: int,
-        timeout: float = 600.0,
+        idle_timeout: float = 300.0,
     ) -> int:
         """Block until `expected_files` upload-status COMPLETE events arrive.
 
@@ -153,10 +165,15 @@ class Map:
         `subscriber_id` must be unique per subscriber within the agent's
         lifetime. Picking os.getpid() + a counter works for most cases.
 
-        Raises TimeoutError if the deadline elapses before enough events
-        arrive. The subscribe stream is closed either way.
+        `idle_timeout` is the max seconds allowed between upload-status
+        events (INIT / IN_PROGRESS / COMPLETE all count as progress). Each
+        event resets the idle window, so total duration is unbounded — a
+        multi-hour single-file upload is fine as long as the agent keeps
+        emitting progress. Raises TimeoutError only when the stream goes
+        silent for `idle_timeout` seconds.
         """
         completed = 0
+        progress = threading.Event()
         done = threading.Event()
         error: list[BaseException] = []
 
@@ -166,11 +183,13 @@ class Map:
                 request = agent_pb2.SubscribeRequest(id=subscriber_id)
                 for response in self._stub.Subscribe(request=request):
                     # type==1 is UPLOAD_STATUS in the SubscribeResponse enum
-                    if response.type == 1 and response.upload_status.status == 2:
-                        completed += 1
-                        if completed >= expected_files:
-                            done.set()
-                            return
+                    if response.type == 1:
+                        progress.set()
+                        if response.upload_status.status == 2:
+                            completed += 1
+                            if completed >= expected_files:
+                                done.set()
+                                return
             except BaseException as exc:  # includes grpc.RpcError on cancel
                 error.append(exc)
                 done.set()
@@ -178,7 +197,16 @@ class Map:
         t = threading.Thread(target=consume, daemon=True)
         t.start()
 
-        finished = done.wait(timeout=timeout)
+        finished = False
+        while not finished:
+            progress.clear()
+            if done.wait(timeout=idle_timeout):
+                finished = True
+                break
+            if not progress.is_set():
+                # No upload-status event arrived during the whole window.
+                break
+
         # Stop the subscriber so the stream closes promptly.
         try:
             self._stub.Unsubscribe(
@@ -189,7 +217,7 @@ class Map:
 
         if not finished:
             raise TimeoutError(
-                f"wait_for_push timed out after {timeout}s; "
+                f"wait_for_push: no upload-status event in {idle_timeout}s; "
                 f"observed {completed}/{expected_files} COMPLETE event(s)"
             )
         if error and completed < expected_files:

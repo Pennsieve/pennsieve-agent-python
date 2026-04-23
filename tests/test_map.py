@@ -68,7 +68,7 @@ def test_wait_for_pull_returns_when_expected_paths_local(tmp_path):
     m.wait_for_pull(
         target_folder=str(tmp_path),
         expected_relative_paths=["folder/a.lay", "folder/b.lay"],
-        timeout=1.0,
+        idle_timeout=1.0,
         poll_interval=0.01,
     )  # must not raise
 
@@ -81,7 +81,7 @@ def test_wait_for_pull_times_out_when_paths_missing(tmp_path):
         m.wait_for_pull(
             target_folder=str(tmp_path),
             expected_relative_paths=["folder/a.lay", "folder/missing.lay"],
-            timeout=0.2,
+            idle_timeout=0.2,
             poll_interval=0.05,
         )
     assert "folder/missing.lay" in str(exc.value)
@@ -100,7 +100,7 @@ def test_wait_for_pull_ignores_non_local_records(tmp_path):
     m.wait_for_pull(
         target_folder=str(tmp_path),
         expected_relative_paths=["folder/a.lay"],
-        timeout=0.5,
+        idle_timeout=0.5,
         poll_interval=0.01,
     )
 
@@ -121,7 +121,7 @@ def test_wait_for_pull_polls_until_state_appears(tmp_path):
         m.wait_for_pull(
             target_folder=str(tmp_path),
             expected_relative_paths=["folder/a.lay"],
-            timeout=1.0,
+            idle_timeout=1.0,
             poll_interval=0.01,
         )
     finally:
@@ -171,7 +171,7 @@ def test_wait_for_push_counts_complete_events():
     stub.Subscribe.side_effect = lambda request: subscribe(request)
 
     m = Map(stub)
-    count = m.wait_for_push(expected_files=2, subscriber_id=9001, timeout=2.0)
+    count = m.wait_for_push(expected_files=2, subscriber_id=9001, idle_timeout=2.0)
     assert count == 2
     stub.Unsubscribe.assert_called_once()
 
@@ -188,4 +188,4 @@ def test_wait_for_push_times_out_when_not_enough_events():
 
     m = Map(stub)
     with pytest.raises(TimeoutError):
-        m.wait_for_push(expected_files=2, subscriber_id=9002, timeout=0.3)
+        m.wait_for_push(expected_files=2, subscriber_id=9002, idle_timeout=0.3)
