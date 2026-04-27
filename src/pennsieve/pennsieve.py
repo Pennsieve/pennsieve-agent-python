@@ -1,6 +1,7 @@
 """
 Copyright (c) 2022 Patryk Orzechowski | Wagenaar Lab | University of Pennsylvania
 """
+
 from __future__ import annotations
 
 import logging
@@ -12,6 +13,7 @@ from tqdm.auto import tqdm
 from .direct import API2_HOST_DEFAULT, API_HOST_DEFAULT
 from .direct.client import AbstractClient, BaseHttpApiClient, HttpApiClient
 from .manifest import Manifest
+from .map import Map
 from .protos import agent_pb2, agent_pb2_grpc
 from .protos.agent_pb2_grpc import AgentStub
 from .session import APISession, APISessionProvider
@@ -111,6 +113,7 @@ class Pennsieve(AbstractClient):
         self.dataset = None
         self.manifest = None
         self.timeseries = None
+        self.map = None
         if http_api_client is None:
             self.http_api = self.build_no_auth_http_api_client()
         else:
@@ -167,6 +170,7 @@ the 'connect=false' parameter.
 
         self.manifest = Manifest(self.stub)
         self.timeseries = TimeSeries(self.stub)
+        self.map = Map(self.stub)
         print("Please set the dataset with use_dataset([name])")
         return self
 
@@ -211,11 +215,13 @@ the 'connect=false' parameter.
             if isinstance(response, list) and len(response) > 0:
                 self._datasets = dict(
                     map(
-                        lambda x: (x["content"]["name"], x["content"]["id"])
-                        if "content" in x.keys()
-                        and "name" in x["content"].keys()
-                        and "id" in x["content"].keys()
-                        else None,
+                        lambda x: (
+                            (x["content"]["name"], x["content"]["id"])
+                            if "content" in x.keys()
+                            and "name" in x["content"].keys()
+                            and "id" in x["content"].keys()
+                            else None
+                        ),
                         response,
                     )
                 )

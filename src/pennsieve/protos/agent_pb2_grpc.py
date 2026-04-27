@@ -89,6 +89,11 @@ class AgentStub(object):
                 request_serializer=pennsieve_dot_protos_dot_agent__pb2.PullRequest.SerializeToString,
                 response_deserializer=pennsieve_dot_protos_dot_agent__pb2.SimpleStatusResponse.FromString,
                 )
+        self.Push = channel.unary_unary(
+                '/v1.Agent/Push',
+                request_serializer=pennsieve_dot_protos_dot_agent__pb2.PushRequest.SerializeToString,
+                response_deserializer=pennsieve_dot_protos_dot_agent__pb2.SimpleStatusResponse.FromString,
+                )
         self.GetMapDiff = channel.unary_unary(
                 '/v1.Agent/GetMapDiff',
                 request_serializer=pennsieve_dot_protos_dot_agent__pb2.MapDiffRequest.SerializeToString,
@@ -148,6 +153,11 @@ class AgentStub(object):
                 '/v1.Agent/Register',
                 request_serializer=pennsieve_dot_protos_dot_agent__pb2.RegisterRequest.SerializeToString,
                 response_deserializer=pennsieve_dot_protos_dot_agent__pb2.RegisterResponse.FromString,
+                )
+        self.Deregister = channel.unary_unary(
+                '/v1.Agent/Deregister',
+                request_serializer=pennsieve_dot_protos_dot_agent__pb2.DeregisterRequest.SerializeToString,
+                response_deserializer=pennsieve_dot_protos_dot_agent__pb2.DeregisterResponse.FromString,
                 )
         self.GetTimeseriesChannels = channel.unary_unary(
                 '/v1.Agent/GetTimeseriesChannels',
@@ -262,6 +272,12 @@ class AgentServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def Push(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def GetMapDiff(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
@@ -335,6 +351,12 @@ class AgentServicer(object):
     def Register(self, request, context):
         """Account Endpoints
         """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def Deregister(self, request, context):
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
@@ -436,6 +458,11 @@ def add_AgentServicer_to_server(servicer, server):
                     request_deserializer=pennsieve_dot_protos_dot_agent__pb2.PullRequest.FromString,
                     response_serializer=pennsieve_dot_protos_dot_agent__pb2.SimpleStatusResponse.SerializeToString,
             ),
+            'Push': grpc.unary_unary_rpc_method_handler(
+                    servicer.Push,
+                    request_deserializer=pennsieve_dot_protos_dot_agent__pb2.PushRequest.FromString,
+                    response_serializer=pennsieve_dot_protos_dot_agent__pb2.SimpleStatusResponse.SerializeToString,
+            ),
             'GetMapDiff': grpc.unary_unary_rpc_method_handler(
                     servicer.GetMapDiff,
                     request_deserializer=pennsieve_dot_protos_dot_agent__pb2.MapDiffRequest.FromString,
@@ -495,6 +522,11 @@ def add_AgentServicer_to_server(servicer, server):
                     servicer.Register,
                     request_deserializer=pennsieve_dot_protos_dot_agent__pb2.RegisterRequest.FromString,
                     response_serializer=pennsieve_dot_protos_dot_agent__pb2.RegisterResponse.SerializeToString,
+            ),
+            'Deregister': grpc.unary_unary_rpc_method_handler(
+                    servicer.Deregister,
+                    request_deserializer=pennsieve_dot_protos_dot_agent__pb2.DeregisterRequest.FromString,
+                    response_serializer=pennsieve_dot_protos_dot_agent__pb2.DeregisterResponse.SerializeToString,
             ),
             'GetTimeseriesChannels': grpc.unary_unary_rpc_method_handler(
                     servicer.GetTimeseriesChannels,
@@ -777,6 +809,23 @@ class Agent(object):
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
+    def Push(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/v1.Agent/Push',
+            pennsieve_dot_protos_dot_agent__pb2.PushRequest.SerializeToString,
+            pennsieve_dot_protos_dot_agent__pb2.SimpleStatusResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
     def GetMapDiff(request,
             target,
             options=(),
@@ -977,6 +1026,23 @@ class Agent(object):
         return grpc.experimental.unary_unary(request, target, '/v1.Agent/Register',
             pennsieve_dot_protos_dot_agent__pb2.RegisterRequest.SerializeToString,
             pennsieve_dot_protos_dot_agent__pb2.RegisterResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def Deregister(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/v1.Agent/Deregister',
+            pennsieve_dot_protos_dot_agent__pb2.DeregisterRequest.SerializeToString,
+            pennsieve_dot_protos_dot_agent__pb2.DeregisterResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 

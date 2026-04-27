@@ -51,6 +51,48 @@ To create a package and upload it to PyPI, first update the package version in t
     twine upload dist/*
 ```
 
+Mapped Datasets
+---------------
+
+The `client.map` wrapper exposes the agent's mapped-dataset RPCs (`map`,
+`pull`, `push`, `diff`) as a small Python API. The four RPCs return as soon
+as the agent has accepted the work — `pull` and `push` then run in the
+background inside the agent — so `client.map` also ships two blocking
+helpers: `wait_for_pull` and `wait_for_push`.
+
+```python
+client.map.map(dataset_id="N:dataset:...", target_folder="/data/foo")
+client.map.pull("/data/foo/subfolder")
+client.map.wait_for_pull("/data/foo", expected_relative_paths=[...])
+
+client.map.push("/data/foo")
+client.map.wait_for_push(expected_files=N, subscriber_id=os.getpid())
+```
+
+### Timeouts
+
+Both wait helpers use an **idle timeout** rather than a total-duration
+timeout — the deadline resets each time progress is observed, so a
+multi-hour single-file transfer is fine as long as the agent keeps making
+progress. You only hit a `TimeoutError` when the agent goes silent.
+
+**`wait_for_pull`** — default `idle_timeout=1800` (30 min)
+- *Progress signal:* a new file entry appears in `.pennsieve/state.json`, which the agent writes on each file's completion.
+- *Why 30 min:* the window has to cover the worst-case single-file download end-to-end, since there is no per-chunk progress for pulls.
+
+**`wait_for_push`** — default `idle_timeout=300` (5 min)
+- *Progress signal:* any `UPLOAD_STATUS` event (`INIT` / `IN_PROGRESS` / `COMPLETE`). The agent emits `IN_PROGRESS` on every S3 chunk read, so events stream continuously during healthy uploads.
+- *Why 5 min:* events are frequent during healthy uploads, so 5 minutes of silence indicates a real stall (network hang, agent wedge) rather than slow progress.
+
+Override either default by passing `idle_timeout=<seconds>` when you know
+your transfer characteristics — e.g. pulls over a very slow link with large
+individual files, or tighter CI smoke-tests where you want to fail faster.
+
+```python
+client.map.wait_for_pull(target_folder, idle_timeout=3600)  # 1 hour
+client.map.wait_for_push(expected_files=N, subscriber_id=..., idle_timeout=60)  # 1 minute
+```
+
 Documentation
 -------------
 

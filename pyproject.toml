@@ -69,8 +69,14 @@ exclude = '''
   | build
   | dist
   | docs
+  | src/pennsieve/protos
 )/
 '''
+
+[tool.isort]
+profile = "black"
+line_length = 99
+skip_glob = ["src/pennsieve/protos/*"]
 
 
 [build-system]
