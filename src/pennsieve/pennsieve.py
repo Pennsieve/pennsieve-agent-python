@@ -241,7 +241,7 @@ the 'connect=false' parameter.
         self.get_datasets()
         if self._datasets and dataset_id in self._datasets.keys():
             self.dataset = self._datasets[dataset_id]
-        elif dataset_id in self._datasets.values():
+        elif self._datasets and dataset_id in self._datasets.values():
             self.dataset = dataset_id
         assert self.dataset is not None
         request = agent_pb2.UseDatasetRequest(dataset_id=self.dataset)
