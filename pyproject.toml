@@ -14,6 +14,8 @@ classifiers = [
     "License :: OSI Approved :: Apache Software License",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Topic :: Scientific/Engineering",
     "Topic :: Scientific/Engineering :: Bio-Informatics",
     "Topic :: Scientific/Engineering :: Information Analysis",
@@ -25,24 +27,24 @@ classifiers = [
 
 
 [tool.poetry.dependencies]
-python = ">=3.10,<3.14"
-grpcio = { version = "^1.51" }
-grpcio_tools = { version = "^1.51" }
-tqdm = { version = "^4.64" }
-protobuf = { version = "^4.21" }
-requests = { version = "^2.28" }
-pyjwt = { version = "^2.6" }
-boto3 = { version = "^1.26" }
+python = ">=3.10,<3.15"
+grpcio = { version = "^1.71" }
+grpcio_tools = { version = "^1.71" }
+tqdm = { version = "^4.67" }
+protobuf = { version = "^5.26" }
+requests = { version = "^2.32" }
+pyjwt = { version = "^2.10" }
+boto3 = { version = "^1.37" }
 pandas = "^2.2.3"
-numpy = "1.26.0"
+numpy = "^1.26"
 
 [tool.poetry.group.dev.dependencies]
-black = { version = "^23.1" }
-blackdoc = "^0.3.8"
-isort = "^5.12.0"
-codecov = { version = "^2.0.8" }
-pytest = { version = "^7.2" }
-build = { version = "^0.10" }
+black = { version = "^25.0" }
+blackdoc = "^0.3.9"
+isort = "^5.13"
+codecov = { version = "^2.1" }
+pytest = { version = "^8.0" }
+build = { version = "^1.0" }
 
 [tool.poetry.extras]
 dev = ["black", "pytest", "flake8", "codecov"]
