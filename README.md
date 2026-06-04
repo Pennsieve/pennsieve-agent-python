@@ -1,17 +1,19 @@
-Pennsieve Python client (pennsieve2)
+Pennsieve Python Client
 ================
-[![PyPI Latest Release](https://img.shields.io/pypi/v/pennsieve2.svg)](https://pypi.org/project/pennsieve2/)
-[![pypi](https://img.shields.io/pypi/pyversions/pennsieve2.svg)](https://pypi.org/project/pennsieve2/)
-[![Package Status](https://img.shields.io/pypi/status/pennsieve2.svg)](https://pypi.org/project/pennsieve2/)
-[![License](https://img.shields.io/pypi/l/pennsieve2.svg)](https://github.com/Pennsieve/pennsieve-agent-python/blob/main/LICENSE)
+[![PyPI Latest Release](https://img.shields.io/pypi/v/pennsieve.svg)](https://pypi.org/project/pennsieve/)
+[![pypi](https://img.shields.io/pypi/pyversions/pennsieve.svg)](https://pypi.org/project/pennsieve/)
+[![Package Status](https://img.shields.io/pypi/status/pennsieve.svg)](https://pypi.org/project/pennsieve/)
+[![License](https://img.shields.io/pypi/l/pennsieve.svg)](https://github.com/Pennsieve/pennsieve-agent-python/blob/main/LICENSE)
 [![Coverage](https://codecov.io/github/pennsieve/pennsieve-agent-python/coverage.svg?branch=main)](https://codecov.io/gh/pennsieve/pennsieve-agent-python)
 
-Python client and command line tool for Pennsieve (pennsieve2).
+Python client and command line tool for Pennsieve.
 
 
 Prerequisites
 -------------
 In order to use this Python library to upload files to Pennsieve, please follow the instruction on installing and setting up Pennsieve agent, which could be found in the documentation.
+
+**Supported Python versions:** 3.10, 3.11, 3.12, 3.13, 3.14
 
 
 Installation
@@ -23,7 +25,7 @@ To install, run:
     pip install -U pennsieve
 ```
 
-To install specific previous dev version, run:
+To install a specific previous dev version, run:
 ```bash
     pip install -U pennsieve==0.1.0.dev2 --extra-index-url https://test.pypi.org/simple
 ```
@@ -36,12 +38,13 @@ To update gRPC python files, execute from the src folder:
 ```bash
     rm src/pennsieve/protos/agent_pb2*
     cd src
-    python3.9 -m grpc_tools.protoc --python_out=. -I. --grpc_python_out=. pennsieve/protos/agent.proto
+    python3 -m grpc_tools.protoc --python_out=. -I. --grpc_python_out=. pennsieve/protos/agent.proto
 ```
-Notice, this command does not produce a valid agent_pb2.py file when executed for Python3.10 or formatted by black - it does not use reflection and is reported as error for Flake8.
+
+Requires `grpcio-tools >= 1.71` and `protobuf >= 5.26` (both installed as project dependencies).
 
 
-To create a package and upload it to PyPI, first update the package version in the pennsieve2/__init__.py, then execute:
+To create a package and upload it to PyPI, first update the package version in `pyproject.toml`, then execute:
 
 ```bash
     python -m build
@@ -96,7 +99,7 @@ client.map.wait_for_push(expected_files=N, subscriber_id=..., idle_timeout=60)  
 Documentation
 -------------
 
-Client and command line documentation can be found on [Pennsieve’s documentation website](https://docs.pennsieve.io/docs/uploading-files-programmatically).
+Client and command line documentation can be found on [Pennsieve's documentation website](https://docs.pennsieve.io/docs/uploading-files-programmatically).
 
 Development
 -------------
@@ -105,9 +108,25 @@ This project uses [Poetry](https://python-poetry.org/) to manage dependencies in
 ```bash
   poetry install
 ```
-from the root directory to install the projects dependencies. Some IDEs (IntelliJ Idea for example) can create a Poetry Python
-environment as well.
+from the root directory to install the project's dependencies. Some IDEs (IntelliJ IDEA for example) can create a Poetry Python environment as well.
 
-Installing from TestPypi
+**Key dependency versions:**
+
+| Package | Version |
+|---|---|
+| Python | >=3.10, <3.15 |
+| grpcio | ^1.71 |
+| grpcio-tools | ^1.71 |
+| protobuf | ^5.26 |
+| boto3 | ^1.37 |
+| requests | ^2.32 |
+| pandas | ^2.2.3 |
+| numpy | ^1.26 |
+| black | ^25.0 |
+| pytest | ^8.0 |
+
+Installing from TestPyPI
 ------------------------
+```bash
 python -m pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple pennsieve
+```
