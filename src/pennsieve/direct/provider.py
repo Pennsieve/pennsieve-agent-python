@@ -82,17 +82,18 @@ class PythonAPISessionProvider(APISessionProvider):
 
 
 class CognitoConfig:
-    def __init__(self, region, userPool, tokenPool, identityPool):
+    # Built from GET /authentication/cognito-config with CognitoConfig(**json).
+    # Only the token pool is used (login). Other keys, such as the retired
+    # identityPool, are accepted and ignored so that changes to the response
+    # don't break login.
+    def __init__(self, region, userPool, tokenPool, **_ignored):
         self.region = region
         self.user_pool = PoolConfig(**userPool)
         self.token_pool = PoolConfig(**tokenPool)
-        self.identity_pool = PoolConfig(**identityPool)
 
     def __str__(self):
-        return (
-            "{{'region': {0}, 'user_pool': {1}, 'token_pool': {2}, 'identity_pool': {3}}}".format(
-                self.region, self.user_pool, self.token_pool, self.identity_pool
-            )
+        return "{{'region': {0}, 'user_pool': {1}, 'token_pool': {2}}}".format(
+            self.region, self.user_pool, self.token_pool
         )
 
 

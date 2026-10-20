@@ -32,18 +32,18 @@ grpcio = { version = "^1.71" }
 grpcio_tools = { version = "^1.71" }
 tqdm = { version = "^4.67" }
 protobuf = { version = "^5.26" }
-requests = { version = "^2.32" }
-pyjwt = { version = "^2.10" }
+requests = { version = "^2.33" }
+pyjwt = { version = "^2.15" }
 boto3 = { version = "^1.37" }
 pandas = "^2.2.3"
 numpy = "^1.26"
 
 [tool.poetry.group.dev.dependencies]
-black = { version = "^25.0" }
+black = { version = "^26.3.1" }
 blackdoc = "^0.3.9"
 isort = "^5.13"
 codecov = { version = "^2.1" }
-pytest = { version = "^8.0" }
+pytest = { version = "^9.0.3" }
 build = { version = "^1.0" }
 
 [tool.poetry.extras]
